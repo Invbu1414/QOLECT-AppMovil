@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "784903621231",
+    "project_id": "app-qolect",
+    "storage_bucket": "app-qolect.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784903621231:android:9d7ba5062fdb99866d1b9a",
+        "android_client_info": {
+          "package_name": "com.qolect.qolectapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784903621231-hte9ev91ide2rdfm17e9p4ntjsg65811.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qolect.qolectapp",
+            "certificate_hash": "4e40bf7a0e896ad0003d61689f7ff22425806ea0"
+          }
+        },
+        {
+          "client_id": "784903621231-qhg3lkd3qv3lvf97tdiob5cjsuujngou.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qolect.qolectapp",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "784903621231-4qjr300snb2vtnm5p3sdq7nup6qumcf9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFiW3L7R3vn9QadYDyAe8G5PPCHNvPk4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784903621231-4qjr300snb2vtnm5p3sdq7nup6qumcf9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "784903621231-ukg0gcgk1hpqajucs65aspe5b3d1bjt3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.qolect.qolectapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

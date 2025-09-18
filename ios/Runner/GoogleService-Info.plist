@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>784903621231-ukg0gcgk1hpqajucs65aspe5b3d1bjt3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.784903621231-ukg0gcgk1hpqajucs65aspe5b3d1bjt3</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>784903621231-hte9ev91ide2rdfm17e9p4ntjsg65811.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBzefWCl_w7UtlpzBsgWznMNc4kKtLMZmg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>784903621231</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.qolect.qolectapp</string>
+	<key>PROJECT_ID</key>
+	<string>app-qolect</string>
+	<key>STORAGE_BUCKET</key>
+	<string>app-qolect.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:784903621231:ios:adf6f91c15f9fce36d1b9a</string>
+</dict>
+</plist>
