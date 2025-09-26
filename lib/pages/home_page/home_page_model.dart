@@ -16,6 +16,12 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
 
   bool plans = true;
 
+  int currentPage = 1;
+  int itemsPerPage = 10;
+  bool isLoadingMore = false;
+  bool hasMoreData = true;
+  List<dynamic> allViajesList = [];
+
   List<dynamic> listCollections = [];
   void addToListCollections(dynamic item) => listCollections.add(item);
   void removeFromListCollections(dynamic item) => listCollections.remove(item);
@@ -76,6 +82,34 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
       if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
         break;
       }
+    }
+  }
+
+  Future<void> loadMoreViajes() async {
+    if (isLoadingMore || !hasMoreData) return;
+
+    isLoadingMore = true;
+
+    try {
+      final response = await WordpressViajesCall.call(
+        author: FFAppState().userSessionID.toString(),
+        after: after,
+        before: before,
+        // Agregar parámetros de paginación si la API los soporta
+      );
+
+      if (response.succeeded) {
+        final newItems = response.jsonBody as List<dynamic>;
+        if (newItems.length < itemsPerPage) {
+          hasMoreData = false;
+        }
+        allViajesList.addAll(newItems);
+        currentPage++;
+      }
+    } catch (e) {
+      print('Error loading more viajes: $e');
+    } finally {
+      isLoadingMore = false;
     }
   }
 }

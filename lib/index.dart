@@ -25,3 +25,4 @@ export '/pages/registrar_usuario_page/registrar_usuario_page_widget.dart'
 export '/pages/web_view_plan/web_view_plan_widget.dart' show WebViewPlanWidget;
 export '/pages/comunidad/comunidad_widget.dart' show ComunidadWidget;
 export '/versiones/comunidadv1/comunidadv1_widget.dart' show Comunidadv1Widget;
+export '/components/optimized_image/optimized_image_widget.dart';

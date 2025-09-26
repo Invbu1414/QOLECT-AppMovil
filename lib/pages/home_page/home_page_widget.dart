@@ -16,6 +16,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import '/components/optimized_image/optimized_image_widget.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 
@@ -39,25 +41,42 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     super.initState();
     _model = createModel(context, () => HomePageModel());
 
-    // On page load action.
+    // Optimizar carga inicial
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.after = '2000-09-06';
-      safeSetState(() {});
-      _model.amountNotifications = await WordpressNotificacionesCall.call(
-        author: FFAppState().userSessionID.toString(),
-      );
 
-      if ((_model.amountNotifications?.succeeded ?? true)) {
+      // Cargar datos de forma asíncrona sin bloquear la UI
+      _loadInitialData();
+    });
+  }
+
+  Future<void> _loadInitialData() async {
+    try {
+      // Cargar notificaciones y viajes en paralelo
+      final futures = await Future.wait([
+        WordpressNotificacionesCall.call(
+          author: FFAppState().userSessionID.toString(),
+        ),
+        _model.loadMoreViajes(),
+      ]);
+
+      final notificationsResponse = futures[0] as ApiCallResponse;
+
+      if (notificationsResponse.succeeded) {
         FFAppState().notificationsAmount = WordpressNotificacionesCall.id(
-          (_model.amountNotifications?.jsonBody ?? ''),
-        )!
-            .length;
-        return;
+              notificationsResponse.jsonBody ?? '',
+            )?.length ??
+            0;
       } else {
         FFAppState().notificationsAmount = 0;
-        return;
       }
-    });
+
+      if (mounted) setState(() {});
+    } catch (e) {
+      print('Error loading initial data: $e');
+      FFAppState().notificationsAmount = 0;
+      if (mounted) setState(() {});
+    }
   }
 
   @override
@@ -979,16 +998,17 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               15.0, 20.0, 15.0, 20.0),
                           child: FutureBuilder<ApiCallResponse>(
-                            future: (_model.apiRequestCompleter1 ??=
-                                    Completer<ApiCallResponse>()
-                                      ..complete(WordpressViajesCall.call(
-                                        author: FFAppState()
-                                            .userSessionID
-                                            .toString(),
-                                        after: _model.after,
-                                        before: _model.before,
-                                      )))
-                                .future,
+                            future: _model.apiRequestCompleter1?.future ??
+                                (_model.apiRequestCompleter1 =
+                                        Completer<ApiCallResponse>()
+                                          ..complete(WordpressViajesCall.call(
+                                            author: FFAppState()
+                                                .userSessionID
+                                                .toString(),
+                                            after: _model.after,
+                                            before: _model.before,
+                                          )))
+                                    .future,
                             builder: (context, snapshot) {
                               // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
@@ -1019,536 +1039,47 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     );
                                   }
 
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: viajesList.length,
-                                    itemBuilder: (context, viajesListIndex) {
-                                      final viajesListItem =
-                                          viajesList[viajesListIndex];
-                                      return InkWell(
-                                        splashColor: Colors.transparent,
-                                        focusColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () async {
-                                          context.pushNamed(
-                                            ViajePageWidget.routeName,
-                                            queryParameters: {
-                                              'info': serializeParam(
-                                                getJsonField(
-                                                  viajesListItem,
-                                                  r'''$''',
-                                                ),
-                                                ParamType.JSON,
-                                              ),
-                                            }.withoutNulls,
-                                          );
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      10.0, 20.0, 10.0, 0.0),
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0),
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          0.0, 0.0, 0.0, 30.0),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                -1.0, -1.0),
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                          child: Image.asset(
-                                                            'assets/images/Group_2181_(1).png',
-                                                            width: 104.0,
-                                                            height: 56.0,
-                                                            fit:
-                                                                BoxFit.fitWidth,
-                                                            alignment:
-                                                                Alignment(
-                                                                    -1.0, -1.0),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceEvenly,
-                                                        children: [
-                                                          Flexible(
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          15.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Align(
-                                                                    alignment:
-                                                                        AlignmentDirectional(
-                                                                            0.0,
-                                                                            0.0),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          10.0),
-                                                                      child:
-                                                                          Text(
-                                                                        valueOrDefault<
-                                                                            String>(
-                                                                          WordpressViajesCall
-                                                                              .title(
-                                                                            listViewCollectionWordpressViajesResponse.jsonBody,
-                                                                          )?.elementAtOrNull(
-                                                                              viajesListIndex),
-                                                                          'Sin nombre',
-                                                                        ),
-                                                                        style: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .override(
-                                                                              font: GoogleFonts.fredoka(
-                                                                                fontWeight: FontWeight.w600,
-                                                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                              ),
-                                                                              color: Colors.black,
-                                                                              letterSpacing: 0.0,
-                                                                              fontWeight: FontWeight.w600,
-                                                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                            ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Align(
-                                                                    alignment:
-                                                                        AlignmentDirectional(
-                                                                            0.0,
-                                                                            0.0),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          15.0),
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.max,
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding: EdgeInsetsDirectional.fromSTEB(
-                                                                                0.0,
-                                                                                0.0,
-                                                                                5.0,
-                                                                                0.0),
-                                                                            child:
-                                                                                Text(
-                                                                              valueOrDefault<String>(
-                                                                                getJsonField(
-                                                                                  viajesListItem,
-                                                                                  r'''$.acf.calificacion''',
-                                                                                )?.toString(),
-                                                                                '0',
-                                                                              ),
-                                                                              style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                                    font: GoogleFonts.fredoka(
-                                                                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                    ),
-                                                                                    color: Colors.black,
-                                                                                    letterSpacing: 0.0,
-                                                                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                  ),
-                                                                            ),
-                                                                          ),
-                                                                          RatingBarIndicator(
-                                                                            itemBuilder: (context, index) =>
-                                                                                Icon(
-                                                                              Icons.star_rounded,
-                                                                              color: FlutterFlowTheme.of(context).warning,
-                                                                            ),
-                                                                            direction:
-                                                                                Axis.horizontal,
-                                                                            rating:
-                                                                                valueOrDefault<double>(
-                                                                              functions.convertirStringADouble(getJsonField(
-                                                                                viajesListItem,
-                                                                                r'''$.acf.calificacion''',
-                                                                              ).toString()),
-                                                                              0.0,
-                                                                            ),
-                                                                            unratedColor:
-                                                                                FlutterFlowTheme.of(context).secondaryText,
-                                                                            itemCount:
-                                                                                5,
-                                                                            itemSize:
-                                                                                13.0,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            10.0),
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .max,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: EdgeInsetsDirectional.fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                          child:
-                                                                              ClipRRect(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(8.0),
-                                                                            child:
-                                                                                Image.asset(
-                                                                              'assets/images/localizacion.png',
-                                                                              width: 25.0,
-                                                                              height: 25.0,
-                                                                              fit: BoxFit.cover,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          valueOrDefault<
-                                                                              String>(
-                                                                            WordpressViajesCall.destino(
-                                                                              listViewCollectionWordpressViajesResponse.jsonBody,
-                                                                            )?.elementAtOrNull(viajesListIndex),
-                                                                            'Sin datos',
-                                                                          ),
-                                                                          style: FlutterFlowTheme.of(context)
-                                                                              .bodyMedium
-                                                                              .override(
-                                                                                font: GoogleFonts.fredoka(
-                                                                                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                ),
-                                                                                color: Colors.black,
-                                                                                fontSize: 12.0,
-                                                                                letterSpacing: 0.0,
-                                                                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                              ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .max,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            10.0,
-                                                                            0.0),
-                                                                        child:
-                                                                            ClipRRect(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(8.0),
-                                                                          child:
-                                                                              Image.asset(
-                                                                            'assets/images/descargar-pdf.png',
-                                                                            width:
-                                                                                25.0,
-                                                                            height:
-                                                                                25.0,
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Text(
-                                                                        'Descarga más información',
-                                                                        style: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .override(
-                                                                              font: GoogleFonts.fredoka(
-                                                                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                              ),
-                                                                              color: FlutterFlowTheme.of(context).secondaryText,
-                                                                              fontSize: 11.0,
-                                                                              letterSpacing: 0.0,
-                                                                              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                            ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          if ((WordpressViajesCall
-                                                                  .imagenCard(
-                                                                listViewCollectionWordpressViajesResponse
-                                                                    .jsonBody,
-                                                              )?.elementAtOrNull(
-                                                                  viajesListIndex)) !=
-                                                              'false')
-                                                            Flexible(
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            10.0,
-                                                                            0.0),
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              20.0),
-                                                                  child: Image
-                                                                      .network(
-                                                                    valueOrDefault<
-                                                                        String>(
-                                                                      WordpressViajesCall
-                                                                          .imagenCard(
-                                                                        listViewCollectionWordpressViajesResponse
-                                                                            .jsonBody,
-                                                                      )?.elementAtOrNull(
-                                                                          viajesListIndex),
-                                                                      'https://app.qolect.co/wp-content/uploads/2023/09/8-1.png',
-                                                                    ),
-                                                                    width:
-                                                                        120.0,
-                                                                    height:
-                                                                        120.0,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    cacheWidth:
-                                                                        120,
-                                                                    cacheHeight:
-                                                                        120,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                      Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      20.0,
-                                                                      0.0,
-                                                                      0.0),
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            children: [
-                                                              Text(
-                                                                _model.before ==
-                                                                        '2100-09-06'
-                                                                    ? 'Todo listo para'
-                                                                    : 'Por qué visitaste',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .fredoka(
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontSize:
-                                                                          18.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            10.0),
-                                                                child: Text(
-                                                                  valueOrDefault<
-                                                                      String>(
-                                                                    WordpressViajesCall
-                                                                        .title(
-                                                                      listViewCollectionWordpressViajesResponse
-                                                                          .jsonBody,
-                                                                    )?.elementAtOrNull(
-                                                                        viajesListIndex),
-                                                                    'Sin datos',
-                                                                  ),
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .fredoka(
-                                                                          fontWeight:
-                                                                              FontWeight.w600,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .bodyMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontSize:
-                                                                            18.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Align(
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          40.0,
-                                                                          0.0,
-                                                                          40.0,
-                                                                          0.0),
-                                                                  child: Text(
-                                                                    valueOrDefault<
-                                                                        String>(
-                                                                      WordpressViajesCall
-                                                                          .descripcion(
-                                                                        listViewCollectionWordpressViajesResponse
-                                                                            .jsonBody,
-                                                                      )?.elementAtOrNull(
-                                                                          viajesListIndex),
-                                                                      'Sin datos',
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.fredoka(
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.black,
-                                                                          fontSize:
-                                                                              18.0,
-                                                                          letterSpacing:
-                                                                              0.0,
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .bodyMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .bodyMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                  return NotificationListener<
+                                      ScrollNotification>(
+                                    onNotification:
+                                        (ScrollNotification scrollInfo) {
+                                      if (scrollInfo.metrics.pixels ==
+                                              scrollInfo
+                                                  .metrics.maxScrollExtent &&
+                                          !_model.isLoadingMore &&
+                                          _model.hasMoreData) {
+                                        _model
+                                            .loadMoreViajes()
+                                            .then((_) => setState(() {}));
+                                      }
+                                      return false;
                                     },
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: _model.allViajesList.length +
+                                          (_model.hasMoreData ? 1 : 0),
+                                      itemBuilder: (context, index) {
+                                        if (index ==
+                                            _model.allViajesList.length) {
+                                          // Indicador de carga al final
+                                          return const Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.all(16.0),
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          );
+                                        }
+
+                                        final viajesListItem =
+                                            _model.allViajesList[index];
+                                        return _buildViajeItem(
+                                            viajesListItem, index);
+                                      },
+                                    ),
                                   );
                                 },
                               );
@@ -1942,6 +1473,324 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildViajeContent(dynamic viajesListItem, int index) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 30.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Imagen del viaje
+          Align(
+            alignment: AlignmentDirectional(-1.0, -1.0),
+            child: OptimizedImageWidget(
+              imageUrl: getJsonField(
+                    viajesListItem,
+                    r'''$.acf.imagen_para_card''',
+                  )?.toString() ??
+                  getJsonField(
+                    viajesListItem,
+                    r'''$.acf.imagen_para_card_copiar''',
+                  )?.toString(),
+              width: MediaQuery.of(context).size.width -
+                  32.0, // Ancho de pantalla menos padding
+              height: 200.0,
+              fit: BoxFit.cover,
+              placeholder: 'assets/images/icono_camara_2.png',
+              borderRadius: 12.0,
+            ),
+          ),
+
+          SizedBox(height: 16.0),
+
+          // Contenido principal
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Título del viaje
+                Text(
+                  valueOrDefault<String>(
+                    getJsonField(
+                      viajesListItem,
+                      r'''$.title.rendered''',
+                    )?.toString(),
+                    'Sin nombre',
+                  ),
+                  style: FlutterFlowTheme.of(context).headlineSmall.override(
+                        font: GoogleFonts.fredoka(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        color: Colors.black,
+                        letterSpacing: 0.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+
+                SizedBox(height: 8.0),
+
+                // Destino
+                if (getJsonField(viajesListItem, r'''$.acf.destino''') != null)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: FlutterFlowTheme.of(context).primary,
+                        size: 16.0,
+                      ),
+                      SizedBox(width: 4.0),
+                      Expanded(
+                        child: Text(
+                          getJsonField(
+                                viajesListItem,
+                                r'''$.acf.destino''',
+                              )?.toString() ??
+                              '',
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                                font: GoogleFonts.fredoka(),
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                                letterSpacing: 0.0,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                SizedBox(height: 8.0),
+
+                // Fechas del viaje
+                if (getJsonField(
+                            viajesListItem, r'''$.acf.fecha_de_salida''') !=
+                        null ||
+                    getJsonField(
+                            viajesListItem, r'''$.acf.fecha_de_llegada''') !=
+                        null)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        color: FlutterFlowTheme.of(context).primary,
+                        size: 16.0,
+                      ),
+                      SizedBox(width: 4.0),
+                      Expanded(
+                        child: Text(
+                          _buildDateRange(viajesListItem),
+                          style: FlutterFlowTheme.of(context)
+                              .bodySmall
+                              .override(
+                                font: GoogleFonts.fredoka(),
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                                letterSpacing: 0.0,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                SizedBox(height: 12.0),
+
+                // Descripción
+                if (getJsonField(viajesListItem, r'''$.acf.descripcion''') !=
+                    null)
+                  Text(
+                    getJsonField(
+                          viajesListItem,
+                          r'''$.acf.descripcion''',
+                        )?.toString() ??
+                        '',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.fredoka(),
+                          color: FlutterFlowTheme.of(context).secondaryText,
+                          letterSpacing: 0.0,
+                          lineHeight: 1.4,
+                        ),
+                  ),
+
+                SizedBox(height: 12.0),
+
+                // Rating y dirección
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Rating
+                    if (getJsonField(
+                            viajesListItem, r'''$.acf.calificacion''') !=
+                        null)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            valueOrDefault<String>(
+                              getJsonField(
+                                viajesListItem,
+                                r'''$.acf.calificacion''',
+                              )?.toString(),
+                              '0',
+                            ),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  font: GoogleFonts.fredoka(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  color: Colors.black,
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
+                          SizedBox(width: 4.0),
+                          RatingBarIndicator(
+                            itemBuilder: (context, index) => Icon(
+                              Icons.star_rounded,
+                              color: Color(0xFFFFC107),
+                            ),
+                            direction: Axis.horizontal,
+                            rating: _parseRating(getJsonField(
+                              viajesListItem,
+                              r'''$.acf.calificacion''',
+                            )),
+                            unratedColor: Color(0xFF9E9E9E),
+                            itemCount: 5,
+                            itemSize: 16.0,
+                          ),
+                        ],
+                      ),
+
+                    // Dirección (si está disponible)
+                    if (getJsonField(
+                            viajesListItem, r'''$.acf.direccion_detallada''') !=
+                        null)
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.place,
+                              color: FlutterFlowTheme.of(context).primary,
+                              size: 14.0,
+                            ),
+                            SizedBox(width: 2.0),
+                            Flexible(
+                              child: Text(
+                                getJsonField(
+                                      viajesListItem,
+                                      r'''$.acf.direccion_detallada''',
+                                    )?.toString() ??
+                                    '',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      font: GoogleFonts.fredoka(),
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      letterSpacing: 0.0,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Método auxiliar para construir el rango de fechas
+  String _buildDateRange(dynamic viajesListItem) {
+    final fechaSalida =
+        getJsonField(viajesListItem, r'''$.acf.fecha_de_salida''')
+                ?.toString() ??
+            '';
+    final fechaLlegada =
+        getJsonField(viajesListItem, r'''$.acf.fecha_de_llegada''')
+                ?.toString() ??
+            '';
+
+    if (fechaSalida.isNotEmpty && fechaLlegada.isNotEmpty) {
+      return '$fechaSalida - $fechaLlegada';
+    } else if (fechaSalida.isNotEmpty) {
+      return 'Desde: $fechaSalida';
+    } else if (fechaLlegada.isNotEmpty) {
+      return 'Hasta: $fechaLlegada';
+    }
+    return '';
+  }
+
+  // Método auxiliar para parsear la calificación de forma segura
+  double _parseRating(dynamic ratingValue) {
+    if (ratingValue == null) return 0.0;
+
+    final ratingString = ratingValue.toString();
+    if (ratingString.isEmpty) return 0.0;
+
+    final parsedRating = double.tryParse(ratingString);
+    if (parsedRating == null || parsedRating.isNaN || parsedRating.isInfinite) {
+      return 0.0;
+    }
+
+    // Asegurar que esté en el rango válido (0-5)
+    return parsedRating.clamp(0.0, 5.0);
+  }
+
+  Widget _buildViajeItem(dynamic viajesListItem, int index) {
+    return VisibilityDetector(
+      key: Key('viaje_$index'),
+      onVisibilityChanged: (VisibilityInfo info) {
+        // Cargar datos adicionales solo cuando el elemento es visible
+        if (info.visibleFraction > 0.5) {
+          // Precargar datos si es necesario
+        }
+      },
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ViajePageWidget.routeName,
+            queryParameters: {
+              'info': serializeParam(
+                getJsonField(viajesListItem, r'''$'''),
+                ParamType.JSON,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 10.0, 0.0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: _buildViajeContent(viajesListItem, index),
+              ),
+            ),
+          ],
         ),
       ),
     );

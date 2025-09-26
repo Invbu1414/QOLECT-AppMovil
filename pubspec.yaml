@@ -143,6 +143,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
+  visibility_detector: ^0.4.0+2  # Para lazy loading
+  shimmer: ^3.0.0  # Para efectos de carga
 
 dependency_overrides:
   device_info_plus: 11.5.0
