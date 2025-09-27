@@ -1,6 +1,5 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
@@ -58,15 +57,9 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
               height: MediaQuery.sizeOf(context).height * 1.0,
               decoration: BoxDecoration(
                 color: Color(0xFF427AAB),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(0.0),
-                  bottomRight: Radius.circular(30.0),
-                  topLeft: Radius.circular(0.0),
-                  topRight: Radius.circular(30.0),
-                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 20.0,
                     offset: Offset(5, 0),
                   ),
@@ -86,9 +79,9 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Colors.white.withOpacity(0.05),
+                            Colors.white.withValues(alpha: 0.05),
                             Colors.transparent,
-                            Colors.black.withOpacity(0.05),
+                            Colors.black.withValues(alpha: 0.05),
                           ],
                           stops: [0.0, 0.5, 1.0],
                         ),
@@ -142,7 +135,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                             .bodyMedium
                                             .override(
                                               font: GoogleFonts.roboto(),
-                                              color: Colors.white.withOpacity(0.7),
+                                              color: Colors.white.withValues(alpha: 0.7),
                                               fontSize: 16.0,
                                             ),
                                       ),
@@ -156,15 +149,15 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                 width: 45.0,
                                 height: 45.0,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
+                                    color: Colors.white.withValues(alpha: 0.3),
                                     width: 1.5,
                                   ),
                                 ),
                                 child: InkWell(
-                                  splashColor: Colors.white.withOpacity(0.3),
+                                  splashColor: Colors.white.withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(25.0),
                                   onTap: () async {
                                     Navigator.pop(context);
@@ -187,7 +180,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                                 width: 1.0,
                               ),
                             ),
@@ -232,7 +225,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   context: context,
                                   title: 'Mis Viajes',
                                   subtitle: 'Ver mis reservas',
-                                  icon: FontAwesomeIcons.planeArrival,
+                                  icon: FontAwesomeIcons.planeUp,
                                   onTap: () async {
                                     context.pushNamed(HomePageWidget.routeName);
                                   },
@@ -278,20 +271,20 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        Colors.red.shade50.withOpacity(0.3),
-                                        Colors.red.shade100.withOpacity(0.2),
+                                        Colors.red.shade50.withValues(alpha: 0.3),
+                                        Colors.red.shade100.withValues(alpha: 0.2),
                                       ],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                     border: Border.all(
-                                      color: Colors.red.withOpacity(0.3),
+                                      color: Colors.red.withValues(alpha: 0.3),
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(15.0),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.red.withOpacity(0.1),
+                                        color: Colors.red.withValues(alpha: 0.1),
                                         blurRadius: 6.0,
                                         offset: Offset(0, 1),
                                       ),
@@ -300,8 +293,8 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   child: Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      splashColor: Colors.red.withOpacity(0.2),
-                                      highlightColor: Colors.red.withOpacity(0.1),
+                                      splashColor: Colors.red.withValues(alpha: 0.2),
+                                      highlightColor: Colors.red.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(15.0),
                                       onTap: () async {
                                         FFAppState().token = '';
@@ -325,7 +318,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                             Container(
                                               padding: EdgeInsets.all(6.0),
                                               decoration: BoxDecoration(
-                                                color: Colors.red.withOpacity(0.1),
+                                                color: Colors.red.withValues(alpha: 0.1),
                                                 borderRadius: BorderRadius.circular(8.0),
                                               ),
                                               child: Icon(
@@ -372,7 +365,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   gradient: LinearGradient(
                                     colors: [
                                       Colors.transparent,
-                                      Colors.white.withOpacity(0.4),
+                                      Colors.white.withValues(alpha: 0.4),
                                       Colors.transparent,
                                     ],
                                   ),
@@ -388,7 +381,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                       font: GoogleFonts.roboto(
                                         fontWeight: FontWeight.w500,
                                       ),
-                                      color: Colors.white.withOpacity(0.8),
+                                      color: Colors.white.withValues(alpha: 0.8),
                                       fontSize: 14.0,
                                       letterSpacing: 0.5,
                                     ),
@@ -415,7 +408,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                     },
                                   ),
                                   _buildSocialIconMinimal(
-                                    icon: Icons.facebook,
+                                    icon: FontAwesomeIcons.facebookF,
                                     onTap: () async {
                                       await actions.launchInBrowser(
                                         'https://www.facebook.com/people/Qolect/100068115511444/',
@@ -423,7 +416,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                     },
                                   ),
                                   _buildSocialIconMinimal(
-                                    icon: Icons.tiktok_sharp,
+                                    icon: FontAwesomeIcons.tiktok,
                                     onTap: () async {
                                       await actions.launchInBrowser(
                                         'https://www.tiktok.com/@qolect',
@@ -478,15 +471,15 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     return Container(
       margin: EdgeInsets.only(bottom: 10.0),
       child: InkWell(
-        splashColor: Colors.white.withOpacity(0.1),
-        highlightColor: Colors.white.withOpacity(0.05),
+        splashColor: Colors.white.withValues(alpha: 0.1),
+        highlightColor: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12.0),
         onTap: onTap,
         child: Container(
           padding: EdgeInsets.all(15.0),
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(12.0),
@@ -497,7 +490,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                 width: 40.0,
                 height: 40.0,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Icon(
@@ -527,7 +520,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                       subtitle,
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.roboto(),
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 12.0,
                           ),
                     ),
@@ -536,7 +529,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
               ),
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 size: 14.0,
               ),
             ],
@@ -551,7 +544,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     required VoidCallback onTap,
   }) {
     return InkWell(
-      splashColor: Colors.white.withOpacity(0.2),
+      splashColor: Colors.white.withValues(alpha: 0.2),
       borderRadius: BorderRadius.circular(12.0),
       onTap: onTap,
       child: Container(
@@ -559,14 +552,14 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
         height: 45.0,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Icon(
           icon,
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           size: 20.0,
         ),
       ),

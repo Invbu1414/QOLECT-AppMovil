@@ -1,4 +1,3 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/noresults/noresults_widget.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
@@ -6,10 +5,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
-import '/flutter_flow/custom_functions.dart' as functions;
 import '/index.dart';
 import 'dart:async';
-import 'dart:ui';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -17,9 +14,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import '/components/optimized_image/optimized_image_widget.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 
@@ -307,7 +302,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             },
                             text: 'Planes',
                             icon: FaIcon(
-                              FontAwesomeIcons.globeAmericas,
+                              FontAwesomeIcons.earthAmericas,
                               size: 15.0,
                             ),
                             options: FFButtonOptions(
