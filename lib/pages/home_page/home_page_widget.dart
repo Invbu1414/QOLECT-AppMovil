@@ -12,11 +12,9 @@ import 'dart:async';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'home_page_model.dart';
 export 'home_page_model.dart';
 
@@ -51,7 +49,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   Future<void> _loadInitialData() async {
     try {
-      // Solo cargamos notificaciones; sin pre-cargar viajes paginados
       final notificationsResponse = await WordpressNotificacionesCall.call(
         author: FFAppState().userSessionID.toString(),
       );
