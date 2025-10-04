@@ -19,6 +19,8 @@ class PlanItem extends StatelessWidget {
     final ratingRaw = getJsonField(plan, r'''$.plan_rating''');
     final rating = _parseRating((ratingRaw ?? '5.0').toString());
     final bannerWidth = MediaQuery.of(context).size.width - 30.0;
+    final bannerAspect = 16 / 9;
+    final bannerHeight = bannerWidth / bannerAspect;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(15.0, 16.0, 15.0, 0.0),
@@ -45,15 +47,16 @@ class PlanItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.0),
               child: Stack(
                 children: [
-                  SizedBox(
+                  AspectRatio(aspectRatio: bannerAspect,
+                  child: SizedBox(
                     width: double.infinity,
                     height: 160.0,
                     child: hasImage
                         ? OptimizedImageWidget(
                             imageUrl: getJsonField(plan, r'''$.plan_image''').toString(),
                             width: bannerWidth,
-                            height: 160.0,
-                            fit: BoxFit.cover,
+                            height: bannerHeight,
+                            fit: BoxFit.fill,//Boxfit.contain
                             borderRadius: 0.0,
                             enableMemoryCache: true,
                             enableDiskCache: true,
@@ -61,7 +64,7 @@ class PlanItem extends StatelessWidget {
                         : Container(
                             color: FlutterFlowTheme.of(context).alternate,
                           ),
-                  ),
+                  ),)
                 ],
               ),
             ),

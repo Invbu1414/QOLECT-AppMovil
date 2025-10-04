@@ -114,6 +114,10 @@ class _OptimizedImageWidgetState extends State<OptimizedImageWidget> {
   }
 
   Widget _buildNetworkImage() {
+    final dpr = MediaQuery.of(context).devicePixelRatio;
+    final cacheW = (widget.width * dpr).round();
+    final cacheH = (widget.height * dpr).round();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.borderRadius),
       child: CachedNetworkImage(
@@ -123,9 +127,16 @@ class _OptimizedImageWidgetState extends State<OptimizedImageWidget> {
         fit: widget.fit,
         placeholder: (context, url) => _buildLoadingWidget(),
         errorWidget: (context, url, error) => _buildErrorWidget(),
-        memCacheWidth: widget.enableMemoryCache ? widget.width.toInt() : null,
-        memCacheHeight: widget.enableMemoryCache ? widget.height.toInt() : null,
+        memCacheWidth: widget.enableMemoryCache ? cacheW : null,
+        memCacheHeight: widget.enableMemoryCache ? cacheH : null,
         cacheManager: widget.enableDiskCache ? null : null,
+        imageBuilder: (context, imageProvider) => Image(
+          image: imageProvider,
+          width: widget.width,
+          height: widget.height,
+          fit: widget.fit,
+          filterQuality: FilterQuality.high,
+        ),
         fadeInDuration: const Duration(milliseconds: 300),
         fadeOutDuration: const Duration(milliseconds: 100),
       ),
