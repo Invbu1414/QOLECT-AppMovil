@@ -1,6 +1,8 @@
 import '/backend/api_requests/api_calls.dart';
 import '/components/noresults/noresults_widget.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
+import '/components/viajes_list/viaje_item.dart';
+import '/components/planes_list/plan_item.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -49,21 +51,16 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   Future<void> _loadInitialData() async {
     try {
-      // Cargar notificaciones y viajes en paralelo
-      final futures = await Future.wait([
-        WordpressNotificacionesCall.call(
-          author: FFAppState().userSessionID.toString(),
-        ),
-        _model.loadMoreViajes(),
-      ]);
-
-      final notificationsResponse = futures[0] as ApiCallResponse;
+      // Solo cargamos notificaciones; sin pre-cargar viajes paginados
+      final notificationsResponse = await WordpressNotificacionesCall.call(
+        author: FFAppState().userSessionID.toString(),
+      );
 
       if (notificationsResponse.succeeded) {
-        FFAppState().notificationsAmount = WordpressNotificacionesCall.id(
-              notificationsResponse.jsonBody ?? '',
-            )?.length ??
-            0;
+        FFAppState().notificationsAmount =
+            WordpressNotificacionesCall.id(notificationsResponse.jsonBody ?? '')
+                    ?.length ??
+                0;
       } else {
         FFAppState().notificationsAmount = 0;
       }
@@ -126,6 +123,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       //Menu lateral
       drawer: HomeDrawerWidget(),
 
+      //AppBar
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, _) => [
@@ -279,6 +277,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ),
                       ),
                     ),
+
+                    // Botones de planes y colecciones
                     Padding(
                       padding:
                           EdgeInsetsDirectional.fromSTEB(0.0, 30.0, 0.0, 0.0),
@@ -287,19 +287,17 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           FFButtonWidget(
-                            onPressed: () async {
-                              safeSetState(
-                                  () => _model.apiRequestCompleter1 = null);
-                              await _model.waitForApiRequestCompleted1();
-                              await Future.delayed(
-                                Duration(
-                                  milliseconds: 2000,
-                                ),
-                              );
-                              _model.plans = true;
-                              _model.collection = false;
-                              safeSetState(() {});
-                            },
+                            showLoadingIndicator: false,
+                            onPressed: _model.plans
+                                ? null
+                                : () async {
+                                    safeSetState(() =>
+                                        _model.apiRequestCompleter1 = null);
+                                    await _model.waitForApiRequestCompleted1();
+                                    _model.plans = true;
+                                    _model.collection = false;
+                                    safeSetState(() {});
+                                  },
                             text: 'Planes',
                             icon: FaIcon(
                               FontAwesomeIcons.earthAmericas,
@@ -352,19 +350,17 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             ),
                           ),
                           FFButtonWidget(
-                            onPressed: () async {
-                              safeSetState(
-                                  () => _model.apiRequestCompleter2 = null);
-                              await _model.waitForApiRequestCompleted2();
-                              await Future.delayed(
-                                Duration(
-                                  milliseconds: 2000,
-                                ),
-                              );
-                              _model.collection = true;
-                              _model.plans = false;
-                              safeSetState(() {});
-                            },
+                            showLoadingIndicator: false,
+                            onPressed: _model.collection
+                                ? null
+                                : () async {
+                                    safeSetState(() =>
+                                        _model.apiRequestCompleter2 = null);
+                                    await _model.waitForApiRequestCompleted2();
+                                    _model.collection = true;
+                                    _model.plans = false;
+                                    safeSetState(() {});
+                                  },
                             text: 'Tu colección',
                             icon: Icon(
                               Icons.history,
@@ -419,6 +415,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ],
                       ),
                     ),
+
+                    // Listas de viajes
                     if (_model.collection == true)
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
@@ -436,8 +434,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         )))
                                   .future,
                           builder: (context, snapshot) {
-                            // Customize what your widget looks like when it's loading.
-                            if (!snapshot.hasData) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
                               return Center(
                                 child: SizedBox(
                                   width: 50.0,
@@ -460,56 +457,30 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         .jsonBody
                                         .toList();
                                 if (viajesList.isEmpty) {
-                                  return Center(
-                                    child: NoresultsWidget(),
-                                  );
+                                  return Center(child: NoresultsWidget());
                                 }
 
-                                return NotificationListener<ScrollNotification>(
-                                  onNotification:
-                                      (ScrollNotification scrollInfo) {
-                                    if (scrollInfo.metrics.pixels ==
-                                            scrollInfo
-                                                .metrics.maxScrollExtent &&
-                                        !_model.isLoadingMore &&
-                                        _model.hasMoreData) {
-                                      _model
-                                          .loadMoreViajes()
-                                          .then((_) => setState(() {}));
-                                    }
-                                    return false;
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: viajesList.length,
+                                  itemBuilder: (context, index) {
+                                    final viajesListItem = viajesList[index];
+                                    return ViajeItem(
+                                      viajesListItem: viajesListItem,
+                                      index: index,
+                                    );
                                   },
-                                  child: ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: _model.allViajesList.length +
-                                        (_model.hasMoreData ? 1 : 0),
-                                    itemBuilder: (context, index) {
-                                      if (index ==
-                                          _model.allViajesList.length) {
-                                        // Indicador de carga al final
-                                        return const Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.all(16.0),
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        );
-                                      }
-
-                                      final viajesListItem =
-                                          _model.allViajesList[index];
-                                      return _buildViajeItem(
-                                          viajesListItem, index);
-                                    },
-                                  ),
                                 );
                               },
                             );
                           },
                         ),
                       ),
+
+                    // Lista de planes
                     if (_model.plans == true)
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
@@ -520,8 +491,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     ..complete(WordpressPlanesCall.call()))
                               .future,
                           builder: (context, snapshot) {
-                            // Customize what your widget looks like when it's loading.
-                            if (!snapshot.hasData) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
                               return Center(
                                 child: SizedBox(
                                   width: 50.0,
@@ -536,17 +506,15 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             }
                             final listViewPlansWordpressPlanesResponse =
                                 snapshot.data!;
-
                             return Builder(
                               builder: (context) {
                                 final plansList = getJsonField(
                                   listViewPlansWordpressPlanesResponse.jsonBody,
                                   r'''$''',
                                 ).toList();
+
                                 if (plansList.isEmpty) {
-                                  return Center(
-                                    child: NoresultsWidget(),
-                                  );
+                                  return const Center(child: NoresultsWidget());
                                 }
 
                                 return ListView.builder(
@@ -555,350 +523,16 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   shrinkWrap: true,
                                   scrollDirection: Axis.vertical,
                                   itemCount: plansList.length,
-                                  itemBuilder: (context, plansListIndex) {
-                                    final plansListItem =
-                                        plansList[plansListIndex];
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  10.0, 20.0, 10.0, 0.0),
-                                          child: Container(
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryBackground,
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      0.0, 0.0, 0.0, 30.0),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Align(
-                                                    alignment:
-                                                        AlignmentDirectional(
-                                                            -1.0, -1.0),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                      child: Image.asset(
-                                                        'assets/images/Group_2181_(1).png',
-                                                        width: 104.0,
-                                                        height: 56.0,
-                                                        fit: BoxFit.fitWidth,
-                                                        alignment: Alignment(
-                                                            -1.0, -1.0),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      15.0,
-                                                                      0.0,
-                                                                      0.0,
-                                                                      0.0),
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Align(
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          10.0),
-                                                                  child: Text(
-                                                                    getJsonField(
-                                                                      plansListItem,
-                                                                      r'''$.plan_title''',
-                                                                    ).toString(),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.fredoka(
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.black,
-                                                                          letterSpacing:
-                                                                              0.0,
-                                                                          fontWeight:
-                                                                              FontWeight.w600,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .bodyMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Align(
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          15.0),
-                                                                  child: Row(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .max,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Padding(
-                                                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            5.0,
-                                                                            0.0),
-                                                                        child:
-                                                                            Text(
-                                                                          '4,5 ',
-                                                                          style: FlutterFlowTheme.of(context)
-                                                                              .bodyMedium
-                                                                              .override(
-                                                                                font: GoogleFonts.fredoka(
-                                                                                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                ),
-                                                                                color: Colors.black,
-                                                                                letterSpacing: 0.0,
-                                                                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                              ),
-                                                                        ),
-                                                                      ),
-                                                                      RatingBarIndicator(
-                                                                        itemBuilder:
-                                                                            (context, index) =>
-                                                                                Icon(
-                                                                          Icons
-                                                                              .star_rounded,
-                                                                          color:
-                                                                              FlutterFlowTheme.of(context).warning,
-                                                                        ),
-                                                                        direction:
-                                                                            Axis.horizontal,
-                                                                        rating:
-                                                                            5.0,
-                                                                        unratedColor:
-                                                                            FlutterFlowTheme.of(context).secondaryText,
-                                                                        itemCount:
-                                                                            5,
-                                                                        itemSize:
-                                                                            13.0,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Row(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      context
-                                                                          .pushNamed(
-                                                                        WebViewPlanWidget
-                                                                            .routeName,
-                                                                        queryParameters:
-                                                                            {
-                                                                          'url':
-                                                                              serializeParam(
-                                                                            '${getJsonField(
-                                                                              plansListItem,
-                                                                              r'''$.plan_url''',
-                                                                            ).toString()}/?nocache',
-                                                                            ParamType.String,
-                                                                          ),
-                                                                        }.withoutNulls,
-                                                                      );
-                                                                    },
-                                                                    text:
-                                                                        'Ver más',
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      height:
-                                                                          40.0,
-                                                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                                                          16.0,
-                                                                          0.0,
-                                                                          16.0,
-                                                                          0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .primary,
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.fredoka(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                15.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          0.0,
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      if (getJsonField(
-                                                        plansListItem,
-                                                        r'''$.plan_has_image''',
-                                                      ))
-                                                        Flexible(
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                            child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0),
-                                                              child:
-                                                                  Image.network(
-                                                                getJsonField(
-                                                                  plansListItem,
-                                                                  r'''$.plan_image''',
-                                                                ).toString(),
-                                                                width: 120.0,
-                                                                height: 120.0,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                cacheWidth: 120,
-                                                                cacheHeight:
-                                                                    120,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      if (!getJsonField(
-                                                        plansListItem,
-                                                        r'''$.plan_has_image''',
-                                                      ))
-                                                        Flexible(
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                            child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20.0),
-                                                              child:
-                                                                  Image.asset(
-                                                                'assets/images/favicon.png',
-                                                                width: 120.0,
-                                                                height: 120.0,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                cacheWidth: 120,
-                                                                cacheHeight:
-                                                                    120,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
+                                  itemBuilder: (context, index) {
+                                    final item = plansList[index];
+                                    return PlanItem(plan: item);
                                   },
                                 );
                               },
                             );
                           },
                         ),
-                      ),
+                      )
                   ]
                       .addToStart(SizedBox(height: 0.0))
                       .addToEnd(SizedBox(height: 50.0)),
@@ -906,324 +540,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildViajeContent(dynamic viajesListItem, int index) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 30.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Imagen del viaje
-          Align(
-            alignment: AlignmentDirectional(-1.0, -1.0),
-            child: OptimizedImageWidget(
-              imageUrl: getJsonField(
-                    viajesListItem,
-                    r'''$.acf.imagen_para_card''',
-                  )?.toString() ??
-                  getJsonField(
-                    viajesListItem,
-                    r'''$.acf.imagen_para_card_copiar''',
-                  )?.toString(),
-              width: MediaQuery.of(context).size.width -
-                  32.0, // Ancho de pantalla menos padding
-              height: 200.0,
-              fit: BoxFit.cover,
-              placeholder: 'assets/images/icono_camara_2.png',
-              borderRadius: 12.0,
-            ),
-          ),
-
-          SizedBox(height: 16.0),
-
-          // Contenido principal
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Título del viaje
-                Text(
-                  valueOrDefault<String>(
-                    getJsonField(
-                      viajesListItem,
-                      r'''$.title.rendered''',
-                    )?.toString(),
-                    'Sin nombre',
-                  ),
-                  style: FlutterFlowTheme.of(context).headlineSmall.override(
-                        font: GoogleFonts.fredoka(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        color: Colors.black,
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-
-                SizedBox(height: 8.0),
-
-                // Destino
-                if (getJsonField(viajesListItem, r'''$.acf.destino''') != null)
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: FlutterFlowTheme.of(context).primary,
-                        size: 16.0,
-                      ),
-                      SizedBox(width: 4.0),
-                      Expanded(
-                        child: Text(
-                          getJsonField(
-                                viajesListItem,
-                                r'''$.acf.destino''',
-                              )?.toString() ??
-                              '',
-                          style: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .override(
-                                font: GoogleFonts.fredoka(),
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                letterSpacing: 0.0,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                SizedBox(height: 8.0),
-
-                // Fechas del viaje
-                if (getJsonField(
-                            viajesListItem, r'''$.acf.fecha_de_salida''') !=
-                        null ||
-                    getJsonField(
-                            viajesListItem, r'''$.acf.fecha_de_llegada''') !=
-                        null)
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today,
-                        color: FlutterFlowTheme.of(context).primary,
-                        size: 16.0,
-                      ),
-                      SizedBox(width: 4.0),
-                      Expanded(
-                        child: Text(
-                          _buildDateRange(viajesListItem),
-                          style: FlutterFlowTheme.of(context)
-                              .bodySmall
-                              .override(
-                                font: GoogleFonts.fredoka(),
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                letterSpacing: 0.0,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                SizedBox(height: 12.0),
-
-                // Descripción
-                if (getJsonField(viajesListItem, r'''$.acf.descripcion''') !=
-                    null)
-                  Text(
-                    getJsonField(
-                          viajesListItem,
-                          r'''$.acf.descripcion''',
-                        )?.toString() ??
-                        '',
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.fredoka(),
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          letterSpacing: 0.0,
-                          lineHeight: 1.4,
-                        ),
-                  ),
-
-                SizedBox(height: 12.0),
-
-                // Rating y dirección
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Rating
-                    if (getJsonField(
-                            viajesListItem, r'''$.acf.calificacion''') !=
-                        null)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            valueOrDefault<String>(
-                              getJsonField(
-                                viajesListItem,
-                                r'''$.acf.calificacion''',
-                              )?.toString(),
-                              '0',
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.fredoka(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  color: Colors.black,
-                                  letterSpacing: 0.0,
-                                ),
-                          ),
-                          SizedBox(width: 4.0),
-                          RatingBarIndicator(
-                            itemBuilder: (context, index) => Icon(
-                              Icons.star_rounded,
-                              color: Color(0xFFFFC107),
-                            ),
-                            direction: Axis.horizontal,
-                            rating: _parseRating(getJsonField(
-                              viajesListItem,
-                              r'''$.acf.calificacion''',
-                            )),
-                            unratedColor: Color(0xFF9E9E9E),
-                            itemCount: 5,
-                            itemSize: 16.0,
-                          ),
-                        ],
-                      ),
-
-                    // Dirección (si está disponible)
-                    if (getJsonField(
-                            viajesListItem, r'''$.acf.direccion_detallada''') !=
-                        null)
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.place,
-                              color: FlutterFlowTheme.of(context).primary,
-                              size: 14.0,
-                            ),
-                            SizedBox(width: 2.0),
-                            Flexible(
-                              child: Text(
-                                getJsonField(
-                                      viajesListItem,
-                                      r'''$.acf.direccion_detallada''',
-                                    )?.toString() ??
-                                    '',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: FlutterFlowTheme.of(context)
-                                    .bodySmall
-                                    .override(
-                                      font: GoogleFonts.fredoka(),
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Método auxiliar para construir el rango de fechas
-  String _buildDateRange(dynamic viajesListItem) {
-    final fechaSalida =
-        getJsonField(viajesListItem, r'''$.acf.fecha_de_salida''')
-                ?.toString() ??
-            '';
-    final fechaLlegada =
-        getJsonField(viajesListItem, r'''$.acf.fecha_de_llegada''')
-                ?.toString() ??
-            '';
-
-    if (fechaSalida.isNotEmpty && fechaLlegada.isNotEmpty) {
-      return '$fechaSalida - $fechaLlegada';
-    } else if (fechaSalida.isNotEmpty) {
-      return 'Desde: $fechaSalida';
-    } else if (fechaLlegada.isNotEmpty) {
-      return 'Hasta: $fechaLlegada';
-    }
-    return '';
-  }
-
-  // Método auxiliar para parsear la calificación de forma segura
-  double _parseRating(dynamic ratingValue) {
-    if (ratingValue == null) return 0.0;
-
-    final ratingString = ratingValue.toString();
-    if (ratingString.isEmpty) return 0.0;
-
-    final parsedRating = double.tryParse(ratingString);
-    if (parsedRating == null || parsedRating.isNaN || parsedRating.isInfinite) {
-      return 0.0;
-    }
-
-    // Asegurar que esté en el rango válido (0-5)
-    return parsedRating.clamp(0.0, 5.0);
-  }
-
-  Widget _buildViajeItem(dynamic viajesListItem, int index) {
-    return VisibilityDetector(
-      key: Key('viaje_$index'),
-      onVisibilityChanged: (VisibilityInfo info) {
-        // Cargar datos adicionales solo cuando el elemento es visible
-        if (info.visibleFraction > 0.5) {
-          // Precargar datos si es necesario
-        }
-      },
-      child: InkWell(
-        splashColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: () async {
-          context.pushNamed(
-            ViajePageWidget.routeName,
-            queryParameters: {
-              'info': serializeParam(
-                getJsonField(viajesListItem, r'''$'''),
-                ParamType.JSON,
-              ),
-            }.withoutNulls,
-          );
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(10.0, 20.0, 10.0, 0.0),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: _buildViajeContent(viajesListItem, index),
-              ),
-            ),
-          ],
         ),
       ),
     );
