@@ -19,7 +19,7 @@ class PlanItem extends StatelessWidget {
     final ratingRaw = getJsonField(plan, r'''$.plan_rating''');
     final rating = _parseRating((ratingRaw ?? '5.0').toString());
     final bannerWidth = MediaQuery.of(context).size.width - 30.0;
-    final bannerAspect = 16 / 9;
+    final bannerAspect = 4 / 4;// 16 / 9
     final bannerHeight = bannerWidth / bannerAspect;
 
     return Padding(
