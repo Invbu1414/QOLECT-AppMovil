@@ -46,413 +46,300 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     context.watch<FFAppState>();
     
     return Opacity(
-      opacity: 0.9,
+      opacity: 1.0,
       child: Container(
         width: MediaQuery.sizeOf(context).width * 0.95,
         child: Drawer(
-          elevation: 20.0,
+          elevation: 12.0,
           child: WebViewAware(
             child: Container(
               width: MediaQuery.sizeOf(context).width * 1.0,
               height: MediaQuery.sizeOf(context).height * 1.0,
               decoration: BoxDecoration(
-                color: Color(0xFF427AAB),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 20.0,
-                    offset: Offset(5, 0),
-                  ),
-                ],
+                color: FlutterFlowTheme.of(context).secondaryBackground,
               ),
-              child: Stack(
-                children: [
-                  // Background pattern overlay
-                  Positioned.fill(
-                    child: Container(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // Header banner con degradado y sombra sutil
+                    Container(
+                      margin: EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(30.0),
-                          topRight: Radius.circular(30.0),
-                        ),
                         gradient: LinearGradient(
+                          colors: [
+                            FlutterFlowTheme.of(context).primaryDark.withValues(alpha: 0.95),
+                            FlutterFlowTheme.of(context).secondary.withValues(alpha: 0.95),
+                          ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withValues(alpha: 0.05),
-                            Colors.transparent,
-                            Colors.black.withValues(alpha: 0.05),
-                          ],
-                          stops: [0.0, 0.5, 1.0],
                         ),
-                      ),
-                    ),
-                  ),
-
-                  // Main content
-                  SafeArea(
-                    child: Column(
-                      children: [
-                        // Header with close button
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Logo
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: Image.asset(
-                                      'assets/images/10_1.png',
-                                      width: 60.0,
-                                      height: 60.0,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'QOLECT',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.roboto(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              color: Colors.white,
-                                              fontSize: 24.0,
-                                              letterSpacing: 1.0,
-                                            ),
-                                      ),
-                                      Text(
-                                        'Tu próxima aventura',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.roboto(),
-                                              color: Colors.white.withValues(alpha: 0.7),
-                                              fontSize: 16.0,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-
-                              // Close button
-                              Container(
-                                width: 45.0,
-                                height: 45.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.3),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: InkWell(
-                                  splashColor: Colors.white.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  onTap: () async {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Icon(
-                                    Icons.close_rounded,
-                                    color: Colors.white,
-                                    size: 22.0,
-                                  ),
-                                ),
-                              ),
-                            ],
+                        borderRadius: BorderRadius.circular(20.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.10),
+                            blurRadius: 16.0,
+                            offset: Offset(0, 8),
                           ),
-                        ),
-
-                        // Menu title
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 20.0),
-                          padding: EdgeInsets.symmetric(vertical: 15.0),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.white.withValues(alpha: 0.3),
-                                width: 1.0,
-                              ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: Image.asset(
+                              'assets/images/10_1.png',
+                              width: 64.0,
+                              height: 64.0,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 4.0,
-                                height: 25.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(2.0),
-                                ),
-                              ),
-                              SizedBox(width: 15.0),
-                              Text(
-                                'Menú Principal',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      color: Colors.white,
-                                      fontSize: 22.0,
-                                      letterSpacing: 0.5,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 15.0),
-
-                        // Menu items
-                        Expanded(
-                          child: SingleChildScrollView(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                          SizedBox(width: 14.0),
+                          Expanded(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildMinimalMenuItem(
-                                  context: context,
-                                  title: 'Mis Viajes',
-                                  subtitle: 'Ver mis reservas',
-                                  icon: FontAwesomeIcons.planeUp,
-                                  onTap: () async {
-                                    context.pushNamed(HomePageWidget.routeName);
-                                  },
-                                ),
-
-                                if (FFAppState().userSessionID != 83)
-                                  _buildMinimalMenuItem(
-                                    context: context,
-                                    title: 'Mi Perfil',
-                                    subtitle: 'Configuración personal',
-                                    icon: Icons.person_outline_rounded,
-                                    onTap: () async {
-                                      context.pushNamed(ProfilePageWidget.routeName);
-                                    },
-                                  ),
-
-                                _buildMinimalMenuItem(
-                                  context: context,
-                                  title: 'Noticias',
-                                  subtitle: 'Últimas actualizaciones',
-                                  icon: Icons.article_outlined,
-                                  onTap: () async {
-                                    context.pushNamed(NoticesPageWidget.routeName);
-                                  },
-                                ),
-
-                                _buildMinimalMenuItem(
-                                  context: context,
-                                  title: 'Comunidad',
-                                  subtitle: 'Conecta con otros viajeros',
-                                  icon: Icons.people_outline_rounded,
-                                  onTap: () async {
-                                    context.pushNamed(ComunidadWidget.routeName);
-                                  },
-                                ),
-
-                                SizedBox(height: 20.0),
-
-                                // Logout button
-                                Container(
-                                  width: double.infinity,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.red.shade50.withValues(alpha: 0.3),
-                                        Colors.red.shade100.withValues(alpha: 0.2),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    border: Border.all(
-                                      color: Colors.red.withValues(alpha: 0.3),
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.red.withValues(alpha: 0.1),
-                                        blurRadius: 6.0,
-                                        offset: Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      splashColor: Colors.red.withValues(alpha: 0.2),
-                                      highlightColor: Colors.red.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      onTap: () async {
-                                        FFAppState().token = '';
-                                        FFAppState().userSessionID = 0;
-                                        FFAppState().userEmail = '';
-                                        FFAppState().notificationsAmount = 0;
-                                        safeSetState(() {});
-                                        GoRouter.of(context).prepareAuthEvent();
-                                        await authManager.signOut();
-                                        GoRouter.of(context).clearRedirectLocation();
-
-                                        context.pushNamedAuth(
-                                            LoginPageWidget.routeName,
-                                            context.mounted);
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 15.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              padding: EdgeInsets.all(6.0),
-                                              decoration: BoxDecoration(
-                                                color: Colors.red.withValues(alpha: 0.1),
-                                                borderRadius: BorderRadius.circular(8.0),
-                                              ),
-                                              child: Icon(
-                                                Icons.logout_rounded,
-                                                color: Colors.red.shade400,
-                                                size: 18.0,
-                                              ),
-                                            ),
-                                            SizedBox(width: 12.0),
-                                            Text(
-                                              'Cerrar Sesión',
-                                              style: FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.fredoka(
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                    color: Colors.red.shade400,
-                                                    fontSize: 15.0,
-                                                    letterSpacing: 0.5,
-                                                  ),
-                                            ),
-                                          ],
+                                Text(
+                                  'QOLECT',
+                                  style: FlutterFlowTheme.of(context)
+                                      .headlineMedium
+                                      .override(
+                                        font: GoogleFonts.fredoka(
+                                          fontWeight: FontWeight.w700,
                                         ),
+                                        color: FlutterFlowTheme.of(context).info,
                                       ),
-                                    ),
-                                  ),
+                                ),
+                                Text(
+                                  'Tu próxima aventura',
+                                  style: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .override(
+                                        font: GoogleFonts.roboto(),
+                                        color: FlutterFlowTheme.of(context).accent4,
+                                      ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                          InkWell(
+                            borderRadius: BorderRadius.circular(24.0),
+                            onTap: () => Navigator.pop(context),
+                            child: Container(
+                              width: 44.0,
+                              height: 44.0,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context).info.withValues(alpha: 0.15),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: FlutterFlowTheme.of(context).info.withValues(alpha: 0.25),
+                                  width: 1.25,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.close_rounded,
+                                color: FlutterFlowTheme.of(context).info,
+                                size: 22.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                        // Footer section
-                        Container(
-                          padding: EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              // Divider
-                              Container(
-                                height: 1.0,
-                                margin: EdgeInsets.only(bottom: 20.0),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.white.withValues(alpha: 0.4),
-                                      Colors.transparent,
+                    // Título de sección
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 6.0,
+                            height: 26.0,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context).primary,
+                              borderRadius: BorderRadius.circular(3.0),
+                            ),
+                          ),
+                          SizedBox(width: 12.0),
+                          Text(
+                            'Menú Principal',
+                            style: FlutterFlowTheme.of(context).titleLarge.override(
+                                  font: GoogleFonts.roboto(fontWeight: FontWeight.w600),
+                                  color: FlutterFlowTheme.of(context).primaryText,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 10.0),
+
+                    // Contenido principal
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: [
+                            _buildMinimalMenuItem(
+                              context: context,
+                              title: 'Mis Viajes',
+                              subtitle: 'Ver mis reservas',
+                              icon: FontAwesomeIcons.planeUp,
+                              onTap: () async {
+                                context.pushNamed(HomePageWidget.routeName);
+                              },
+                            ),
+                            if (FFAppState().userSessionID != 83)
+                              _buildMinimalMenuItem(
+                                context: context,
+                                title: 'Mi Perfil',
+                                subtitle: 'Configuración personal',
+                                icon: Icons.person_outline_rounded,
+                                onTap: () async {
+                                  context.pushNamed(ProfilePageWidget.routeName);
+                                },
+                              ),
+                            _buildMinimalMenuItem(
+                              context: context,
+                              title: 'Noticias',
+                              subtitle: 'Últimas actualizaciones',
+                              icon: Icons.article_outlined,
+                              onTap: () async {
+                                context.pushNamed(NoticesPageWidget.routeName);
+                              },
+                            ),
+                            _buildMinimalMenuItem(
+                              context: context,
+                              title: 'Comunidad',
+                              subtitle: 'Conecta con otros viajeros',
+                              icon: Icons.people_outline_rounded,
+                              onTap: () async {
+                                context.pushNamed(ComunidadWidget.routeName);
+                              },
+                            ),
+
+                            SizedBox(height: 16.0),
+
+                            // Botón Cerrar sesión sólido amarillo
+                            Container(
+                              width: double.infinity,
+                              height: 52.0,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context).warning,
+                                borderRadius: BorderRadius.circular(16.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: FlutterFlowTheme.of(context)
+                                        .warning
+                                        .withValues(alpha: 0.25),
+                                    blurRadius: 10.0,
+                                    offset: Offset(0, 6),
+                                  ),
+                                ],
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  splashColor: FlutterFlowTheme.of(context)
+                                      .primary
+                                      .withValues(alpha: 0.2),
+                                  onTap: () async {
+                                    FFAppState().token = '';
+                                    FFAppState().userSessionID = 0;
+                                    FFAppState().userEmail = '';
+                                    FFAppState().notificationsAmount = 0;
+                                    safeSetState(() {});
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    await authManager.signOut();
+                                    GoRouter.of(context).clearRedirectLocation();
+                                    context.pushNamedAuth(
+                                      LoginPageWidget.routeName,
+                                      context.mounted,
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.logout_rounded,
+                                        color: Color(0xFF174F98),
+                                        size: 20.0,
+                                      ),
+                                      SizedBox(width: 10.0),
+                                      Text(
+                                        'Cerrar Sesión',
+                                        style: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .override(
+                                              font: GoogleFonts.fredoka(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              color: Color(0xFF174F98),
+                                            ),
+                                      ),
                                     ],
                                   ),
                                 ),
                               ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
-                              // Social media section
-                              Text(
-                                'Síguenos',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      color: Colors.white.withValues(alpha: 0.8),
-                                      fontSize: 14.0,
-                                      letterSpacing: 0.5,
-                                    ),
+                    // Footer simple con redes
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Divider(
+                            color: FlutterFlowTheme.of(context)
+                                .alternate
+                                .withValues(alpha: 0.5),
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildSocialIconMinimal(
+                                context: context,
+                                icon: FontAwesomeIcons.whatsapp,
+                                onTap: () async {
+                                  await actions.launchInBrowser(
+                                    'https://api.whatsapp.com/send?phone=+573018119374&text=Hola%2C%20quiero%20armar%20mi%20plan%20de%20vacaciones%20%F0%9F%9B%AB.%0AViajo%20desde%20(Ingresa%20lugar%20de%20salida)%2C%20hac%C3%ADa%20(Ingresa%20lugar%20de%20destino)%20%F0%9F%98%8E',
+                                  );
+                                },
                               ),
-                              SizedBox(height: 15.0),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildSocialIconMinimal(
-                                    icon: FontAwesomeIcons.whatsapp,
-                                    onTap: () async {
-                                      await actions.launchInBrowser(
-                                        'https://api.whatsapp.com/send?phone=+573018119374&text=Hola%2C%20quiero%20armar%20mi%20plan%20de%20vacaciones%20%F0%9F%9B%AB.%0AViajo%20desde%20(Ingresa%20lugar%20de%20salida)%2C%20hac%C3%ADa%20(Ingresa%20lugar%20de%20destino)%20%F0%9F%98%8E',
-                                      );
-                                    },
-                                  ),
-                                  _buildSocialIconMinimal(
-                                    icon: FontAwesomeIcons.instagram,
-                                    onTap: () async {
-                                      await actions.launchInBrowser(
-                                        'https://www.instagram.com/qolect/',
-                                      );
-                                    },
-                                  ),
-                                  _buildSocialIconMinimal(
-                                    icon: FontAwesomeIcons.facebookF,
-                                    onTap: () async {
-                                      await actions.launchInBrowser(
-                                        'https://www.facebook.com/people/Qolect/100068115511444/',
-                                      );
-                                    },
-                                  ),
-                                  _buildSocialIconMinimal(
-                                    icon: FontAwesomeIcons.tiktok,
-                                    onTap: () async {
-                                      await actions.launchInBrowser(
-                                        'https://www.tiktok.com/@qolect',
-                                      );
-                                    },
-                                  ),
-                                ],
+                              _buildSocialIconMinimal(
+                                context: context,
+                                icon: FontAwesomeIcons.instagram,
+                                onTap: () async {
+                                  await actions.launchInBrowser('https://www.instagram.com/qolect/');
+                                },
                               ),
-                              SizedBox(height: 20.0),
-
-                              // Company logo and brand
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(20.0),
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: Image.asset(
-                                        'assets/images/LOGO_3.png',
-                                        width: 120.0,
-                                        height: 80.0,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              _buildSocialIconMinimal(
+                                context: context,
+                                icon: FontAwesomeIcons.facebookF,
+                                onTap: () async {
+                                  await actions.launchInBrowser(
+                                      'https://www.facebook.com/people/Qolect/100068115511444/');
+                                },
+                              ),
+                              _buildSocialIconMinimal(
+                                context: context,
+                                icon: FontAwesomeIcons.tiktok,
+                                onTap: () async {
+                                  await actions.launchInBrowser('https://www.tiktok.com/@qolect');
+                                },
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -461,6 +348,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     );
   }
 
+  
   Widget _buildMinimalMenuItem({
     required BuildContext context,
     required String title,
@@ -469,70 +357,69 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
-      child: InkWell(
-        splashColor: Colors.white.withValues(alpha: 0.1),
-        highlightColor: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12.0),
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.all(15.0),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.2),
-              width: 1.0,
+      margin: EdgeInsets.only(bottom: 12.0),
+      child: Material(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(16.0),
+        elevation: 0,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16.0),
+          splashColor: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.1),
+          highlightColor: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.06),
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: FlutterFlowTheme.of(context).alternate.withValues(alpha: 0.5),
+                width: 1.0,
+              ),
+              borderRadius: BorderRadius.circular(16.0),
             ),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 40.0,
-                height: 40.0,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10.0),
+            child: Row(
+              children: [
+                Container(
+                  width: 46.0,
+                  height: 46.0,
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: FlutterFlowTheme.of(context).primary,
+                    size: 22.0,
+                  ),
                 ),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 20.0,
-                ),
-              ),
-              SizedBox(width: 12.0),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w600,
+                SizedBox(width: 14.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: FlutterFlowTheme.of(context).titleMedium.override(
+                              font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                              color: FlutterFlowTheme.of(context).primaryText,
                             ),
-                            color: Colors.white,
-                            fontSize: 15.0,
-                            letterSpacing: 0.3,
-                          ),
-                    ),
-                    SizedBox(height: 1.0),
-                    Text(
-                      subtitle,
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.roboto(),
-                            color: Colors.white.withValues(alpha: 0.7),
-                            fontSize: 12.0,
-                          ),
-                    ),
-                  ],
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(
+                        subtitle,
+                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                              font: GoogleFonts.roboto(),
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.white.withValues(alpha: 0.5),
-                size: 14.0,
-              ),
-            ],
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: FlutterFlowTheme.of(context).secondaryText,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -540,26 +427,28 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
   }
 
   Widget _buildSocialIconMinimal({
+    required BuildContext context,
     required IconData icon,
     required VoidCallback onTap,
   }) {
     return InkWell(
-      splashColor: Colors.white.withValues(alpha: 0.2),
+      splashColor: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.15),
       borderRadius: BorderRadius.circular(12.0),
       onTap: onTap,
       child: Container(
         width: 45.0,
         height: 45.0,
         decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.08),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.3),
+            color: FlutterFlowTheme.of(context).alternate.withValues(alpha: 0.6),
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Icon(
           icon,
-          color: Colors.white.withValues(alpha: 0.9),
+          color: FlutterFlowTheme.of(context).primary,
           size: 20.0,
         ),
       ),

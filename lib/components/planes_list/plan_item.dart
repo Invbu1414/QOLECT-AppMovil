@@ -128,9 +128,9 @@ class PlanItem extends StatelessWidget {
                         context.pushNamed(
                           WebViewPlanWidget.routeName,
                           queryParameters: {
-                            'url': serializeParam(
-                              '${getJsonField(plan, r'''$.plan_url''').toString()}/?nocache',
-                              ParamType.String,
+                            'planId': serializeParam(
+                              getJsonField(plan, r'''$.plan_id'''),
+                              ParamType.int,
                             ),
                           }.withoutNulls,
                         );
