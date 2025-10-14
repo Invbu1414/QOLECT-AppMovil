@@ -1,6 +1,7 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_web_view.dart';
+import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:badges/badges.dart' as badges;
@@ -28,8 +29,8 @@ class WebViewPlanWidget extends StatefulWidget {
 
 class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
   late WebViewPlanModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -57,40 +58,12 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         floatingActionButton: WebViewAware(
-          child: FloatingActionButton(
-            onPressed: () {
-              print('FloatingActionButton pressed ...');
-            },
-            backgroundColor: Color(0x004078A8),
-            elevation: 8.0,
-            child: Align(
-              alignment: AlignmentDirectional(0.75, 0.0),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  await actions.launchInBrowser(
-                    'https://api.whatsapp.com/send?phone=+573018119374&text=Hola%2C%20quiero%20armar%20mi%20plan%20de%20vacaciones%20%F0%9F%9B%AB.%0AViajo%20desde%20(Ingresa%20lugar%20de%20salida)%2C%20hac%C3%ADa%20(Ingresa%20lugar%20de%20destino)%20%F0%9F%98%8E',
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.asset(
-                    'assets/images/Group_48.png',
-                    width: 60.0,
-                    height: 60.0,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          child: WhatsappFabWidget(),
         ),
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, _) => [
+            //AppBar
             SliverAppBar(
               expandedHeight: 90.0,
               pinned: false,
@@ -187,13 +160,14 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
               elevation: 2.0,
             )
           ],
+
           body: Builder(
             builder: (context) {
               return Align(
                 alignment: AlignmentDirectional(0.0, -1.0),
                 child: Container(
-                  width: 400.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
+                  width: 439.0,
+                  height: double.infinity,
                   decoration: BoxDecoration(
                     color: FlutterFlowTheme.of(context).secondaryBackground,
                     image: DecorationImage(
@@ -204,13 +178,34 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
                     ),
                     shape: BoxShape.rectangle,
                   ),
-                  child: FlutterFlowWebView(
-                    content: widget.url!,
-                    bypass: false,
-                    width: MediaQuery.sizeOf(context).width * 1.0,
-                    height: MediaQuery.sizeOf(context).height * 1.0,
-                    verticalScroll: false,
-                    horizontalScroll: false,
+                  child: Stack(
+                    children: [
+                      FlutterFlowWebView(
+                        content: widget.url!,
+                        bypass: false,
+                        width: MediaQuery.sizeOf(context).width * 1.0,
+                        height: MediaQuery.sizeOf(context).height * 1.0,
+                        verticalScroll: true,
+                        horizontalScroll: false,
+                        onLoadStarted: () {
+                          if (mounted) setState(() => _isLoading = true);
+                        },
+                        onLoadFinished: () {
+                          if (mounted) setState(() => _isLoading = false);
+                        },
+                      ),
+                      if (_isLoading)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.black26,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: FlutterFlowTheme.of(context).primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               );
