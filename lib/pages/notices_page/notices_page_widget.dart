@@ -1,20 +1,16 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/noresults/noresults_widget.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
-import '/flutter_flow/flutter_flow_expanded_image_view.dart';
+import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 import 'notices_page_model.dart';
 export 'notices_page_model.dart';
 
@@ -68,36 +64,7 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            print('FloatingActionButton pressed ...');
-          },
-          backgroundColor: Color(0x004078A8),
-          elevation: 8.0,
-          child: Align(
-            alignment: AlignmentDirectional(0.75, 0.0),
-            child: InkWell(
-              splashColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () async {
-                await actions.launchInBrowser(
-                  'https://api.whatsapp.com/send?phone=+573018119374&text=Hola%2C%20quiero%20armar%20mi%20plan%20de%20vacaciones%20%F0%9F%9B%AB.%0AViajo%20desde%20(Ingresa%20lugar%20de%20salida)%2C%20hac%C3%ADa%20(Ingresa%20lugar%20de%20destino)%20%F0%9F%98%8E',
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'assets/images/Group_48.png',
-                  width: 60.0,
-                  height: 60.0,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
-        ),
+        floatingActionButton: WhatsappFabWidget(),
         drawer: HomeDrawerWidget(),
         body: NestedScrollView(
           floatHeaderSlivers: true,
@@ -264,376 +231,153 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: noticias.length,
                                   itemBuilder: (context, noticiasIndex) {
-                                    final noticiasItem =
-                                        noticias[noticiasIndex];
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  10.0, 20.0, 10.0, 0.0),
-                                          child: Container(
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryBackground,
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      0.0, 0.0, 0.0, 30.0),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Align(
-                                                    alignment:
-                                                        AlignmentDirectional(
-                                                            0.0, -1.0),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Align(
-                                                          alignment:
-                                                              AlignmentDirectional(
-                                                                  -1.0, -1.0),
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                            child: Image.asset(
-                                                              'assets/images/Group_2181_(1).png',
-                                                              width: 104.0,
-                                                              height: 56.0,
-                                                              fit: BoxFit
-                                                                  .fitWidth,
-                                                              alignment:
-                                                                  Alignment(
-                                                                      -1.0,
-                                                                      -1.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    focusColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () async {
-                                                      await Navigator.push(
-                                                        context,
-                                                        PageTransition(
-                                                          type:
-                                                              PageTransitionType
-                                                                  .fade,
-                                                          child:
-                                                              FlutterFlowExpandedImageView(
-                                                            image:
-                                                                Image.network(
-                                                              (WordpressNoticiasCall
-                                                                      .imagen(
-                                                                listViewWordpressNoticiasResponse
-                                                                    .jsonBody,
-                                                              )!
-                                                                  .elementAtOrNull(
-                                                                      noticiasIndex))!,
-                                                              fit: BoxFit
-                                                                  .contain,
-                                                            ),
-                                                            allowRotation:
-                                                                false,
-                                                            tag: (WordpressNoticiasCall
-                                                                    .imagen(
-                                                              listViewWordpressNoticiasResponse
-                                                                  .jsonBody,
-                                                            )!
-                                                                .elementAtOrNull(
-                                                                    noticiasIndex))!,
-                                                            useHeroAnimation:
-                                                                true,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Hero(
-                                                      tag: (WordpressNoticiasCall
-                                                              .imagen(
-                                                        listViewWordpressNoticiasResponse
-                                                            .jsonBody,
-                                                      )!
-                                                          .elementAtOrNull(
-                                                              noticiasIndex))!,
-                                                      transitionOnUserGestures:
-                                                          true,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20.0),
-                                                        child: Image.network(
-                                                          (WordpressNoticiasCall
-                                                                  .imagen(
-                                                            listViewWordpressNoticiasResponse
-                                                                .jsonBody,
-                                                          )!
-                                                              .elementAtOrNull(
-                                                                  noticiasIndex))!,
-                                                          width: 200.0,
-                                                          height: 200.0,
+                                    final noticiasItem = noticias[noticiasIndex];
+                                    // Datos seguros con fallbacks
+                                    final imageUrl = (WordpressNoticiasCall.imagen(
+                                      listViewWordpressNoticiasResponse.jsonBody,
+                                    )?.elementAtOrNull(noticiasIndex)) ??
+                                        '';
+                                    final titleText = valueOrDefault<String>(
+                                      getJsonField(noticiasItem, r'''$.title.rendered''')?.toString(),
+                                      'Noticia',
+                                    );
+                                    final dateRaw = getJsonField(noticiasItem, r'''$.date''')?.toString();
+                                    final dateFmt = (dateRaw != null && dateRaw.isNotEmpty)
+                                        ? dateTimeFormat('yMMMd', DateTime.tryParse(dateRaw))
+                                        : 'Fecha no disponible';
+                                    final descriptionText = valueOrDefault<String>(
+                                      getJsonField(noticiasItem, r'''$.acf.descripcion''')?.toString(),
+                                      'Sin contenido disponible.',
+                                    );
+
+                                    return Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(10.0, 16.0, 10.0, 0.0),
+                                      child: Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        elevation: 6,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16.0),
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            context.pushNamed(
+                                              NoticeDetailPageWidget.routeName,
+                                              queryParameters: {
+                                                'title': serializeParam(titleText, ParamType.String),
+                                                'imageUrl': serializeParam(imageUrl, ParamType.String),
+                                                'date': serializeParam(dateRaw ?? '', ParamType.String),
+                                                'description': serializeParam(descriptionText, ParamType.String),
+                                              }.withoutNulls,
+                                            );
+                                          },
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              AspectRatio(
+                                                aspectRatio: 4 / 4,
+                                                child: Hero(
+                                                  tag: imageUrl.isNotEmpty ? imageUrl : 'noticia_$noticiasIndex',
+                                                  transitionOnUserGestures: true,
+                                                  child: imageUrl.isNotEmpty
+                                                      ? Image.network(
+                                                          imageUrl,
+                                                          fit: BoxFit.cover,
+                                                          loadingBuilder: (context, child, progress) {
+                                                            if (progress == null) return child;
+                                                            return Container(
+                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                            );
+                                                          },
+                                                          errorBuilder: (context, error, stackTrace) {
+                                                            return Image.asset(
+                                                              'assets/images/new_logo.png',
+                                                              fit: BoxFit.cover,
+                                                            );
+                                                          },
+                                                        )
+                                                      : Image.asset(
+                                                          'assets/images/new_logo.png',
                                                           fit: BoxFit.cover,
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Align(
-                                                    alignment:
-                                                        AlignmentDirectional(
-                                                            0.0, 0.0),
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  20.0,
-                                                                  0.0,
-                                                                  0.0),
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        30.0,
-                                                                        0.0,
-                                                                        30.0,
-                                                                        10.0),
-                                                            child: Text(
-                                                              (WordpressNoticiasCall
-                                                                      .title(
-                                                                listViewWordpressNoticiasResponse
-                                                                    .jsonBody,
-                                                              )!
-                                                                  .elementAtOrNull(
-                                                                      noticiasIndex))!,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .fredoka(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        18.0,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                            ),
-                                                          ),
-                                                          Align(
-                                                            alignment:
-                                                                AlignmentDirectional(
-                                                                    0.0, 0.0),
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          40.0,
-                                                                          0.0,
-                                                                          40.0,
-                                                                          0.0),
-                                                              child: Text(
-                                                                valueOrDefault<
-                                                                    String>(
-                                                                  WordpressNoticiasCall
-                                                                      .descripcion(
-                                                                    listViewWordpressNoticiasResponse
-                                                                        .jsonBody,
-                                                                  )?.elementAtOrNull(
-                                                                      noticiasIndex),
-                                                                  'Descripción',
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .justify,
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .fredoka(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontSize:
-                                                                          18.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          if (false !=
-                                                              getJsonField(
-                                                                noticiasItem,
-                                                                r'''$.acf.adjunto''',
-                                                              ))
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          20.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              child:
-                                                                  FFButtonWidget(
-                                                                onPressed:
-                                                                    () async {
-                                                                  context
-                                                                      .pushNamed(
-                                                                    WebViewWidget
-                                                                        .routeName,
-                                                                    queryParameters:
-                                                                        {
-                                                                      'url':
-                                                                          serializeParam(
-                                                                        getJsonField(
-                                                                          noticiasItem,
-                                                                          r'''$.acf.adjunto''',
-                                                                        ).toString(),
-                                                                        ParamType
-                                                                            .String,
-                                                                      ),
-                                                                    }.withoutNulls,
-                                                                  );
-                                                                },
-                                                                text: 'Ver más',
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .picture_as_pdf,
-                                                                  size: 15.0,
-                                                                ),
-                                                                options:
-                                                                    FFButtonOptions(
-                                                                  height: 40.0,
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          24.0,
-                                                                          0.0,
-                                                                          24.0,
-                                                                          0.0),
-                                                                  iconPadding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primary,
-                                                                  textStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .fredoka(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                  elevation:
-                                                                      3.0,
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                    color: Colors
-                                                                        .transparent,
-                                                                    width: 1.0,
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              50.0),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 16.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      titleText,
+                                                      softWrap: true,
+                                                      style: FlutterFlowTheme.of(context).titleLarge.override(
+                                                            font: GoogleFonts.fredoka(
+                                                              fontWeight: FontWeight.w700,
+                                                              fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                                                            ),
+                                                            color: FlutterFlowTheme.of(context).primaryText,
+                                                            letterSpacing: 0.0,
+                                                            fontWeight: FontWeight.w700,
+                                                            fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                                                          ),
+                                                    ),
+                                                    const SizedBox(height: 8.0),
+                                                    Text(
+                                                      dateFmt,
+                                                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                                                            font: GoogleFonts.fredoka(
+                                                              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                                                              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                            ),
+                                                            color: FlutterFlowTheme.of(context).secondaryText,
+                                                            letterSpacing: 0.0,
+                                                            fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                                                            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                          ),
+                                                    ),
+                                                    const SizedBox(height: 12.0),
+                                                    Align(
+                                                      alignment: Alignment.centerRight,
+                                                      child: FFButtonWidget(
+                                                        onPressed: () {
+                                                          context.pushNamed(
+                                                            NoticeDetailPageWidget.routeName,
+                                                            queryParameters: {
+                                                              'title': serializeParam(titleText, ParamType.String),
+                                                              'imageUrl': serializeParam(imageUrl, ParamType.String),
+                                                              'date': serializeParam(dateRaw ?? '', ParamType.String),
+                                                              'description': serializeParam(descriptionText, ParamType.String),
+                                                            }.withoutNulls,
+                                                          );
+                                                        },
+                                                        text: 'Ver más',
+                                                        icon: const Icon(
+                                                          Icons.arrow_forward_rounded,
+                                                          size: 18.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                        options: FFButtonOptions(
+                                                          height: 36.0,
+                                                          padding: const EdgeInsetsDirectional.fromSTEB(14.0, 0.0, 16.0, 0.0),
+                                                          color: FlutterFlowTheme.of(context).primary,
+                                                          textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                                                font: GoogleFonts.fredoka(
+                                                                  fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                                ),
+                                                                color: Colors.white,
+                                                              ),
+                                                          elevation: 3.0,
+                                                          borderRadius: BorderRadius.circular(12.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     );
                                   },
                                 );

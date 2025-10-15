@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui' show ImageFilter;
 import 'on_boarding1_page_model.dart';
 export 'on_boarding1_page_model.dart';
 
@@ -23,6 +24,29 @@ class _OnBoarding1PageWidgetState extends State<OnBoarding1PageWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // Transición personalizada: fade + scale
+  PageRouteBuilder _fadeScaleRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: const Duration(milliseconds: 600),
+      reverseTransitionDuration: const Duration(milliseconds: 600),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        );
+        return FadeTransition(
+          opacity: curved,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.98, end: 1.0).animate(curved),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -39,15 +63,33 @@ class _OnBoarding1PageWidgetState extends State<OnBoarding1PageWidget> {
         if (Navigator.of(context).canPop()) {
           context.pop();
         }
-        context.pushNamed(HomePageWidget.routeName);
-
+        // Transición fade hacia Home usando FlutterFlow
+        context.pushNamed(
+          HomePageWidget.routeName,
+          extra: {
+            kTransitionInfoKey: TransitionInfo(
+              hasTransition: true,
+              transitionType: PageTransitionType.fade,
+              duration: Duration(milliseconds: 600),
+            ),
+          },
+        );
         return;
       } else {
         if (Navigator.of(context).canPop()) {
           context.pop();
         }
-        context.pushNamed(LoginPageWidget.routeName);
-
+        // Transición fade hacia Login usando FlutterFlow
+        context.pushNamed(
+          LoginPageWidget.routeName,
+          extra: {
+            kTransitionInfoKey: TransitionInfo(
+              hasTransition: true,
+              transitionType: PageTransitionType.fade,
+              duration: Duration(milliseconds: 600),
+            ),
+          },
+        );
         return;
       }
     });
@@ -72,135 +114,76 @@ class _OnBoarding1PageWidgetState extends State<OnBoarding1PageWidget> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
+        body: Stack(
           children: [
-            Expanded(
+            // Overlay sutil para mejorar legibilidad del texto
+            Positioned.fill(
               child: Container(
-                width: 439.0,
-                height: 100.0,
                 decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: Image.asset(
-                      'assets/images/20852675_6345959_1.png',
-                    ).image,
+                  gradient: LinearGradient(
+                    colors: [
+                      FlutterFlowTheme.of(context).primary,
+                      Colors.white,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.center,
                   ),
-                  shape: BoxShape.rectangle,
                 ),
-                child: Align(
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  child: SingleChildScrollView(
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24.0, 28.0, 24.0, 0.0),
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Align(
-                          alignment: AlignmentDirectional(0.0, -1.0),
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 20.0, 0.0, 0.0),
-                            child: Container(
-                              width: 339.0,
-                              height: 100.0,
-                              decoration: BoxDecoration(
-                                color: Color(0xFF427AAB),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 4.0,
-                                    color: Color(0x33000000),
-                                    offset: Offset(
-                                      0.0,
-                                      2.0,
-                                    ),
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(20.0),
+                        Text(
+                          'Encuentra tu siguiente aventura',
+                          textAlign: TextAlign.center,
+                          style: FlutterFlowTheme.of(context)
+                              .titleLarge
+                              .override(
+                                fontSize: 32.0,
+                                fontWeight: FontWeight.w800,
+                                color: FlutterFlowTheme.of(context).primaryText,
                               ),
-                              child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    20.0, 10.0, 20.0, 10.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.asset(
-                                    'assets/images/LOGO_3.png',
-                                    width: 300.0,
-                                    height: 200.0,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 50.0, 0.0, 0.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              'assets/images/10_1.png',
-                              width: 300.0,
-                              height: 318.0,
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(0.0, -1.0),
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 60.0, 0.0, 0.0),
-                            child: Container(
-                              width: 339.0,
-                              height: 47.0,
-                              decoration: BoxDecoration(
-                                color: Color(0xFF427AAB),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 4.0,
-                                    color: Color(0x33000000),
-                                    offset: Offset(
-                                      0.0,
-                                      2.0,
-                                    ),
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(20.0),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'Despierta al viajero consciente',
+                          textAlign: TextAlign.center,
+                          style: FlutterFlowTheme.of(context)
+                              .labelLarge
+                              .override(
+                                fontSize: 14.0,
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryText,
                               ),
-                              child: Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: Text(
-                                  'TU COMPAÑERO DE VIAJE',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.fredoka(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryBackground,
-                                        fontSize: 24.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                ],
+              ),
+            ),
+            Center(
+              child: Image.asset(
+                'assets/images/LOGO_3.png',
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
+              ),
+            ),
+            // Imagen inferior: ancho completo, altura proporcional de la imagen
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Image.asset(
+                'assets/images/onboarding_background2.png',
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.bottomCenter,
               ),
             ),
           ],

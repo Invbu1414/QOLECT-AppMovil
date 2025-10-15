@@ -997,3 +997,24 @@ String? escapeStringForJson(String? input) {
       .replaceAll('\n', '\\n')
       .replaceAll('\t', '\\t');
 }
+
+
+class WordpressPlanDetailCall {
+  static Future<ApiCallResponse> call({
+    int? id,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'Wordpress Plan Detail',
+      apiUrl: 'https://app.qolect.co/wp-json/v2/plans/${id}',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}

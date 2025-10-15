@@ -9,6 +9,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 import '/index.dart';
+import '/components/splash/branded_splash_widget.dart';
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
@@ -184,6 +185,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'url',
               ParamType.String,
             ),
+            // Nuevo: obtener planId desde la ruta
+            planId: params.getParam(
+              'planId',
+              ParamType.int,
+            ),
           ),
         ),
         FFRoute(
@@ -195,6 +201,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: Comunidadv1Widget.routeName,
           path: Comunidadv1Widget.routePath,
           builder: (context, params) => Comunidadv1Widget(),
+        ),
+        FFRoute(
+          name: NoticeDetailPageWidget.routeName,
+          path: NoticeDetailPageWidget.routePath,
+          builder: (context, params) => NoticeDetailPageWidget(
+            title: params.getParam('title', ParamType.String),
+            imageUrl: params.getParam('imageUrl', ParamType.String),
+            date: params.getParam('date', ParamType.String),
+            description: params.getParam('description', ParamType.String),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
@@ -380,17 +396,7 @@ class FFRoute {
                 )
               : builder(context, ffParams);
           final child = appStateNotifier.loading
-              ? Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        FlutterFlowTheme.of(context).primary,
-                      ),
-                    ),
-                  ),
-                )
+              ? BrandedSplashWidget()
               : page;
 
           final transitionInfo = state.transitionInfo;

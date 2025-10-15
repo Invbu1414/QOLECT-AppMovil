@@ -145,6 +145,7 @@ dependencies:
   visibility_detector: ^0.4.0+2  # Para lazy loading
   shimmer: ^3.0.0  # Para efectos de carga
   intl: ^0.20.2
+  flutter_launcher_icons: ^0.13.1
 
 dependency_overrides:
   device_info_plus: 11.5.0
@@ -153,7 +154,6 @@ dependency_overrides:
   uuid: ^4.0.0
 
 dev_dependencies:
-  flutter_launcher_icons: 0.13.1
   flutter_lints: 4.0.0
   image: 4.2.0
   lints: 4.0.0
@@ -161,13 +161,15 @@ dev_dependencies:
     sdk: flutter
 
 
-flutter_launcher_icons:
+flutter_icons:
   android: true
   ios: true
+  image_path_android: assets/images/new_logo.png
+  image_path_ios: assets/images/app_icon_ios.png
+  adaptive_icon_background: "#67BEE9"
+  adaptive_icon_foreground: assets/images/new_logo.png
   remove_alpha_ios: true
-  web:
-    generate: true
-  image_path: 'assets/images/app_launcher_icon.png'
+  min_sdk_android: 21
 
 
 # For information on the generic Dart part of this file, see the
