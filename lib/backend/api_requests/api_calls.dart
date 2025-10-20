@@ -1645,3 +1645,167 @@ class FastAPIExperienciasCall {
         r'''$.total''',
       ));
 }
+
+/// GET /home - Datos para pantalla HOME (banner + noticias destacadas + planes populares)
+class FastAPIHomeCall {
+  static Future<ApiCallResponse> call() async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Home',
+      apiUrl: '${_pythonApiBaseUrl}/home',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  // Banner
+  static String? bannerTitulo(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.banner.titulo''',
+      ));
+
+  static String? bannerSubtitulo(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.banner.subtitulo''',
+      ));
+
+  static String? bannerImagen(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.banner.imagen''',
+      ));
+
+  static String? bannerCtaText(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.banner.cta_text''',
+      ));
+
+  // Noticias destacadas (5)
+  static List? noticiasDestacadas(dynamic response) => getJsonField(
+        response,
+        r'''$.noticias_destacadas''',
+        true,
+      ) as List?;
+
+  static List<int>? noticiasId(dynamic response) => (getJsonField(
+        response,
+        r'''$.noticias_destacadas[:].idnoticia''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? noticiasTitulo(dynamic response) => (getJsonField(
+        response,
+        r'''$.noticias_destacadas[:].titulo''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? noticiasDescripcion(dynamic response) => (getJsonField(
+        response,
+        r'''$.noticias_destacadas[:].descripcion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? noticiasImagen(dynamic response) => (getJsonField(
+        response,
+        r'''$.noticias_destacadas[:].imagen''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? noticiasFecha(dynamic response) => (getJsonField(
+        response,
+        r'''$.noticias_destacadas[:].created_at''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  // Planes populares (3)
+  static List? planesPopulares(dynamic response) => getJsonField(
+        response,
+        r'''$.planes_populares''',
+        true,
+      ) as List?;
+
+  static List<int>? planesId(dynamic response) => (getJsonField(
+        response,
+        r'''$.planes_populares[:].idproducto''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? planesNombre(dynamic response) => (getJsonField(
+        response,
+        r'''$.planes_populares[:].nombre''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? planesDescripcion(dynamic response) => (getJsonField(
+        response,
+        r'''$.planes_populares[:].descripcion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? planesDescripcionCorta(dynamic response) => (getJsonField(
+        response,
+        r'''$.planes_populares[:].descripcioncorta''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<double>? planesPrecio(dynamic response) => (getJsonField(
+        response,
+        r'''$.planes_populares[:].precio''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<double>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? planesImagen(dynamic response) => (getJsonField(
+        response,
+        r'''$.planes_populares[:].imagen''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+}
