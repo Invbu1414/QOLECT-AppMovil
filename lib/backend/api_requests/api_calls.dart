@@ -1018,3 +1018,630 @@ class WordpressPlanDetailCall {
     );
   }
 }
+
+// ============================================================================
+// NUEVAS API CALLS - PYTHON FASTAPI
+// Base URL: http://localhost:8000 (desarrollo) / https://api.qolect.co (producción)
+// ============================================================================
+
+/// Base URL para la nueva API Python FastAPI
+// Usando 10.0.2.2 para Android emulator (localhost del host)
+// IMPORTANTE: Usamos /rest para endpoints REST (workaround problema DNS Windows)
+const String _pythonApiBaseUrl = 'http://10.0.2.2:8000/api/v1/mobile/rest';
+
+/// GET /noticias - Listar noticias (público)
+class FastAPINoticiasCall {
+  static Future<ApiCallResponse> call({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Noticias',
+      apiUrl: '${_pythonApiBaseUrl}/noticias',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'skip': skip,
+        'limit': limit,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static List<int>? id(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].idnoticia''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? titulo(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].titulo''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? descripcion(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].descripcion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? imagenUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].imagen''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? adjuntoUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].adjunto_url''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? fechaCreacion(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].created_at''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static int? total(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total''',
+      ));
+}
+
+/// GET /planes - Listar planes/productos (público)
+class FastAPIPlanesCall {
+  static Future<ApiCallResponse> call({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Planes',
+      apiUrl: '${_pythonApiBaseUrl}/planes',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'skip': skip,
+        'limit': limit,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static List<int>? id(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].id''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? nombre(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].nombre''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? descripcion(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].descripcion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<double>? precio(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].precio''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<double>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? imagenUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].imagen_url''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? categoria(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].categoria.nombre''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static int? total(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total''',
+      ));
+}
+
+/// GET /viajes - Listar viajes del usuario (requiere auth)
+class FastAPIViajesCall {
+  static Future<ApiCallResponse> call({
+    String? firebaseToken = '',
+    int skip = 0,
+    int limit = 20,
+    String? fechaInicio,
+    String? fechaFin,
+  }) async {
+    final params = <String, dynamic>{
+      'skip': skip,
+      'limit': limit,
+    };
+
+    if (fechaInicio != null && fechaInicio.isNotEmpty) {
+      params['fecha_inicio'] = fechaInicio;
+    }
+    if (fechaFin != null && fechaFin.isNotEmpty) {
+      params['fecha_fin'] = fechaFin;
+    }
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Viajes',
+      apiUrl: '${_pythonApiBaseUrl}/viajes',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': 'Bearer ${firebaseToken}',
+      },
+      params: params,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static List<int>? id(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].id''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? destino(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].destino''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? descripcion(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].descripcion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? fechaSalida(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].fecha_salida''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? fechaLlegada(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].fecha_llegada''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<double>? calificacion(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].calificacion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<double>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? imagenUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].imagen_card_url''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static int? total(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total''',
+      ));
+}
+
+/// GET /viajes/{id} - Detalle de un viaje (requiere auth)
+class FastAPIViajeDetalleCall {
+  static Future<ApiCallResponse> call({
+    String? firebaseToken = '',
+    required int viajeId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Viaje Detalle',
+      apiUrl: '${_pythonApiBaseUrl}/viajes/${viajeId}',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': 'Bearer ${firebaseToken}',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static int? id(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.id''',
+      ));
+
+  static String? destino(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.destino''',
+      ));
+
+  static String? descripcion(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.descripcion''',
+      ));
+
+  static String? direccion(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.direccion_detallada''',
+      ));
+
+  static String? fechaSalida(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.fecha_salida''',
+      ));
+
+  static String? fechaLlegada(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.fecha_llegada''',
+      ));
+
+  static double? calificacion(dynamic response) => castToType<double>(getJsonField(
+        response,
+        r'''$.calificacion''',
+      ));
+
+  static String? calificacionTexto(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.calificacion_texto''',
+      ));
+
+  static String? imagenCardUrl(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.imagen_card_url''',
+      ));
+
+  // Documentos JSONB
+  static dynamic documentosDestino(dynamic response) => getJsonField(
+        response,
+        r'''$.documentos.en_destino''',
+      );
+
+  static dynamic documentosViaje(dynamic response) => getJsonField(
+        response,
+        r'''$.documentos.prepara_viaje''',
+      );
+
+  static dynamic documentosRegreso(dynamic response) => getJsonField(
+        response,
+        r'''$.documentos.regreso_casa''',
+      );
+}
+
+/// PUT /viajes/{id}/rate - Calificar un viaje (requiere auth)
+class FastAPIViajeCalificarCall {
+  static Future<ApiCallResponse> call({
+    String? firebaseToken = '',
+    required int viajeId,
+    required double calificacion,
+    String? comentario = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "calificacion": ${calificacion},
+  "comentario": "${escapeStringForJson(comentario)}"
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Viaje Calificar',
+      apiUrl: '${_pythonApiBaseUrl}/viajes/${viajeId}/rate',
+      callType: ApiCallType.PUT,
+      headers: {
+        'Authorization': 'Bearer ${firebaseToken}',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+/// GET /notifications - Listar notificaciones del usuario (requiere auth)
+class FastAPINotificacionesCall {
+  static Future<ApiCallResponse> call({
+    String? firebaseToken = '',
+    int skip = 0,
+    int limit = 20,
+    bool? soloNoLeidas,
+  }) async {
+    final params = <String, dynamic>{
+      'skip': skip,
+      'limit': limit,
+    };
+
+    if (soloNoLeidas != null) {
+      params['unread_only'] = soloNoLeidas;
+    }
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Notificaciones',
+      apiUrl: '${_pythonApiBaseUrl}/notifications',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': 'Bearer ${firebaseToken}',
+      },
+      params: params,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static List<int>? id(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].id''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? titulo(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].titulo''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? mensaje(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].mensaje''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<bool>? leida(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].leida''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<bool>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? fechaCreacion(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].created_at''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static int? total(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total''',
+      ));
+}
+
+/// PUT /notifications/{id}/read - Marcar notificación como leída (requiere auth)
+class FastAPINotificacionLeerCall {
+  static Future<ApiCallResponse> call({
+    String? firebaseToken = '',
+    required int notificacionId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Notificacion Leer',
+      apiUrl: '${_pythonApiBaseUrl}/notifications/${notificacionId}/read',
+      callType: ApiCallType.PUT,
+      headers: {
+        'Authorization': 'Bearer ${firebaseToken}',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+/// GET /experiencias - Listar experiencias de la comunidad (público)
+class FastAPIExperienciasCall {
+  static Future<ApiCallResponse> call({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Experiencias',
+      apiUrl: '${_pythonApiBaseUrl}/experiencias',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'skip': skip,
+        'limit': limit,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static List<int>? id(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].id''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? comentario(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].comentario''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? imagenUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].imagen_url''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? videoUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].video_url''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? usuarioNombre(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].usuario.nombre_completo''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? usuarioFoto(dynamic response) => (getJsonField(
+        response,
+        r'''$.items[:].usuario.foto_url''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static int? total(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total''',
+      ));
+}
