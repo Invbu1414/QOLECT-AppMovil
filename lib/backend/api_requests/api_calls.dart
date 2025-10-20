@@ -1809,3 +1809,97 @@ class FastAPIHomeCall {
           .withoutNulls
           .toList();
 }
+
+/// POST /login - Login con Python API (compatible con WordPress JWT)
+class FastAPILoginCall {
+  static Future<ApiCallResponse> call({
+    String? username = '',
+    String? password = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "username": "${username}",
+  "password": "${password}"
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Login',
+      apiUrl: '${_pythonApiBaseUrl}/login',
+      callType: ApiCallType.POST,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  // Response fields (compatible con WordPress JWT format)
+  static String? token(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.token''',
+      ));
+
+  static String? userEmail(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.user_email''',
+      ));
+
+  static String? userNicename(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.user_nicename''',
+      ));
+
+  static String? userDisplayName(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.user_display_name''',
+      ));
+
+  static int? userId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.id''',
+      ));
+}
+
+/// POST /validate-email - Validar si email existe
+class FastAPIValidateEmailCall {
+  static Future<ApiCallResponse> call({
+    String? email = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "email": "${email}"
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Validate Email',
+      apiUrl: '${_pythonApiBaseUrl}/validate-email',
+      callType: ApiCallType.POST,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? exists(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.exists''',
+      ));
+
+  static String? email(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.email''',
+      ));
+}
