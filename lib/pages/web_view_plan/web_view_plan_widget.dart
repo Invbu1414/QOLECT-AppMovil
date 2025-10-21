@@ -2,6 +2,9 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
+import '/pages/cart_page/cart_page_widget.dart';
+import '/models/cart_item.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:badges/badges.dart' as badges;
@@ -11,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'web_view_plan_model.dart';
 export 'web_view_plan_model.dart';
 import '/backend/api_requests/api_calls.dart';
+import '/components/optimized_image/optimized_image_widget.dart';
 
 class WebViewPlanWidget extends StatefulWidget {
   const WebViewPlanWidget({
@@ -120,29 +124,9 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, _) => [
-            //AppBar
-            SliverAppBar(
-              expandedHeight: 90.0,
-              pinned: false,
-              floating: true,
-              snap: true,
-              backgroundColor: FlutterFlowTheme.of(context).primary,
-              automaticallyImplyLeading: false,
-              leading: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  context.safePop();
-                },
-                child: Icon(
-                  Icons.chevron_left_outlined,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  size: 30.0,
-                ),
-              ),
-              title: Padding(
+            MainSliverAppBar(
+              title: '',
+              titleWidget: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
@@ -154,68 +138,20 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
                   ),
                 ),
               ),
-              actions: [
-                Align(
-                  alignment: AlignmentDirectional(-1.0, 0.0),
-                  child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 25.0, 0.0),
-                    child: badges.Badge(
-                      badgeContent: Text(
-                        valueOrDefault<String>(
-                          FFAppState().notificationsAmount.toString(),
-                          '0',
-                        ),
-                        style: FlutterFlowTheme.of(context).titleSmall.override(
-                              font: GoogleFonts.fredoka(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 11.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
-                            ),
-                      ),
-                      showBadge: true,
-                      shape: badges.BadgeShape.circle,
-                      badgeColor: FlutterFlowTheme.of(context).error,
-                      elevation: 4.0,
-                      padding: EdgeInsets.all(5.0),
-                      position: badges.BadgePosition.topEnd(),
-                      animationType: badges.BadgeAnimationType.scale,
-                      toAnimate: false,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          context.pushNamed(NotificationsPageWidget.routeName);
-                        },
-                        child: Icon(
-                          Icons.notifications,
-                          color: FlutterFlowTheme.of(context).warning,
-                          size: 35.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              centerTitle: true,
-              toolbarHeight: 90.0,
-              elevation: 2.0,
-            )
+              leadingIcon: Icons.chevron_left_outlined,
+              onLeadingTap: () async {
+                context.safePop();
+              },
+              onMenuTap: () {},
+              onCartTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPageWidget()),
+                );
+              },
+              notificationsCount: FFAppState().notificationsAmount,
+              cartCount: FFAppState().cartItems.length,
+            ),
           ],
           body: Builder(
             builder: (context) {
@@ -274,11 +210,12 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
                               else
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(20.0),
-                                  child: Image.asset(
-                                    'assets/images/new_logo.png',
+                                  child: OptimizedImageWidget(
+                                    imageUrl: imageUrl.isNotEmpty ? imageUrl : 'assets/images/new_logo.png',
                                     width: double.infinity,
                                     height: 240.0,
-                                    fit: BoxFit.contain,
+                                    fit: imageUrl.isNotEmpty ? BoxFit.cover : BoxFit.contain,
+                                    borderRadius: 20.0,
                                   ),
                                 ),
                               const SizedBox(height: 16.0),
@@ -360,22 +297,51 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
                                   if (purchaseUrl.isNotEmpty) {
                                     await actions.launchInBrowser(purchaseUrl);
                                   } else {
+                                    // ID del plan: usa planId del widget o el id del objeto, fallback al título
+                                    final planIdStr = widget.planId?.toString() ??
+                                        getJsonField(_plan, r'''$.id''')?.toString() ??
+                                        title;
+                                    
+                                    // Normalizar y parsear el precio (soporta ',' y '.')
+                                    final source = rawPrice.trim().isNotEmpty ? rawPrice : price;
+                                    final cleaned = source.replaceAll(RegExp(r'[^0-9.,-]'), '');
+                                    String normalized = cleaned;
+                                    if (cleaned.contains('.') && cleaned.contains(',')) {
+                                      normalized = cleaned.replaceAll('.', '').replaceAll(',', '.');
+                                    } else if (cleaned.contains(',')) {
+                                      normalized = cleaned.replaceAll(',', '.');
+                                    } else if (cleaned.contains('.')) {
+                                      final hasDecimal = RegExp(r'\.\d{1,2}$').hasMatch(cleaned);
+                                      normalized = hasDecimal ? cleaned : cleaned.replaceAll('.', '');
+                                    }
+                                    final priceValue = double.tryParse(normalized) ?? 0.0;
+                                    
+                                    context.read<FFAppState>().addToCart(
+                                      CartItem(
+                                        id: planIdStr,
+                                        name: title,
+                                        price: priceValue,
+                                        quantity: 1,
+                                        imageUrl: imageUrl.isNotEmpty ? imageUrl : null,
+                                      ),
+                                    );
+                                    
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          'No hay URL de compra disponible.',
+                                          '$title ha sido agregado al carrito.',
                                           style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                font: GoogleFonts.fredoka(),
-                                                color: Colors.white,
-                                                letterSpacing: 0.0,
-                                              ),
+                                            font: GoogleFonts.fredoka(),
+                                            color: Colors.white,
+                                            letterSpacing: 0.0,
+                                          ),
                                         ),
                                         backgroundColor: FlutterFlowTheme.of(context).primary,
                                       ),
                                     );
                                   }
                                 },
-                                text: 'Realizar compra',
+                                text: 'Agregar al carrito',
                                 iconData: Icons.shopping_cart_outlined,
                                 options: FFButtonOptions(
                                   height: 48.0,
@@ -410,7 +376,7 @@ class _WebViewPlanWidgetState extends State<WebViewPlanWidget> {
                       if (_isLoading)
                         Positioned.fill(
                           child: Container(
-                            color: Colors.black26,
+                            color: Colors.white,
                             child: Center(
                               child: CircularProgressIndicator(
                                 color: FlutterFlowTheme.of(context).primary,

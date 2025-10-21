@@ -17,6 +17,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
+import '/pages/cart_page/cart_page_widget.dart';
 import 'profile_page_model.dart';
 export 'profile_page_model.dart';
 
@@ -132,28 +134,9 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, _) => [
-            SliverAppBar(
-              expandedHeight: 90.0,
-              pinned: false,
-              floating: true,
-              snap: true,
-              backgroundColor: FlutterFlowTheme.of(context).primary,
-              automaticallyImplyLeading: false,
-              leading: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  scaffoldKey.currentState!.openDrawer();
-                },
-                child: Icon(
-                  Icons.menu,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  size: 30.0,
-                ),
-              ),
-              title: Padding(
+            MainSliverAppBar(
+              title: '',
+              titleWidget: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
@@ -165,68 +148,18 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   ),
                 ),
               ),
-              actions: [
-                Align(
-                  alignment: AlignmentDirectional(-1.0, 0.0),
-                  child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 25.0, 0.0),
-                    child: badges.Badge(
-                      badgeContent: Text(
-                        valueOrDefault<String>(
-                          FFAppState().notificationsAmount.toString(),
-                          '0',
-                        ),
-                        style: FlutterFlowTheme.of(context).titleSmall.override(
-                              font: GoogleFonts.fredoka(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 11.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
-                            ),
-                      ),
-                      showBadge: true,
-                      shape: badges.BadgeShape.circle,
-                      badgeColor: FlutterFlowTheme.of(context).error,
-                      elevation: 4.0,
-                      padding: EdgeInsets.all(5.0),
-                      position: badges.BadgePosition.topEnd(),
-                      animationType: badges.BadgeAnimationType.scale,
-                      toAnimate: false,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          context.pushNamed(NotificationsPageWidget.routeName);
-                        },
-                        child: Icon(
-                          Icons.notifications,
-                          color: FlutterFlowTheme.of(context).warning,
-                          size: 35.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              centerTitle: true,
-              toolbarHeight: 90.0,
-              elevation: 2.0,
-            )
+              onMenuTap: () async {
+                scaffoldKey.currentState!.openDrawer();
+              },
+              onCartTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPageWidget()),
+                );
+              },
+              notificationsCount: FFAppState().notificationsAmount,
+              cartCount: FFAppState().cartItems.length,
+            ),
           ],
           body: Builder(
             builder: (context) {

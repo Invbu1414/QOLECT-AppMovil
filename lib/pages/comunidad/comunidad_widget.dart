@@ -4,6 +4,8 @@ import '/components/add_experience/add_experience_widget.dart';
 import '/components/noresults/noresults_widget.dart';
 import '/components/view_experience/view_experience_widget.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
+import '/pages/cart_page/cart_page_widget.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -65,101 +67,20 @@ class _ComunidadWidgetState extends State<ComunidadWidget> {
             NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, _) => [
-            SliverAppBar(
-              expandedHeight: 90.0,
-              pinned: false,
-              floating: true,
-              snap: true,
-              backgroundColor: FlutterFlowTheme.of(context).primary,
-              automaticallyImplyLeading: false,
-              leading: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  scaffoldKey.currentState!.openDrawer();
-                },
-                child: Icon(
-                  Icons.menu,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  size: 30.0,
-                ),
-              ),
-              title: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.asset(
-                    'assets/images/LOGO_3.png',
-                    width: 226.0,
-                    height: 63.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              actions: [
-                Align(
-                  alignment: AlignmentDirectional(-1.0, 0.0),
-                  child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 25.0, 0.0),
-                    child: badges.Badge(
-                      badgeContent: Text(
-                        valueOrDefault<String>(
-                          FFAppState().notificationsAmount.toString(),
-                          '0',
-                        ),
-                        style: FlutterFlowTheme.of(context).titleSmall.override(
-                              font: GoogleFonts.fredoka(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 10.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
-                            ),
-                      ),
-                      showBadge: true,
-                      shape: badges.BadgeShape.circle,
-                      badgeColor: FlutterFlowTheme.of(context).error,
-                      elevation: 4.0,
-                      padding: EdgeInsets.all(5.0),
-                      position: badges.BadgePosition.topEnd(),
-                      animationType: badges.BadgeAnimationType.scale,
-                      toAnimate: false,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          context.pushNamed(NotificationsPageWidget.routeName);
-                        },
-                        child: Icon(
-                          Icons.notifications,
-                          color: FlutterFlowTheme.of(context).warning,
-                          size: 35.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              centerTitle: true,
-              toolbarHeight: 90.0,
-              elevation: 2.0,
-            )
+            MainSliverAppBar(
+              title: 'COMUNIDAD',
+              onMenuTap: () async {
+                scaffoldKey.currentState!.openDrawer();
+              },
+              onCartTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPageWidget()),
+                );
+              },
+              notificationsCount: FFAppState().notificationsAmount,
+              cartCount: FFAppState().cartItems.length,
+            ),
           ],
           body: Builder(
             builder: (context) {
@@ -180,42 +101,6 @@ class _ComunidadWidgetState extends State<ComunidadWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
-                        child: Container(
-                          width: 200.0,
-                          height: 34.0,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).primary,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Align(
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Text(
-                              'COMUNIDAD',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .override(
-                                    font: GoogleFonts.fredoka(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    fontSize: 24.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ),
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                             15.0, 20.0, 15.0, 20.0),

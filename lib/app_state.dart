@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'models/cart_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FFAppState extends ChangeNotifier {
@@ -75,6 +76,39 @@ class FFAppState extends ChangeNotifier {
   int get notificationsAmount => _notificationsAmount;
   set notificationsAmount(int value) {
     _notificationsAmount = value;
+  }
+
+  List<CartItem> cartItems = [];
+  double get cartTotal =>
+      cartItems.fold(0, (sum, i) => sum + (i.price * i.quantity));
+
+  void addToCart(CartItem item) {
+    final idx = cartItems.indexWhere((i) => i.id == item.id);
+    if (idx == -1) {
+      cartItems.add(item);
+    } else {
+      cartItems[idx] =
+          cartItems[idx].copyWith(quantity: cartItems[idx].quantity + item.quantity);
+    }
+    notifyListeners();
+  }
+
+  void removeFromCart(String id) {
+    cartItems.removeWhere((i) => i.id == id);
+    notifyListeners();
+  }
+
+  void updateQuantity(String id, int quantity) {
+    final idx = cartItems.indexWhere((i) => i.id == id);
+    if (idx != -1) {
+      cartItems[idx] = cartItems[idx].copyWith(quantity: quantity);
+      notifyListeners();
+    }
+  }
+
+  void clearCart() {
+    cartItems.clear();
+    notifyListeners();
   }
 }
 

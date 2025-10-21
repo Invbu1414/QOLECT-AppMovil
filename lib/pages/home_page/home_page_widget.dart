@@ -1,7 +1,10 @@
 import '/backend/api_requests/api_calls.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
+import '/pages/cart_page/cart_page_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,30 +76,20 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       floatingActionButton: WhatsappFabWidget(),
       drawer: HomeDrawerWidget(),
-      appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
-        automaticallyImplyLeading: false,
-        leading: InkWell(
-          onTap: () {
-            scaffoldKey.currentState!.openDrawer();
-          },
-          child: Icon(
-            Icons.menu,
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-            size: 30.0,
-          ),
-        ),
-        title: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Image.asset(
-            'assets/images/LOGO_3.png',
-            width: 226.0,
-            height: 63.0,
-            fit: BoxFit.cover,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 2.0,
+      
+      appBar: MainSliverAppBar(
+        title: 'EXPERIENCIAS',
+        asSliver: false,
+        onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
+        onCartTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => const CartPageWidget(),
+            ),
+          );
+        },
+        notificationsCount: FFAppState().notificationsAmount,
+        cartCount: FFAppState().cartItems.length,
       ),
       body: _isLoading
           ? Center(

@@ -8,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'rating_page_model.dart';
+import '/components/optimized_image/optimized_image_widget.dart';
 export 'rating_page_model.dart';
 
 class RatingPageWidget extends StatefulWidget {
@@ -107,11 +108,12 @@ class _RatingPageWidgetState extends State<RatingPageWidget> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              'assets/images/Group_2181_(1).png',
+                            child: OptimizedImageWidget(
+                              imageUrl: 'assets/images/Group_2181_(1).png',
                               width: 110.0,
                               height: 100.0,
                               fit: BoxFit.cover,
+                              borderRadius: 8.0,
                             ),
                           ),
                           Padding(
