@@ -1205,8 +1205,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                           child: FFButtonWidget(
                                             onPressed: () async {
                                               var _shouldSetState = false;
+                                              // MIGRADO A PYTHON API
                                               _model.apiLoginResult =
-                                                  await WordPressLoginCall.call(
+                                                  await FastAPILoginCall.call(
                                                 username:
                                                     _model.textController1.text,
                                                 password:
@@ -1219,6 +1220,21 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                           200)
                                                       .toString() ==
                                                   '200') {
+                                                // Guardar token y datos del usuario
+                                                FFAppState().token =
+                                                    FastAPILoginCall.token(
+                                                  _model.apiLoginResult?.jsonBody ?? {},
+                                                ) ?? '';
+                                                FFAppState().userSessionID =
+                                                    FastAPILoginCall.userId(
+                                                  _model.apiLoginResult?.jsonBody ?? {},
+                                                ) ?? 0;
+                                                FFAppState().userEmail =
+                                                    FastAPILoginCall.userEmail(
+                                                  _model.apiLoginResult?.jsonBody ?? {},
+                                                ) ?? '';
+                                                safeSetState(() {});
+
                                                 context.goNamed(
                                                   HomePageWidget.routeName,
                                                   extra: <String, dynamic>{
@@ -1273,28 +1289,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                 return;
                                               }
 
-                                              FFAppState().userSessionID =
-                                                  WordPressLoginCall.id(
-                                                (_model.apiLoginResult
-                                                        ?.jsonBody ??
-                                                    ''),
-                                              )!
-                                                      .firstOrNull!;
-                                              FFAppState().userEmail =
-                                                  WordPressLoginCall.email(
-                                                (_model.apiLoginResult
-                                                        ?.jsonBody ??
-                                                    ''),
-                                              )!
-                                                      .firstOrNull!;
-                                              FFAppState().token =
-                                                  WordPressLoginCall.token(
-                                                (_model.apiLoginResult
-                                                        ?.jsonBody ??
-                                                    ''),
-                                              )!
-                                                      .firstOrNull!;
-                                              safeSetState(() {});
                                               if (_shouldSetState)
                                                 safeSetState(() {});
                                             },

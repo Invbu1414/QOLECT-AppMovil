@@ -396,8 +396,7 @@ class FFRoute {
                 )
               : builder(context, ffParams);
           final child = appStateNotifier.loading
-              ? BrandedSplashWidget()
-              : page;
+              ? BrandedSplashWidget () : page;
 
           final transitionInfo = state.transitionInfo;
           return transitionInfo.hasTransition

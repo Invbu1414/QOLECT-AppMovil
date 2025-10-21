@@ -110,8 +110,9 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                         padding: EdgeInsetsDirectional.fromSTEB(
                             15.0, 20.0, 15.0, 20.0),
                         child: FutureBuilder<ApiCallResponse>(
-                          future: WordpressNoticiasCall.call(
-                            author: FFAppState().userSessionID.toString(),
+                          future: FastAPINoticiasCall.call(
+                            skip: 0,
+                            limit: 50,
                           ),
                           builder: (context, snapshot) {
                             // Customize what your widget looks like when it's loading.
@@ -128,14 +129,16 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                 ),
                               );
                             }
-                            final listViewWordpressNoticiasResponse =
+                            final listViewFastAPINoticiasResponse =
                                 snapshot.data!;
 
                             return Builder(
                               builder: (context) {
-                                final noticias =
-                                    listViewWordpressNoticiasResponse.jsonBody
-                                        .toList();
+                                final noticias = getJsonField(
+                                  listViewFastAPINoticiasResponse.jsonBody,
+                                  r'''$.items''',
+                                ).toList();
+
                                 if (noticias.isEmpty) {
                                   return Center(
                                     child: NoresultsWidget(),
@@ -150,21 +153,21 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                   itemCount: noticias.length,
                                   itemBuilder: (context, noticiasIndex) {
                                     final noticiasItem = noticias[noticiasIndex];
-                                    // Datos seguros con fallbacks
-                                    final imageUrl = (WordpressNoticiasCall.imagen(
-                                      listViewWordpressNoticiasResponse.jsonBody,
-                                    )?.elementAtOrNull(noticiasIndex)) ??
-                                        '';
+                                    // Datos seguros con fallbacks - Adaptado para FastAPI
+                                    final imageUrl = valueOrDefault<String>(
+                                      getJsonField(noticiasItem, r'''$.imagen''')?.toString(),
+                                      '',
+                                    );
                                     final titleText = valueOrDefault<String>(
-                                      getJsonField(noticiasItem, r'''$.title.rendered''')?.toString(),
+                                      getJsonField(noticiasItem, r'''$.titulo''')?.toString(),
                                       'Noticia',
                                     );
-                                    final dateRaw = getJsonField(noticiasItem, r'''$.date''')?.toString();
+                                    final dateRaw = getJsonField(noticiasItem, r'''$.created_at''')?.toString();
                                     final dateFmt = (dateRaw != null && dateRaw.isNotEmpty)
                                         ? dateTimeFormat('yMMMd', DateTime.tryParse(dateRaw))
                                         : 'Fecha no disponible';
                                     final descriptionText = valueOrDefault<String>(
-                                      getJsonField(noticiasItem, r'''$.acf.descripcion''')?.toString(),
+                                      getJsonField(noticiasItem, r'''$.descripcion''')?.toString(),
                                       'Sin contenido disponible.',
                                     );
 
@@ -259,13 +262,13 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                                         onPressed: () {
                                                           context.pushNamed(
                                                             NoticeDetailPageWidget.routeName,
-                                                            queryParameters: {
-                                                              'title': serializeParam(titleText, ParamType.String),
-                                                              'imageUrl': serializeParam(imageUrl, ParamType.String),
-                                                              'date': serializeParam(dateRaw ?? '', ParamType.String),
-                                                              'description': serializeParam(descriptionText, ParamType.String),
-                                                            }.withoutNulls,
-                                                          );
+                                                              queryParameters: {
+                                                                'title': serializeParam(titleText, ParamType.String),
+                                                                'imageUrl': serializeParam(imageUrl, ParamType.String),
+                                                                'date': serializeParam(dateRaw ?? '', ParamType.String),
+                                                                'description': serializeParam(descriptionText, ParamType.String),
+                                                              }.withoutNulls,
+                                                            );
                                                         },
                                                         text: 'Ver más',
                                                         icon: const Icon(
