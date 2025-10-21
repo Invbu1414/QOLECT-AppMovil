@@ -2,6 +2,8 @@ import '/backend/api_requests/api_calls.dart';
 import '/components/noresults/noresults_widget.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
+import '/pages/cart_page/cart_page_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -69,104 +71,20 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, _) => [
-            SliverAppBar(
-              expandedHeight: 90.0,
-              pinned: false,
-              floating: true,
-              snap: true,
-              backgroundColor: FlutterFlowTheme.of(context).primary,
-              automaticallyImplyLeading: false,
-              leading: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  scaffoldKey.currentState!.openDrawer();
-                },
-                child: Icon(
-                  Icons.menu,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  size: 30.0,
-                ),
-              ),
-              title: Text(
-                'NOTICIAS',
-                style: FlutterFlowTheme.of(context).titleMedium.override(
-                      font: GoogleFonts.fredoka(
-                        fontWeight: FontWeight.w600,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                      ),
-                      fontSize: 24.0,
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.w600,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                    ),
-              ),
-              actions: [
-                Align(
-                  alignment: AlignmentDirectional(-1.0, 0.0),
-                  child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 25.0, 0.0),
-                    child: badges.Badge(
-                      badgeContent: Text(
-                        valueOrDefault<String>(
-                          FFAppState().notificationsAmount.toString(),
-                          '0',
-                        ),
-                        style: FlutterFlowTheme.of(context).titleSmall.override(
-                              font: GoogleFonts.fredoka(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 11.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
-                            ),
-                      ),
-                      showBadge: true,
-                      shape: badges.BadgeShape.circle,
-                      badgeColor: FlutterFlowTheme.of(context).error,
-                      elevation: 4.0,
-                      padding: EdgeInsets.all(5.0),
-                      position: badges.BadgePosition.topEnd(),
-                      animationType: badges.BadgeAnimationType.scale,
-                      toAnimate: false,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () async {
-                          context.pushNamed(NotificationsPageWidget.routeName);
-                        },
-                        child: Icon(
-                          Icons.notifications,
-                          color: FlutterFlowTheme.of(context).warning,
-                          size: 35.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              centerTitle: true,
-              toolbarHeight: 90.0,
-              elevation: 2.0,
-            )
+            MainSliverAppBar(
+              title: 'NOTICIAS',
+              onMenuTap: () async {
+                scaffoldKey.currentState!.openDrawer();
+              },
+              onCartTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPageWidget()),
+                );
+              },
+              notificationsCount: FFAppState().notificationsAmount,
+              cartCount: FFAppState().cartItems.length,
+            ),
           ],
           body: Builder(
             builder: (context) {

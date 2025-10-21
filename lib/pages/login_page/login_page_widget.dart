@@ -1,6 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/loading/loading_widget.dart';
+import '/components/optimized_image/optimized_image_widget.dart';
 import '/components/usuario_error/usuario_error_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -831,13 +832,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
-                                                  child: Image.asset(
-                                                    'assets/images/Group_19.png',
+                                                  child: OptimizedImageWidget(
+                                                    imageUrl: 'assets/images/Group_19.png',
                                                     width: 68.0,
                                                     height: 68.0,
                                                     fit: BoxFit.cover,
-                                                    alignment:
-                                                        Alignment(0.0, 0.0),
+                                                    borderRadius: 8.0,
                                                   ),
                                                 ),
                                               ),

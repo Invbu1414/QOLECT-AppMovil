@@ -25,20 +25,26 @@ class ViajeContent extends StatelessWidget {
         children: [
           Align(
             alignment: AlignmentDirectional(-1.0, -1.0),
-            child: OptimizedImageWidget(
-              imageUrl: getJsonField(
-                    viajesListItem,
-                    r'''$.acf.imagen_para_card''',
-                  )?.toString() ??
-                  getJsonField(
-                    viajesListItem,
-                    r'''$.acf.imagen_para_card_copiar''',
-                  )?.toString(),
-              width: MediaQuery.of(context).size.width - 32.0,
-              height: 200.0,
-              fit: BoxFit.cover,
-              borderRadius: 12.0,
-            ),
+            child: AspectRatio(aspectRatio: 4 / 4,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 160.0,
+                    child: OptimizedImageWidget(
+                        imageUrl: getJsonField(
+                              viajesListItem,
+                              r'''$.acf.imagen_para_card''',
+                            )?.toString() ??
+                            getJsonField(
+                              viajesListItem,
+                              r'''$.acf.imagen_para_card_copiar''',
+                            )?.toString(),
+                        width: MediaQuery.of(context).size.width - 32.0,
+                        height: 200.0,
+                        fit: BoxFit.fill,
+                        borderRadius: 12.0,
+                      )
+                    ),
+                  )
           ),
           SizedBox(height: 16.0),
           Padding(

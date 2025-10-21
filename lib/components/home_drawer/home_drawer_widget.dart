@@ -21,26 +21,6 @@ class HomeDrawerWidget extends StatefulWidget {
 }
 
 class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
-  late HomeDrawerModel _model;
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _model = createModel(context, () => HomeDrawerModel());
-  }
-
-  @override
-  void dispose() {
-    _model.maybeDispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
@@ -210,6 +190,16 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                             ),
                             _buildMinimalMenuItem(
                               context: context,
+                              title: 'Notificaciones',
+                              subtitle: 'Avisos y alertas',
+                              icon: Icons.notifications_outlined,
+                              badgeCount: FFAppState().notificationsAmount,
+                              onTap: () async {
+                                context.pushNamed(NotificationsPageWidget.routeName);
+                              },
+                            ),
+                            _buildMinimalMenuItem(
+                              context: context,
                               title: 'Comunidad',
                               subtitle: 'Conecta con otros viajeros',
                               icon: Icons.people_outline_rounded,
@@ -355,6 +345,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     required String subtitle,
     required IconData icon,
     required VoidCallback onTap,
+    int? badgeCount,
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.0),
@@ -414,6 +405,22 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                     ],
                   ),
                 ),
+                if (badgeCount != null && badgeCount > 0)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                    decoration: BoxDecoration(
+                      color: FlutterFlowTheme.of(context).primary,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Text(
+                      badgeCount.toString(),
+                      style: FlutterFlowTheme.of(context).bodySmall.override(
+                        font: GoogleFonts.fredoka(),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                SizedBox(width: 8.0),
                 Icon(
                   Icons.chevron_right_rounded,
                   color: FlutterFlowTheme.of(context).secondaryText,

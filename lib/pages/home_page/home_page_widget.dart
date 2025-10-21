@@ -4,6 +4,7 @@ import '/components/home_drawer/home_drawer_widget.dart';
 import '/components/viajes_list/viaje_item.dart';
 import '/components/planes_list/plan_item.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -17,7 +18,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'home_page_model.dart';
+import '/pages/cart_page/cart_page_widget.dart';
 export 'home_page_model.dart';
+import 'dart:ui';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
@@ -96,100 +99,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       body: NestedScrollView(
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, _) => [
-          SliverAppBar(
-            expandedHeight: 90.0,
-            pinned: false,
-            floating: true,
-            snap: true,
-            backgroundColor: FlutterFlowTheme.of(context).primary,
-            automaticallyImplyLeading: false,
-            leading: InkWell(
-              splashColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () async {
-                scaffoldKey.currentState!.openDrawer();
-              },
-              child: Icon(
-                Icons.menu,
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                size: 30.0,
-              ),
-            ),
-            title: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'assets/images/LOGO_3.png',
-                  width: 226.0,
-                  height: 63.0,
-                  fit: BoxFit.cover,
+          MainSliverAppBar(
+            title: 'EXPERIENCIAS',
+            onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
+            onCartTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => const CartPageWidget(),
                 ),
-              ),
-            ),
-            actions: [
-              Align(
-                alignment: AlignmentDirectional(-1.0, 0.0),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 25.0, 0.0),
-                  child: badges.Badge(
-                    badgeContent: Text(
-                      valueOrDefault<String>(
-                        FFAppState().notificationsAmount.toString(),
-                        '0',
-                      ),
-                      style: FlutterFlowTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.fredoka(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
-                            ),
-                            color: Colors.white,
-                            fontSize: 10.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                    ),
-                    showBadge: true,
-                    shape: badges.BadgeShape.circle,
-                    badgeColor: FlutterFlowTheme.of(context).error,
-                    elevation: 4.0,
-                    padding: EdgeInsets.all(5.0),
-                    position: badges.BadgePosition.topEnd(),
-                    animationType: badges.BadgeAnimationType.scale,
-                    toAnimate: false,
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () async {
-                        context.pushNamed(NotificationsPageWidget.routeName);
-                      },
-                      child: Icon(
-                        Icons.notifications,
-                        color: FlutterFlowTheme.of(context).warning,
-                        size: 35.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            centerTitle: true,
-            toolbarHeight: 90.0,
-            elevation: 2.0,
-          )
+              );
+            },
+            notificationsCount: FFAppState().notificationsAmount,
+            cartCount: FFAppState().cartItems.length,
+          ),
         ],
         body: Builder(
           builder: (context) {
@@ -210,42 +132,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 40.0, 0.0, 0.0),
-                      child: Container(
-                        width: 200.0,
-                        height: 34.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primary,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: Text(
-                            'EXPERIENCIAS',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.fredoka(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryBackground,
-                                  fontSize: 24.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                    ),
 
                     // Botones de planes y colecciones
                     Padding(
