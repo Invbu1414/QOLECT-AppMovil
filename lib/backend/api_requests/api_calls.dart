@@ -1961,3 +1961,152 @@ class FastAPIRegisterCall {
         r'''$.user_nicename''',
       ));
 }
+
+/// GET /users/{id} - Obtener perfil de usuario
+class FastAPIGetUserCall {
+  static Future<ApiCallResponse> call({
+    required int userId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Get User',
+      apiUrl: '${_pythonApiBaseUrl}/users/${userId}',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static int? id(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.id''',
+      ));
+
+  static String? name(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.name''',
+      ));
+
+  static String? email(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.email''',
+      ));
+
+  static String? username(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.username''',
+      ));
+
+  static String? telefono(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.telefono''',
+      ));
+
+  static String? fotoUrl(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.foto_url''',
+      ));
+
+  static bool? verificado(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.verificado''',
+      ));
+
+  static String? createdAt(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.created_at''',
+      ));
+
+  static bool? isActive(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.is_active''',
+      ));
+}
+
+/// PUT /users/{id} - Actualizar perfil de usuario
+class FastAPIUpdateUserCall {
+  static Future<ApiCallResponse> call({
+    required int userId,
+    String? name,
+    String? telefono,
+    String? fotoUrl,
+    String? password,
+  }) async {
+    final Map<String, dynamic> bodyData = {};
+
+    if (name != null) bodyData['name'] = name;
+    if (telefono != null) bodyData['telefono'] = telefono;
+    if (fotoUrl != null) bodyData['foto_url'] = fotoUrl;
+    if (password != null) bodyData['password'] = password;
+
+    final ffApiRequestBody = jsonEncode(bodyData);
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Update User',
+      apiUrl: '${_pythonApiBaseUrl}/users/${userId}',
+      callType: ApiCallType.PUT,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+
+  static int? userId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.user_id''',
+      ));
+
+  static List? updatedFields(dynamic response) => getJsonField(
+        response,
+        r'''$.updated_fields''',
+        true,
+      ) as List?;
+}
+
+/// DELETE /users/{id} - Eliminar cuenta de usuario
+class FastAPIDeleteUserCall {
+  static Future<ApiCallResponse> call({
+    required int userId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Delete User',
+      apiUrl: '${_pythonApiBaseUrl}/users/${userId}',
+      callType: ApiCallType.DELETE,
+      headers: {},
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+
+  static int? userId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.user_id''',
+      ));
+}
