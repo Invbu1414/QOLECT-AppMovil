@@ -1966,12 +1966,15 @@ class FastAPIRegisterCall {
 class FastAPIGetUserCall {
   static Future<ApiCallResponse> call({
     required int userId,
+    String? token = '',
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Get User',
       apiUrl: '${_pythonApiBaseUrl}/users/${userId}',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: {
+        'Authorization': 'Bearer ${token}',
+      },
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -2036,6 +2039,7 @@ class FastAPIUpdateUserCall {
     String? telefono,
     String? fotoUrl,
     String? password,
+    String? token = '',
   }) async {
     final Map<String, dynamic> bodyData = {};
 
@@ -2050,7 +2054,9 @@ class FastAPIUpdateUserCall {
       callName: 'FastAPI Update User',
       apiUrl: '${_pythonApiBaseUrl}/users/${userId}',
       callType: ApiCallType.PUT,
-      headers: {},
+      headers: {
+        'Authorization': 'Bearer ${token}',
+      },
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2084,12 +2090,15 @@ class FastAPIUpdateUserCall {
 class FastAPIDeleteUserCall {
   static Future<ApiCallResponse> call({
     required int userId,
+    String? token = '',
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Delete User',
       apiUrl: '${_pythonApiBaseUrl}/users/${userId}',
       callType: ApiCallType.DELETE,
-      headers: {},
+      headers: {
+        'Authorization': 'Bearer ${token}',
+      },
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
