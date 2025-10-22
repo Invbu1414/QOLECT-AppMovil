@@ -1903,3 +1903,61 @@ class FastAPIValidateEmailCall {
         r'''$.email''',
       ));
 }
+
+/// POST /register - Registro de nuevo usuario
+class FastAPIRegisterCall {
+  static Future<ApiCallResponse> call({
+    String? name = '',
+    String? email = '',
+    String? password = '',
+    String? telefono = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "name": "${name}",
+  "email": "${email}",
+  "password": "${password}"${telefono != null && telefono.isNotEmpty ? ',\n  "telefono": "${telefono}"' : ''}
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Register',
+      apiUrl: '${_pythonApiBaseUrl}/register',
+      callType: ApiCallType.POST,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static int? userId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.user_id''',
+      ));
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+
+  static String? userEmail(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.user_email''',
+      ));
+
+  static String? userDisplayName(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.user_display_name''',
+      ));
+
+  static String? userNicename(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.user_nicename''',
+      ));
+}
