@@ -423,9 +423,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             return Builder(
                               builder: (context) {
                                 final viajesList =
-                                    listViewCollectionWordpressViajesResponse
-                                        .jsonBody
-                                        .toList();
+                                    (listViewCollectionWordpressViajesResponse
+                                        .jsonBody as List? ?? []);
                                 if (viajesList.isEmpty) {
                                   return Center(child: NoresultsWidget());
                                 }
@@ -458,7 +457,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         child: FutureBuilder<ApiCallResponse>(
                           future: (_model.apiRequestCompleter2 ??=
                                   Completer<ApiCallResponse>()
-                                    ..complete(WordpressPlanesCall.call()))
+                                    ..complete(FastAPIPlanesCall.call()))
                               .future,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -478,10 +477,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 snapshot.data!;
                             return Builder(
                               builder: (context) {
-                                final plansList = getJsonField(
+                                final plansList = (getJsonField(
                                   listViewPlansWordpressPlanesResponse.jsonBody,
-                                  r'''$''',
-                                ).toList();
+                                  r'''$.items''',
+                                ) as List? ?? []);
 
                                 if (plansList.isEmpty) {
                                   return const Center(child: NoresultsWidget());
