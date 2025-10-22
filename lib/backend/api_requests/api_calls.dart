@@ -1210,34 +1210,26 @@ class FastAPIPlanesCall {
 }
 
 /// GET /viajes - Listar viajes del usuario (requiere auth)
+/// GET /viajes - Obtener viajes del usuario (Python API - Compatible con WordPress ACF)
 class FastAPIViajesCall {
   static Future<ApiCallResponse> call({
-    String? firebaseToken = '',
-    int skip = 0,
-    int limit = 20,
-    String? fechaInicio,
-    String? fechaFin,
+    String? author = '',
+    String? after = '2000-09-06',
+    String? before = '2100-09-06',
+    String? token = '',
   }) async {
-    final params = <String, dynamic>{
-      'skip': skip,
-      'limit': limit,
-    };
-
-    if (fechaInicio != null && fechaInicio.isNotEmpty) {
-      params['fecha_inicio'] = fechaInicio;
-    }
-    if (fechaFin != null && fechaFin.isNotEmpty) {
-      params['fecha_fin'] = fechaFin;
-    }
-
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Viajes',
       apiUrl: '${_pythonApiBaseUrl}/viajes',
       callType: ApiCallType.GET,
       headers: {
-        'Authorization': 'Bearer ${firebaseToken}',
+        'Authorization': 'Bearer ${token}',
       },
-      params: params,
+      params: {
+        'user_id': author,
+        'after': after,
+        'before': before,
+      },
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
@@ -1247,9 +1239,40 @@ class FastAPIViajesCall {
     );
   }
 
+  // Extractors - Mismos que WordpressViajesCall para compatibilidad
   static List<int>? id(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].id''',
+        r'''$[:].id''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? date(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].date''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? dateGmt(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].date_gmt''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<int>? authorId(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].author''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1259,7 +1282,7 @@ class FastAPIViajesCall {
 
   static List<String>? destino(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].destino''',
+        r'''$[:].acf.destino''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1269,7 +1292,17 @@ class FastAPIViajesCall {
 
   static List<String>? descripcion(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].descripcion''',
+        r'''$[:].acf.descripcion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? direccion(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.direccion_detallada''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1279,7 +1312,7 @@ class FastAPIViajesCall {
 
   static List<String>? fechaSalida(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].fecha_salida''',
+        r'''$[:].acf.fecha_de_salida''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1287,9 +1320,9 @@ class FastAPIViajesCall {
           .withoutNulls
           .toList();
 
-  static List<String>? fechaLlegada(dynamic response) => (getJsonField(
+  static List<String>? fechLlegada(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].fecha_llegada''',
+        r'''$[:].acf.fecha_de_llegada''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1297,19 +1330,9 @@ class FastAPIViajesCall {
           .withoutNulls
           .toList();
 
-  static List<double>? calificacion(dynamic response) => (getJsonField(
+  static List<String>? calificacion(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].calificacion''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<double>(x))
-          .withoutNulls
-          .toList();
-
-  static List<String>? imagenUrl(dynamic response) => (getJsonField(
-        response,
-        r'''$.items[:].imagen_card_url''',
+        r'''$[:].acf.calificacion''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1317,10 +1340,143 @@ class FastAPIViajesCall {
           .withoutNulls
           .toList();
 
-  static int? total(dynamic response) => castToType<int>(getJsonField(
+  static List<String>? imagenCard(dynamic response) => (getJsonField(
         response,
-        r'''$.total''',
-      ));
+        r'''$[:].acf.imagen_para_card''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? imagenCopiar(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.imagen_para_card_copiar''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? title(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].title.rendered''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? destinoNombre(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.en_destino_documentos[:].nombre''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? destinoPdf(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.en_destino_documentos[:].pdf''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? destinoIcono(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.en_destino_documentos[:].icono''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? regresoNombre(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.de_regreso_a_casa_documentos[:].nombre''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<bool>? regresoPdf(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.de_regreso_a_casa_documentos[:].pdf''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<bool>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? regresoIcono(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.de_regreso_a_casa_documentos[:].icono''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? viajeIcono(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.prepara_tu_viaje_documentos[:].icono''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? viajePdf(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.prepara_tu_viaje_documentos[:].pdf''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? viajeNombre(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.prepara_tu_viaje_documentos[:].nombre''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List? arrayDestino(dynamic response) => getJsonField(
+        response,
+        r'''$[:].acf.en_destino_documentos''',
+        true,
+      ) as List?;
+
+  static List? arrayRegreso(dynamic response) => getJsonField(
+        response,
+        r'''$[:].acf.de_regreso_a_casa_documentos''',
+        true,
+      ) as List?;
+
+  static List? arrayViaje(dynamic response) => getJsonField(
+        response,
+        r'''$[:].acf.prepara_tu_viaje_documentos''',
+        true,
+      ) as List?;
 }
 
 /// GET /viajes/{id} - Detalle de un viaje (requiere auth)

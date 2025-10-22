@@ -394,12 +394,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           future: _model.apiRequestCompleter1?.future ??
                               (_model.apiRequestCompleter1 =
                                       Completer<ApiCallResponse>()
-                                        ..complete(WordpressViajesCall.call(
+                                        ..complete(FastAPIViajesCall.call(
                                           author: FFAppState()
                                               .userSessionID
                                               .toString(),
                                           after: _model.after,
                                           before: _model.before,
+                                          token: FFAppState().token,
                                         )))
                                   .future,
                           builder: (context, snapshot) {
