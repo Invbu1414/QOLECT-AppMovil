@@ -1,5 +1,7 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/components/app_bar/main_sliver_app_bar.dart';
+import '/pages/cart_page/cart_page_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,6 +12,7 @@ class NoticeDetailPageWidget extends StatefulWidget {
     this.imageUrl,
     this.date,
     this.description,
+    this.heroTag,
   });
 
   static String routeName = 'notice_detail_page';
@@ -19,6 +22,7 @@ class NoticeDetailPageWidget extends StatefulWidget {
   final String? imageUrl;
   final String? date;
   final String? description;
+  final String? heroTag;
 
   @override
   State<NoticeDetailPageWidget> createState() => _NoticeDetailPageWidgetState();
@@ -37,6 +41,11 @@ class _NoticeDetailPageWidgetState extends State<NoticeDetailPageWidget> {
       widget.description,
       'Sin contenido disponible.',
     );
+    // Usa el heroTag recibido; fallback seguro si no viene
+    final heroTag = widget.heroTag ??
+        (imageUrl.isNotEmpty
+            ? 'notice_fallback_${imageUrl.hashCode}'
+            : 'notice_detail_image');
 
     return GestureDetector(
       onTap: () {
@@ -45,25 +54,28 @@ class _NoticeDetailPageWidgetState extends State<NoticeDetailPageWidget> {
       },
       child: Scaffold(
           backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-          appBar: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).primary,
-            automaticallyImplyLeading: true,
-            title: Text(
-              'NOTICIA',
-              style: FlutterFlowTheme.of(context).titleMedium.override(
-                font: GoogleFonts.fredoka(
-                  fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-              ),
-            ),
-            centerTitle: true,
-            elevation: 2.0,
+          appBar: MainSliverAppBar(
+            title: 'NOTICIA',
+            asSliver: false,
+            leadingIcon: Icons.chevron_left_outlined,
+            onMenuTap: () {},
+            onLeadingTap: () async {
+              context.safePop();
+            },
+            onCartTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CartPageWidget()),
+              );
+            },
+            notificationsCount: FFAppState().notificationsAmount,
+            cartCount: FFAppState().cartItems.length,
           ),
           body: Container(
+            width: double.infinity,
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.sizeOf(context).height,
+            ),
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/20852675_6345959_1_(2).png'),
@@ -81,9 +93,7 @@ class _NoticeDetailPageWidgetState extends State<NoticeDetailPageWidget> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16.0),
                       child: Hero(
-                        tag: imageUrl.isNotEmpty
-                            ? imageUrl
-                            : 'notice_detail_image',
+                        tag: heroTag,
                         transitionOnUserGestures: true,
                         child: AspectRatio(
                           aspectRatio: 4 / 4,

@@ -210,6 +210,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             imageUrl: params.getParam('imageUrl', ParamType.String),
             date: params.getParam('date', ParamType.String),
             description: params.getParam('description', ParamType.String),
+            heroTag: params.getParam('heroTag', ParamType.String),
           ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
