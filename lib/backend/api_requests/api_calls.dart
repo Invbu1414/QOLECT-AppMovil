@@ -2275,3 +2275,166 @@ class FastAPIDeleteUserCall {
         r'''$.user_id''',
       ));
 }
+
+/// POST /users/upload-profile-photo - Upload profile photo
+class FastAPIUploadProfilePhotoCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    FFUploadedFile? photo,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Upload Profile Photo',
+      apiUrl: '${_pythonApiBaseUrl}/users/upload-profile-photo',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {
+        'file': photo,
+      },
+      bodyType: BodyType.MULTIPART,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? fotoUrl(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.foto_url''',
+      ));
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+/// POST /experiencias/{experiencia_id}/upload-photo - Upload photo to experiencia
+class FastAPIUploadExperienciaPhotoCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    required int experienciaId,
+    FFUploadedFile? photo,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Upload Experiencia Photo',
+      apiUrl: '${_pythonApiBaseUrl}/experiencias/$experienciaId/upload-photo',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {
+        'file': photo,
+      },
+      bodyType: BodyType.MULTIPART,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? fotoUrl(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.foto_url''',
+      ));
+
+  static int? totalFotos(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total_fotos''',
+      ));
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+/// DELETE /experiencias/{experiencia_id}/delete-photo - Delete photo from experiencia
+class FastAPIDeleteExperienciaPhotoCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    required int experienciaId,
+    required String fotoUrl,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Delete Experiencia Photo',
+      apiUrl: '${_pythonApiBaseUrl}/experiencias/$experienciaId/delete-photo?foto_url=$fotoUrl',
+      callType: ApiCallType.DELETE,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static int? totalFotos(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.total_fotos''',
+      ));
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+/// DELETE /users/delete-profile-photo - Delete profile photo
+class FastAPIDeleteProfilePhotoCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Delete Profile Photo',
+      apiUrl: '${_pythonApiBaseUrl}/users/delete-profile-photo',
+      callType: ApiCallType.DELETE,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
