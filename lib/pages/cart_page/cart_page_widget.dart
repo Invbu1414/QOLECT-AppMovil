@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../app_state.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -9,7 +8,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/components/app_bar/main_sliver_app_bar.dart';
 import '/components/optimized_image/optimized_image_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/pages/notifications_page/notifications_page_widget.dart';
 
 class CartPageWidget extends StatefulWidget {
   const CartPageWidget({Key? key}) : super(key: key);
