@@ -290,9 +290,9 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                       _model.assetUploadState = true;
                                       safeSetState(() {});
                                       _model.uploadResult =
-                                          await UploadMediaCall.call(
-                                        token: FFAppState().token,
-                                        file: _model.fotoAsset,
+                                          await FastAPIUploadProfilePhotoCall.call(
+                                        authToken: FFAppState().token,
+                                        photo: _model.fotoAsset,
                                       );
 
                                       if ((_model.uploadResult?.succeeded ??
@@ -425,9 +425,9 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                       _model.assetUploadState = true;
                                       safeSetState(() {});
                                       _model.uploadResult2 =
-                                          await UploadMediaCall.call(
-                                        token: FFAppState().token,
-                                        file: _model.fotoAsset,
+                                          await FastAPIUploadProfilePhotoCall.call(
+                                        authToken: FFAppState().token,
+                                        photo: _model.fotoAsset,
                                       );
 
                                       if ((_model.uploadResult2?.succeeded ??
