@@ -97,7 +97,7 @@ class MainSliverAppBar extends StatelessWidget implements PreferredSizeWidget {
                   style: FlutterFlowTheme.of(context).titleSmall.override(
                         font: GoogleFonts.fredoka(),
                         color: Colors.white,
-                        fontSize: 10.0,
+                        fontSize: 15.0,
                         letterSpacing: 0.0,
                       ),
                 ),
@@ -107,22 +107,25 @@ class MainSliverAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ? FlutterFlowTheme.of(context).error
                     : FlutterFlowTheme.of(context).primaryDark,
                 elevation: 0.0,
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(5.0),
                 position: badges.BadgePosition.topEnd(top: -8, end: -6),
                 animationType: badges.BadgeAnimationType.scale,
                 toAnimate: false,
-                child: InkWell(
-                  splashColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onTap: onCartTap,
-                  child: Icon(
-                    Icons.shopping_cart_outlined,
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                    size: 26.0,
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                    child: InkWell(
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: onCartTap,
+                    child: Icon(
+                      Icons.shopping_cart_outlined,
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      size: 32.0,
+                    ),
                   ),
-                ),
+                )
               ),
             ),
           ),
@@ -193,7 +196,7 @@ class MainSliverAppBar extends StatelessWidget implements PreferredSizeWidget {
                 style: FlutterFlowTheme.of(context).titleSmall.override(
                       font: GoogleFonts.fredoka(),
                       color: Colors.white,
-                      fontSize: 10.0,
+                      fontSize: 15.0,
                       letterSpacing: 0.0,
                     ),
               ),
@@ -203,22 +206,25 @@ class MainSliverAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ? FlutterFlowTheme.of(context).error
                   : FlutterFlowTheme.of(context).primaryDark,
               elevation: 0.0,
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.all(5.0),
               position: badges.BadgePosition.topEnd(top: -8, end: -6),
               animationType: badges.BadgeAnimationType.scale,
               toAnimate: false,
-              child: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: onCartTap,
-                child: Icon(
-                  Icons.shopping_cart_outlined,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  size: 26.0,
+              child: Padding(
+                padding: EdgeInsets.all(4.0),
+                  child: InkWell(
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: onCartTap,
+                  child: Icon(
+                    Icons.shopping_cart_outlined,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    size: 32.0,
+                  ),
                 ),
-              ),
+              )
             ),
           ),
         ),

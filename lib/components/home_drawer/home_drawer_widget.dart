@@ -182,9 +182,9 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                               context: context,
                               title: 'Mis Viajes',
                               subtitle: 'Ver mis reservas',
-                              icon: Icons.travel_explore_outlined,//planeUp,
+                              icon: Icons.travel_explore_outlined,
                               onTap: () async {
-                                context.pushNamed(HomePageWidget.routeName);
+
                               },
                             ),
                             _buildMinimalMenuItem(
