@@ -106,22 +106,22 @@ Future<List<SelectedFile>?> selectMediaWithSourceBottomSheet({
             ],
             if (allowPhoto && allowVideo) ...[
               createUploadMediaListTile(
-                'Galeria',
+                'Fotos',
                 MediaSource.photoGallery,
               ),
               const Divider(),
               createUploadMediaListTile(
-                'Galeria',
+                'Videos',
                 MediaSource.videoGallery,
               ),
             ] else if (allowPhoto)
               createUploadMediaListTile(
-                'Galeria',
+                'Fotos',
                 MediaSource.photoGallery,
               )
             else
               createUploadMediaListTile(
-                'Galeria',
+                'Videos',
                 MediaSource.videoGallery,
               ),
             if (!kIsWeb) ...[

@@ -1,7 +1,6 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/components/loading/loading_widget.dart';
-import '/components/optimized_image/optimized_image_widget.dart';
 import '/components/usuario_error/usuario_error_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -9,7 +8,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
@@ -109,10 +107,26 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                      'assets/images/LOGO_3.png',
-                                      fit: BoxFit.contain,
-                                      alignment: Alignment.center,
+                                    LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        final maxWidth = constraints.maxWidth == double.infinity
+                                            ? MediaQuery.sizeOf(context).width
+                                            : constraints.maxWidth;
+
+                                        const aspectRatio = 3.5;
+                                        final width = maxWidth * 0.7;
+                                        final height = width / aspectRatio;
+
+                                        return SizedBox(
+                                          width: width,
+                                          height: height,
+                                          child: Image.asset(
+                                            'assets/images/Logo.png',
+                                            fit: BoxFit.cover,
+                                            alignment: Alignment.center,
+                                          ),
+                                        );
+                                      },
                                     ),
 
                                     // TextFiled Correo
@@ -246,7 +260,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                 enabledBorder:
                                                     OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                    color: Colors.transparent,
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primary,
                                                     width: 1.0,
                                                   ),
                                                   borderRadius:
@@ -258,8 +274,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                   borderSide: BorderSide(
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primaryDark,
-                                                    width: 1.0,
+                                                        .primaryText,
+                                                    width: 1.5,
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -478,8 +494,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                   enabledBorder:
                                                       OutlineInputBorder(
                                                     borderSide:
-                                                        const BorderSide(
-                                                      color: Colors.transparent,
+                                                      BorderSide(
+                                                      color: FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primary,
                                                       width: 1.0,
                                                     ),
                                                     borderRadius:
@@ -492,8 +510,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                       color:
                                                           FlutterFlowTheme.of(
                                                                   context)
-                                                              .primaryDark,
-                                                      width: 1.0,
+                                                              .primaryText,
+                                                      width: 1.5,
                                                     ),
                                                     borderRadius:
                                                         BorderRadius.circular(

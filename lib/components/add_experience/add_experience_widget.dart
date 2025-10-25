@@ -557,62 +557,41 @@ class _AddExperienceWidgetState extends State<AddExperienceWidget> {
                                             (_model.uploadFile?.bytes
                                                     ?.isNotEmpty ??
                                                 false)) {
-                                          _model.apiResultUploadMedia =
-                                              await UploadMediaCall.call(
-                                            token: FFAppState().token,
-                                            file: _model.uploadFile,
+                                          // PASO 1: Crear experiencia primero (sin foto)
+                                          _model.apiResultGuardarExperiencia =
+                                              await WordPressGuardarExperienciaCall
+                                                  .call(
+                                            comentario: _model
+                                                .comentariosTextController
+                                                .text,
+                                            idImagen: 0,
+                                            idVideo: 0,
+                                            textoPrev: ' ',
+                                            idUsuario:
+                                                FFAppState().userSessionID,
                                           );
 
-                                          if ((_model.apiResultUploadMedia
+                                          if ((_model
+                                                  .apiResultGuardarExperiencia
                                                   ?.succeeded ??
                                               true)) {
-                                            if ('${getJsonField(
-                                                  (_model.apiResultUploadMedia
-                                                          ?.jsonBody ??
-                                                      ''),
-                                                  r'''$.mime_type''',
-                                                ).toString()}' ==
-                                                'video/mp4') {
-                                              _model.typeResource = 'video/mp4';
-                                              _model.idImage = 0;
-                                              _model.idVideo = getJsonField(
-                                                (_model.apiResultUploadMedia
-                                                        ?.jsonBody ??
-                                                    ''),
-                                                r'''$.id''',
-                                              );
-                                            } else {
-                                              _model.typeResource =
-                                                  getJsonField(
-                                                (_model.apiResultUploadMedia
-                                                        ?.jsonBody ??
-                                                    ''),
-                                                r'''$.mime_type''',
-                                              ).toString();
-                                              _model.idVideo = 0;
-                                              _model.idImage = getJsonField(
-                                                (_model.apiResultUploadMedia
-                                                        ?.jsonBody ??
-                                                    ''),
-                                                r'''$.id''',
-                                              );
-                                            }
-
-                                            _model.apiResultGuardarExperiencia =
-                                                await WordPressGuardarExperienciaCall
-                                                    .call(
-                                              comentario: _model
-                                                  .comentariosTextController
-                                                  .text,
-                                              idImagen: _model.idImage,
-                                              idVideo: _model.idVideo,
-                                              textoPrev: ' ',
-                                              idUsuario:
-                                                  FFAppState().userSessionID,
+                                            // PASO 2: Obtener ID de la experiencia creada
+                                            final experienciaId = getJsonField(
+                                              (_model.apiResultGuardarExperiencia
+                                                      ?.jsonBody ??
+                                                  ''),
+                                              r'''$.id''',
                                             );
 
-                                            if ((_model
-                                                    .apiResultGuardarExperiencia
+                                            // PASO 3: Subir foto a Supabase
+                                            _model.apiResultUploadMedia =
+                                                await FastAPIUploadExperienciaPhotoCall.call(
+                                              authToken: FFAppState().token,
+                                              experienciaId: experienciaId,
+                                              photo: _model.uploadFile,
+                                            );
+
+                                            if ((_model.apiResultUploadMedia
                                                     ?.succeeded ??
                                                 true)) {
                                               Navigator.pop(context);
@@ -645,7 +624,7 @@ class _AddExperienceWidgetState extends State<AddExperienceWidget> {
                                                   .showSnackBar(
                                                 SnackBar(
                                                   content: Text(
-                                                    'Ha ocurrido un error al momento de subir el recurso, intentalo más tarde.',
+                                                    'Ha ocurrido un error al momento de subir la foto, intentalo más tarde.',
                                                     style: TextStyle(
                                                       color: FlutterFlowTheme
                                                               .of(context)
@@ -666,7 +645,7 @@ class _AddExperienceWidgetState extends State<AddExperienceWidget> {
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                  'Ha ocurrido un error al momento de subir el recurso, intentalo más tarde.',
+                                                  'Ha ocurrido un error al momento de crear la experiencia, intentalo más tarde.',
                                                   style: TextStyle(
                                                     color: FlutterFlowTheme.of(
                                                             context)

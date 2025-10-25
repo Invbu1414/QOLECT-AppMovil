@@ -1547,15 +1547,11 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                         return;
                                       }
                                       _model.apiResultnsi =
-                                          await WordPressProfileCall.call(
-                                        id: FFAppState().userSessionID,
+                                          await FastAPIUpdateUserCall.call(
+                                        userId: FFAppState().userSessionID,
                                         token: FFAppState().token,
-                                        celular: _model.textController2.text,
-                                        contrasena: _model.textController3.text,
-                                        pictureId: _model.assetId,
-                                        pictureIdX: _model.fotoidX,
-                                        contrasenaX: _model.contrasenaX,
-                                        celularX: _model.celularX,
+                                        telefono: _model.textController2.text,
+                                        password: _model.textController3.text.isNotEmpty ? _model.textController3.text : null,
                                       );
 
                                       _shouldSetState = true;

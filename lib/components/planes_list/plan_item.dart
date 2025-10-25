@@ -19,8 +19,17 @@ class PlanItem extends StatelessWidget {
     final ratingRaw = getJsonField(plan, r'''$.plan_rating''');
     final rating = _parseRating((ratingRaw ?? '5.0').toString());
     final bannerWidth = MediaQuery.of(context).size.width - 30.0;
-    final bannerAspect = 4 / 4;// 16 / 9
+    final bannerAspect = 4 / 4;
     final bannerHeight = bannerWidth / bannerAspect;
+    final description = getJsonField(plan, r'''$.descripcion''')?.toString() ?? '';
+    final planPriceStr = getJsonField(plan, r'''$.plan_price''')?.toString();
+    final precioNumero = getJsonField(plan, r'''$.precio''');
+    final priceDisplay = (planPriceStr?.isNotEmpty ?? false)
+        ? planPriceStr!
+        : (precioNumero != null ? precioNumero.toString() : '');
+    final isActive = getJsonField(plan, r'''$.is_active''') == true;
+    final planIdStr = getJsonField(plan, r'''$.plan_id''').toString();
+    final heroTag = 'planHero_$planIdStr';
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(15.0, 16.0, 15.0, 0.0),
@@ -47,24 +56,43 @@ class PlanItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.0),
               child: Stack(
                 children: [
-                  AspectRatio(aspectRatio: bannerAspect,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 160.0,
-                    child: hasImage
-                        ? OptimizedImageWidget(
-                            imageUrl: getJsonField(plan, r'''$.plan_image''').toString(),
-                            width: bannerWidth,
-                            height: bannerHeight,
-                            fit: BoxFit.fill,//Boxfit.contain
-                            borderRadius: 0.0,
-                            enableMemoryCache: true,
-                            enableDiskCache: true,
-                          )
-                        : Container(
-                            color: FlutterFlowTheme.of(context).alternate,
-                          ),
-                  ),)
+                  AspectRatio(
+                    aspectRatio: bannerAspect,
+                    child: InkWell(
+                      onTap: () {
+                        context.pushNamed(
+                          PlanDetailPageWidget.routeName,
+                          extra: {
+                            'plan': plan,
+                            'heroTag': heroTag,
+                          },
+                        );
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 160.0,
+                        child: Hero(
+                          tag: heroTag,
+                          child: hasImage
+                              ? OptimizedImageWidget(
+                                  imageUrl: getJsonField(
+                                          plan, r'''$.plan_image''')
+                                      .toString(),
+                                  width: bannerWidth,
+                                  height: bannerHeight,
+                                  fit: BoxFit.fill,
+                                  borderRadius: 0.0,
+                                  enableMemoryCache: true,
+                                  enableDiskCache: true,
+                                )
+                              : Container(
+                                  color: FlutterFlowTheme.of(context)
+                                      .alternate,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -87,6 +115,56 @@ class PlanItem extends StatelessWidget {
                         ),
                   ),
                   const SizedBox(height: 6.0),
+                  // Indicador de estado
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    decoration: BoxDecoration(
+                      color: (isActive ? Colors.green : Colors.red).withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(6.0),
+                      border: Border.all(color: isActive ? Colors.green : Colors.red),
+                    ),
+                    child: Text(
+                      isActive ? 'Activo' : 'Inactivo',
+                      style: FlutterFlowTheme.of(context).bodySmall.override(
+                            font: GoogleFonts.fredoka(),
+                            color: isActive ? Colors.green : Colors.red,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  // Descripción
+                  if (description.isNotEmpty)
+                    Text(
+                      description,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.fredoka(
+                              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            ),
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            letterSpacing: 0.0,
+                            lineHeight: 1.5,
+                          ),
+                    ),
+                  const SizedBox(height: 10.0),
+                  // Precio
+                  if (priceDisplay.isNotEmpty)
+                    Text(
+                      'Precio: $priceDisplay',
+                      style: FlutterFlowTheme.of(context).titleSmall.override(
+                            font: GoogleFonts.fredoka(
+                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                            ),
+                            color: Colors.black,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                  const SizedBox(height: 10.0),
+                  // Rating
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -126,13 +204,11 @@ class PlanItem extends StatelessWidget {
                     child: FFButtonWidget(
                       onPressed: () async {
                         context.pushNamed(
-                          WebViewPlanWidget.routeName,
-                          queryParameters: {
-                            'planId': serializeParam(
-                              getJsonField(plan, r'''$.plan_id'''),
-                              ParamType.int,
-                            ),
-                          }.withoutNulls,
+                          PlanDetailPageWidget.routeName,
+                          extra: {
+                            'plan': plan,
+                            'heroTag': heroTag,
+                          },
                         );
                       },
                       text: 'Ver más',

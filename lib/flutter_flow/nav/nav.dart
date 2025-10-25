@@ -178,21 +178,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => RegistrarUsuarioPageWidget(),
         ),
         FFRoute(
-          name: WebViewPlanWidget.routeName,
-          path: WebViewPlanWidget.routePath,
-          builder: (context, params) => WebViewPlanWidget(
-            url: params.getParam(
-              'url',
-              ParamType.String,
-            ),
-            // Nuevo: obtener planId desde la ruta
-            planId: params.getParam(
-              'planId',
-              ParamType.int,
-            ),
-          ),
-        ),
-        FFRoute(
           name: ComunidadWidget.routeName,
           path: ComunidadWidget.routePath,
           builder: (context, params) => ComunidadWidget(),
@@ -203,6 +188,19 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => Comunidadv1Widget(),
         ),
         FFRoute(
+          name: PlansPageWidget.routeName,
+          path: PlansPageWidget.routePath,
+          builder: (context, params) => const PlansPageWidget(),
+        ),
+        FFRoute(
+          name: PlanDetailPageWidget.routeName,
+          path: PlanDetailPageWidget.routePath,
+          builder: (context, params) => PlanDetailPageWidget(
+            plan: params.getParam('plan', ParamType.JSON),
+            heroTag: params.getParam('heroTag', ParamType.String) ?? '',
+          ),
+        ),
+        FFRoute(
           name: NoticeDetailPageWidget.routeName,
           path: NoticeDetailPageWidget.routePath,
           builder: (context, params) => NoticeDetailPageWidget(
@@ -210,6 +208,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             imageUrl: params.getParam('imageUrl', ParamType.String),
             date: params.getParam('date', ParamType.String),
             description: params.getParam('description', ParamType.String),
+            heroTag: params.getParam('heroTag', ParamType.String),
           ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),

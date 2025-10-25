@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../app_state.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -9,7 +8,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/components/app_bar/main_sliver_app_bar.dart';
 import '/components/optimized_image/optimized_image_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/pages/notifications_page/notifications_page_widget.dart';
 
 class CartPageWidget extends StatefulWidget {
   const CartPageWidget({Key? key}) : super(key: key);
@@ -115,112 +113,92 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                   return Dismissible(
                     key: ValueKey(item.id),
                     direction: DismissDirection.endToStart,
-                    // Confirmación antes de eliminar por swipe
                     confirmDismiss: (direction) => _confirmDeleteItem(context, item.name),
-                    background: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).error,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Icon(Icons.delete, color: FlutterFlowTheme.of(context).secondaryBackground),
-                    ),
                     onDismissed: (_) => state.removeFromCart(item.id),
-                    child: Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      elevation: 2.0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: OptimizedImageWidget(
-                                imageUrl: item.imageUrl,
-                                width: 64,
-                                height: 64,
-                                fit: BoxFit.cover,
-                                borderRadius: 10.0,
-                              )
+                    child: Container(
+                      margin: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        borderRadius: BorderRadius.circular(12.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 6.0,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.horizontal(
+                              left: Radius.circular(12.0),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
+                            child: (item.imageUrl != null && item.imageUrl!.isNotEmpty)
+                                ? OptimizedImageWidget(
+                                    imageUrl: item.imageUrl,
+                                    width: 120.0,
+                                    height: 100.0,
+                                    fit: BoxFit.cover,
+                                    borderRadius: 0.0,
+                                  )
+                                : Container(
+                                    width: 120.0,
+                                    height: 100.0,
+                                    color: FlutterFlowTheme.of(context).alternate,
+                                    child: const Center(
+                                      child: Icon(Icons.image_not_supported, size: 32.0),
+                                    ),
+                                  ),
+                          ),
+                          // Contenido (tipografías y tamaños iguales)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Título del CartItem (usa CartItem.name)
-                                  Text(
-                                    item.name,
-                                    style: FlutterFlowTheme.of(context).titleMedium.override(
-                                      font: GoogleFonts.fredoka(
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                                      ),
-                                      color: FlutterFlowTheme.of(context).primaryText,
-                                      fontSize: 24.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
                                   Row(
                                     children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .primary
-                                              .withOpacity(0.08),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
+                                      Expanded(
                                         child: Text(
-                                          '\$${item.price.toStringAsFixed(2)}',
+                                          item.name,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                           style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                color: FlutterFlowTheme.of(context).primary,
+                                                font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                                                fontSize: 16.0,
                                                 letterSpacing: 0.0,
-                                                fontWeight: FontWeight.w600,
                                               ),
                                         ),
-                                      )
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Eliminar',
+                                        icon: const Icon(Icons.delete_outline),
+                                        onPressed: () async {
+                                          final confirmed = await _confirmDeleteItem(context, item.name);
+                                          if (confirmed) {
+                                            state.removeFromCart(item.id);
+                                          }
+                                        },
+                                      ),
                                     ],
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Text(
+                                    '\$${item.price.toStringAsFixed(0)} USD',
+                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                          font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                                          color: FlutterFlowTheme.of(context).primary,
+                                          fontSize: 18.0,
+                                          letterSpacing: 0.0,
+                                        ),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '\$${(item.price * item.quantity).toStringAsFixed(2)}',
-                                  style: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .override(letterSpacing: 0.0, fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(height: 6),
-                                IconButton(
-                                  tooltip: 'Eliminar',
-                                  icon: const Icon(Icons.delete_outline),
-                                  onPressed: () async {
-                                    final confirmed = await _confirmDeleteItem(context, item.name);
-                                    if (confirmed) {
-                                      state.removeFromCart(item.id);
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   );

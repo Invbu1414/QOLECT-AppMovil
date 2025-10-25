@@ -170,7 +170,11 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                       getJsonField(noticiasItem, r'''$.descripcion''')?.toString(),
                                       'Sin contenido disponible.',
                                     );
-
+                                    // Tag único y URL-safe para el Hero
+                                    final heroTag = imageUrl.isNotEmpty
+                                        ? 'notice_${noticiasIndex}_${imageUrl.hashCode}'
+                                        : 'noticia_$noticiasIndex';
+                                
                                     return Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(10.0, 16.0, 10.0, 0.0),
                                       child: Card(
@@ -188,6 +192,7 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                                 'imageUrl': serializeParam(imageUrl, ParamType.String),
                                                 'date': serializeParam(dateRaw ?? '', ParamType.String),
                                                 'description': serializeParam(descriptionText, ParamType.String),
+                                                'heroTag': serializeParam(heroTag, ParamType.String),
                                               }.withoutNulls,
                                             );
                                           },
@@ -197,7 +202,7 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                               AspectRatio(
                                                 aspectRatio: 4 / 4,
                                                 child: Hero(
-                                                  tag: imageUrl.isNotEmpty ? imageUrl : 'noticia_$noticiasIndex',
+                                                  tag: heroTag,
                                                   transitionOnUserGestures: true,
                                                   child: imageUrl.isNotEmpty
                                                       ? Image.network(
@@ -267,6 +272,7 @@ class _NoticesPageWidgetState extends State<NoticesPageWidget> {
                                                                 'imageUrl': serializeParam(imageUrl, ParamType.String),
                                                                 'date': serializeParam(dateRaw ?? '', ParamType.String),
                                                                 'description': serializeParam(descriptionText, ParamType.String),
+                                                                'heroTag': serializeParam(heroTag, ParamType.String),
                                                               }.withoutNulls,
                                                             );
                                                         },

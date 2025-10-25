@@ -22,10 +22,11 @@ export '/pages/registrar_page/registrar_page_widget.dart'
     show RegistrarPageWidget;
 export '/pages/registrar_usuario_page/registrar_usuario_page_widget.dart'
     show RegistrarUsuarioPageWidget;
-export '/pages/web_view_plan/web_view_plan_widget.dart' show WebViewPlanWidget;
 export '/pages/comunidad/comunidad_widget.dart' show ComunidadWidget;
 export '/versiones/comunidadv1/comunidadv1_widget.dart' show Comunidadv1Widget;
 export '/components/optimized_image/optimized_image_widget.dart';
 export '/components/app_bar/main_sliver_app_bar.dart';
 export '/pages/notice_detail/notice_detail_widget.dart'
     show NoticeDetailPageWidget;
+export '/pages/plans_page/plans_page_widget.dart' show PlansPageWidget;
+export '/pages/plan_detail_page/plan_detail_widget.dart' show PlanDetailPageWidget;

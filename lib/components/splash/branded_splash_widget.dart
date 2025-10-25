@@ -68,14 +68,26 @@ class _BrandedSplashWidgetState extends State<BrandedSplashWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      'assets/images/LOGO_3.png',
-                      width: 220.0,
-                      height: 62.0,
-                      fit: BoxFit.contain,
-                    ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final maxWidth = constraints.maxWidth == double.infinity
+                          ? MediaQuery.sizeOf(context).width
+                          : constraints.maxWidth;
+
+                      const aspectRatio = 3.5;
+                      final width = maxWidth * 0.7;
+                      final height = width / aspectRatio;
+
+                      return SizedBox(
+                        width: width,
+                        height: height,
+                        child: Image.asset(
+                          'assets/images/Logo.png',
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 24.0),
                   SizedBox(

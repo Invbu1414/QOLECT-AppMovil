@@ -1029,6 +1029,9 @@ class WordpressPlanDetailCall {
 // IMPORTANTE: Usamos /rest para endpoints REST (workaround problema DNS Windows)
 const String _pythonApiBaseUrl = 'http://10.0.2.2:8000/api/v1/mobile/rest';
 
+// URL base para endpoints de UPLOAD (sin /rest/)
+const String _pythonApiUploadBaseUrl = 'http://10.0.2.2:8000/api/v1/mobile';
+
 /// GET /noticias - Listar noticias (público)
 class FastAPINoticiasCall {
   static Future<ApiCallResponse> call({
@@ -2284,7 +2287,7 @@ class FastAPIUploadProfilePhotoCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Upload Profile Photo',
-      apiUrl: '${_pythonApiBaseUrl}/users/upload-profile-photo',
+      apiUrl: '${_pythonApiUploadBaseUrl}/users/upload-profile-photo',
       callType: ApiCallType.POST,
       headers: {
         'Authorization': 'Bearer $authToken',
@@ -2327,7 +2330,7 @@ class FastAPIUploadExperienciaPhotoCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Upload Experiencia Photo',
-      apiUrl: '${_pythonApiBaseUrl}/experiencias/$experienciaId/upload-photo',
+      apiUrl: '${_pythonApiUploadBaseUrl}/experiencias/$experienciaId/upload-photo',
       callType: ApiCallType.POST,
       headers: {
         'Authorization': 'Bearer $authToken',
@@ -2375,7 +2378,7 @@ class FastAPIDeleteExperienciaPhotoCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Delete Experiencia Photo',
-      apiUrl: '${_pythonApiBaseUrl}/experiencias/$experienciaId/delete-photo?foto_url=$fotoUrl',
+      apiUrl: '${_pythonApiUploadBaseUrl}/experiencias/$experienciaId/delete-photo?foto_url=$fotoUrl',
       callType: ApiCallType.DELETE,
       headers: {
         'Authorization': 'Bearer $authToken',

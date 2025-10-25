@@ -161,16 +161,6 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                         child: Column(
                           children: [
                             _buildMinimalMenuItem(
-                              context: context,
-                              title: 'Mis Viajes',
-                              subtitle: 'Ver mis reservas',
-                              icon: FontAwesomeIcons.planeUp,
-                              onTap: () async {
-                                context.pushNamed(HomePageWidget.routeName);
-                              },
-                            ),
-                            if (FFAppState().userSessionID != 83)
-                              _buildMinimalMenuItem(
                                 context: context,
                                 title: 'Mi Perfil',
                                 subtitle: 'Configuración personal',
@@ -179,6 +169,24 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                   context.pushNamed(ProfilePageWidget.routeName);
                                 },
                               ),
+                            _buildMinimalMenuItem(
+                              context: context,
+                              title: 'Experiencias',
+                              subtitle: 'Descubre',
+                              icon: Icons.home_outlined,
+                              onTap: () async {
+                                context.pushNamed(HomePageWidget.routeName);
+                              },
+                            ),
+                            _buildMinimalMenuItem(
+                              context: context,
+                              title: 'Mis Viajes',
+                              subtitle: 'Ver mis reservas',
+                              icon: Icons.travel_explore_outlined,
+                              onTap: () async {
+
+                              },
+                            ),
                             _buildMinimalMenuItem(
                               context: context,
                               title: 'Noticias',
@@ -280,7 +288,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
 
                     // Footer simple con redes
                     Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           Divider(
@@ -288,7 +296,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                 .alternate
                                 .withValues(alpha: 0.5),
                           ),
-                          SizedBox(height: 10.0),
+                          SizedBox(height: 8.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -348,7 +356,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
     int? badgeCount,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12.0),
+      margin: EdgeInsets.only(bottom: 8.0),
       child: Material(
         color: FlutterFlowTheme.of(context).secondaryBackground,
         borderRadius: BorderRadius.circular(16.0),
@@ -405,7 +413,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                     ],
                   ),
                 ),
-                if (badgeCount != null && badgeCount > 0)
+                if (badgeCount != null && badgeCount >= 0)
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                     decoration: BoxDecoration(
@@ -455,7 +463,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
         ),
         child: Icon(
           icon,
-          color: FlutterFlowTheme.of(context).primary,
+          color: FlutterFlowTheme.of(context).primaryDark,
           size: 20.0,
         ),
       ),
