@@ -1,13 +1,14 @@
 import '/backend/api_requests/api_calls.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
-import '/components/app_bar/main_sliver_app_bar.dart';
 import '/pages/cart_page/cart_page_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
+import '/index.dart';
 
 class HomePageWidget extends StatefulWidget {
   const HomePageWidget({super.key});
@@ -266,14 +267,45 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            'NOTICIAS DESTACADAS',
-            style: FlutterFlowTheme.of(context).headlineSmall.override(
-                  font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
-                  color: FlutterFlowTheme.of(context).primary,
-                  letterSpacing: 0.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'NOTICIAS DESTACADAS',
+                style: FlutterFlowTheme.of(context).headlineSmall.override(
+                      font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                      color: FlutterFlowTheme.of(context).primary,
+                      letterSpacing: 0.0,
+                    ),
                 ),
-          ),
+                FFButtonWidget(
+                  onPressed: () {
+                    context.pushNamed(NoticesPageWidget.routeName);
+                  },
+                  text: 'Ver todas >',
+                  options: FFButtonOptions(
+                  height: 36.0,
+                  padding: EdgeInsets.zero,
+                  color: Colors.transparent,
+                  textStyle: FlutterFlowTheme.of(context).labelLarge
+                      .override(
+                          font: GoogleFonts.fredoka(
+                          fontWeight:
+                              FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                        ),
+                        color: FlutterFlowTheme.of(context).primary,
+                      )
+                      .merge(const TextStyle(
+                        decoration: TextDecoration.underline,
+                      )),
+                  elevation: 0.0,
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+              ),
+            ]
+          )
         ),
         const SizedBox(height: 12.0),
         SizedBox(
@@ -284,7 +316,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             itemCount: noticias.length,
             itemBuilder: (context, index) {
               final noticia = noticias[index];
-              return _buildNoticiaCard(noticia);
+              return _buildNoticiaCard(noticia, index);
             },
           ),
         ),
@@ -292,81 +324,108 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
-  Widget _buildNoticiaCard(dynamic noticia) {
+  Widget _buildNoticiaCard(dynamic noticia, int index) {
     final titulo = noticia['titulo'] ?? '';
     final imagen = noticia['imagen'] ?? '';
     final fecha = noticia['created_at'] ?? '';
-
-    return Container(
-      width: 280.0,
-      margin: const EdgeInsets.only(right: 12.0),
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 6.0,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Imagen
-          ClipRRect(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(12.0)),
-            child: Image.network(
-              imagen,
-              width: double.infinity,
-              height: 120.0,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 120.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                  child: const Center(
-                    child: Icon(Icons.image_not_supported, size: 48.0),
-                  ),
-                );
-              },
+    final descripcion = noticia['descripcion'] ?? '';
+    final heroTag = imagen.isNotEmpty
+        ? 'notice_${index}_${imagen.hashCode}'
+        : 'noticia_$index';
+  
+    return InkWell(
+      onTap: () {
+        context.pushNamed(
+          NoticeDetailPageWidget.routeName,
+          queryParameters: {
+            'title': serializeParam(titulo, ParamType.String),
+            'imageUrl': serializeParam(imagen, ParamType.String),
+            'date': serializeParam(fecha, ParamType.String),
+            'description': serializeParam(descripcion, ParamType.String),
+            'heroTag': serializeParam(heroTag, ParamType.String),
+          }.withoutNulls,
+        );
+      },
+      child: Container(
+        width: 280.0,
+        margin: const EdgeInsets.only(right: 12.0),
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).secondaryBackground,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6.0,
+              offset: const Offset(0, 2),
             ),
-          ),
-          // Contenido
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    titulo,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
-                          fontSize: 14.0,
-                          letterSpacing: 0.0,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
+              child: Hero(
+                tag: heroTag,
+                transitionOnUserGestures: true,
+                child: imagen.isNotEmpty
+                    ? Image.network(
+                        imagen,
+                        width: double.infinity,
+                        height: 120.0,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 120.0,
+                            color: FlutterFlowTheme.of(context).alternate,
+                            child: const Center(
+                              child: Icon(Icons.image_not_supported, size: 48.0),
+                            ),
+                          );
+                        },
+                      )
+                    : Container(
+                        height: 120.0,
+                        color: FlutterFlowTheme.of(context).alternate,
+                        child: const Center(
+                          child: Icon(Icons.image_not_supported, size: 48.0),
                         ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    fecha.split('T').first,
-                    style: FlutterFlowTheme.of(context).labelSmall.override(
-                          font: GoogleFonts.fredoka(),
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ],
+                      ),
               ),
             ),
-          ),
-        ],
-      ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      titulo,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                            fontSize: 14.0,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      fecha.split('T').first,
+                      style: FlutterFlowTheme.of(context).labelSmall.override(
+                            font: GoogleFonts.fredoka(),
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            fontSize: 12.0,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 
@@ -376,14 +435,45 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            'PLANES POPULARES',
-            style: FlutterFlowTheme.of(context).headlineSmall.override(
-                  font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
-                  color: FlutterFlowTheme.of(context).primary,
-                  letterSpacing: 0.0,
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'PLANES POPULARES',
+              style: FlutterFlowTheme.of(context).headlineSmall.override(
+                    font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                    color: FlutterFlowTheme.of(context).primary,
+                    letterSpacing: 0.0,
+                  ),
+            ),
+            FFButtonWidget(
+                  onPressed: () {
+                    context.pushNamed(PlansPageWidget.routeName);
+                  },
+                  text: 'Ver todos >',
+                  options: FFButtonOptions(
+                  height: 36.0,
+                  padding: EdgeInsets.zero,
+                  color: Colors.transparent,
+                  textStyle: FlutterFlowTheme.of(context).labelLarge
+                      .override(
+                          font: GoogleFonts.fredoka(
+                          fontWeight:
+                              FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                        ),
+                        color: FlutterFlowTheme.of(context).primary,
+                      )
+                      .merge(const TextStyle(
+                        decoration: TextDecoration.underline,
+                      )),
+                  elevation: 0.0,
+                  borderRadius: BorderRadius.circular(4.0),
                 ),
-          ),
+              ),
+          ],
+        ),
         ),
         const SizedBox(height: 12.0),
         ListView.builder(
@@ -405,87 +495,114 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     final descripcionCorta = plan['descripcioncorta'] ?? '';
     final precio = plan['precio'] ?? 0.0;
     final imagen = plan['imagen'] ?? '';
+    final heroTag = 'planHero_${plan['idproducto'] ?? nombre}';
+    final normalizedPlan = {
+      'plan_title': nombre,
+      'plan_image': imagen,
+      'descripcion': descripcionCorta,
+      'precio': precio,
+      'plan_price': precio.toStringAsFixed(2),
+      'is_active': true,
+      'plan_id': plan['idproducto'] ?? nombre,
+      'plan_rating': (plan['rating'] ?? 0).toString(),
+    };
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 6.0,
-            offset: const Offset(0, 2),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PlanDetailPageWidget(
+              plan: normalizedPlan,
+              heroTag: heroTag,
+            ),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Imagen
-          ClipRRect(
-            borderRadius:
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12.0),
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).secondaryBackground,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6.0,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Imagen
+            ClipRRect(
+              borderRadius:
                 const BorderRadius.horizontal(left: Radius.circular(12.0)),
-            child: Image.network(
-              imagen,
-              width: 120.0,
-              height: 100.0,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
+              child: Hero(
+                tag: heroTag,
+                child: Image.network(
+                  imagen,
                   width: 120.0,
                   height: 100.0,
-                  color: FlutterFlowTheme.of(context).alternate,
-                  child: const Center(
-                    child: Icon(Icons.image_not_supported, size: 32.0),
-                  ),
-                );
-              },
-            ),
-          ),
-          // Contenido
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    nombre,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
-                          fontSize: 16.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                  const SizedBox(height: 4.0),
-                  Text(
-                    descripcionCorta,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: FlutterFlowTheme.of(context).bodySmall.override(
-                          font: GoogleFonts.fredoka(),
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          fontSize: 13.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    '\$${precio.toStringAsFixed(0)} USD',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
-                          color: FlutterFlowTheme.of(context).primary,
-                          fontSize: 18.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ],
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 120.0,
+                      height: 100.0,
+                      color: FlutterFlowTheme.of(context).alternate,
+                      child: const Center(
+                        child: Icon(Icons.image_not_supported, size: 32.0),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+            // Contenido
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nombre,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      descripcionCorta,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).bodySmall.override(
+                            font: GoogleFonts.fredoka(),
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            fontSize: 13.0,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      '\$${precio.toStringAsFixed(0)} USD',
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                            color: FlutterFlowTheme.of(context).primary,
+                            fontSize: 18.0,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
