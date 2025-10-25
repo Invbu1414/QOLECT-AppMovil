@@ -164,10 +164,13 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path_android: assets/images/new_logo.png
-  image_path_ios: assets/images/app_icon_ios.png
-  adaptive_icon_background: "#67BEE9"
-  adaptive_icon_foreground: assets/images/new_logo.png
+  image_path_android: assets/images/app_icon_legacy.png
+  image_path_ios: assets/images/app_icon_legacy.png
+
+  # Adaptive icons para Android 8+
+  adaptive_icon_background: "#67BEE9"  # o usa: assets/images/app_icon_background.png
+  adaptive_icon_foreground: assets/images/Logo.png
+
   remove_alpha_ios: true
   min_sdk_android: 21
 
