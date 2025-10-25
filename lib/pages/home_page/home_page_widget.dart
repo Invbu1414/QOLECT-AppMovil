@@ -77,30 +77,32 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       floatingActionButton: WhatsappFabWidget(),
       drawer: HomeDrawerWidget(),
-      appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
-        automaticallyImplyLeading: false,
-        leading: InkWell(
-          onTap: () {
-            scaffoldKey.currentState!.openDrawer();
-          },
-          child: Icon(
-            Icons.menu,
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-            size: 30.0,
+      appBar: MainSliverAppBar(
+        asSliver: false,
+        title: '',
+        titleWidget: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.asset(
+              'assets/images/Logo.png',
+              width: 226.0,
+              height: 63.0,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        title: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Image.asset(
-            'assets/images/LOGO_3.png',
-            width: 226.0,
-            height: 63.0,
-            fit: BoxFit.cover,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 2.0,
+        onMenuTap: () async {
+          scaffoldKey.currentState!.openDrawer();
+        },
+        onCartTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CartPageWidget()),
+          );
+        },
+        notificationsCount: FFAppState().notificationsAmount,
+        cartCount: FFAppState().cartItems.length,
       ),
       body: _isLoading
           ? Center(

@@ -215,72 +215,7 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                                 context.pushNamed(ComunidadWidget.routeName);
                               },
                             ),
-
                             SizedBox(height: 16.0),
-
-                            // Botón Cerrar sesión sólido amarillo
-                            Container(
-                              width: double.infinity,
-                              height: 52.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context).warning,
-                                borderRadius: BorderRadius.circular(16.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: FlutterFlowTheme.of(context)
-                                        .warning
-                                        .withValues(alpha: 0.25),
-                                    blurRadius: 10.0,
-                                    offset: Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  splashColor: FlutterFlowTheme.of(context)
-                                      .primary
-                                      .withValues(alpha: 0.2),
-                                  onTap: () async {
-                                    FFAppState().token = '';
-                                    FFAppState().userSessionID = 0;
-                                    FFAppState().userEmail = '';
-                                    FFAppState().notificationsAmount = 0;
-                                    safeSetState(() {});
-                                    GoRouter.of(context).prepareAuthEvent();
-                                    await authManager.signOut();
-                                    GoRouter.of(context).clearRedirectLocation();
-                                    context.pushNamedAuth(
-                                      LoginPageWidget.routeName,
-                                      context.mounted,
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.logout_rounded,
-                                        color: Color(0xFF174F98),
-                                        size: 20.0,
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Text(
-                                        'Cerrar Sesión',
-                                        style: FlutterFlowTheme.of(context)
-                                            .titleMedium
-                                            .override(
-                                              font: GoogleFonts.fredoka(
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              color: Color(0xFF174F98),
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
