@@ -170,11 +170,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         // Mi Colección (solo si está logueado y tiene viajes)
                         if (FFAppState().userSessionID > 0 &&
                             _viajesData != null &&
+                            _viajesData is List &&
                             (_viajesData as List).isNotEmpty)
-                          _buildMiColeccion(_viajesData),
+                          _buildMiColeccion(_viajesData as List),
 
                         if (FFAppState().userSessionID > 0 &&
                             _viajesData != null &&
+                            _viajesData is List &&
                             (_viajesData as List).isNotEmpty)
                           const SizedBox(height: 20.0),
 
