@@ -14,6 +14,8 @@ export '/pages/notifications_page/notifications_page_widget.dart'
     show NotificationsPageWidget;
 export '/pages/notices_page/notices_page_widget.dart' show NoticesPageWidget;
 export '/pages/viaje_page/viaje_page_widget.dart' show ViajePageWidget;
+export '/pages/mis_colecciones_page/mis_colecciones_page_widget.dart'
+    show MisColeccionesPageWidget;
 export '/pages/rating_page/rating_page_widget.dart' show RatingPageWidget;
 export '/pages/web_view/web_view_widget.dart' show WebViewWidget;
 export '/pages/restablece_page/restablece_page_widget.dart'

@@ -1220,6 +1220,7 @@ class FastAPIViajesCall {
     String? after = '2000-09-06',
     String? before = '2100-09-06',
     String? token = '',
+    bool? isActive,
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Viajes',
@@ -1232,6 +1233,7 @@ class FastAPIViajesCall {
         'user_id': author,
         'after': after,
         'before': before,
+        if (isActive != null) 'is_active': isActive,
       },
       returnBody: true,
       encodeBodyUtf8: false,
@@ -1601,29 +1603,27 @@ class FastAPIViajeCalificarCall {
   }
 }
 
-/// GET /notifications - Listar notificaciones del usuario (requiere auth)
+/// GET /notificaciones - Listar notificaciones del usuario (requiere auth) - Compatible con WordPress
 class FastAPINotificacionesCall {
   static Future<ApiCallResponse> call({
-    String? firebaseToken = '',
-    int skip = 0,
-    int limit = 20,
-    bool? soloNoLeidas,
+    String? author = '',
+    String? token = '',
+    bool? onlyUnread,
   }) async {
     final params = <String, dynamic>{
-      'skip': skip,
-      'limit': limit,
+      'user_id': author,
     };
 
-    if (soloNoLeidas != null) {
-      params['unread_only'] = soloNoLeidas;
+    if (onlyUnread != null) {
+      params['only_unread'] = onlyUnread;
     }
 
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Notificaciones',
-      apiUrl: '${_pythonApiBaseUrl}/notifications',
+      apiUrl: '${_pythonApiBaseUrl}/notificaciones',
       callType: ApiCallType.GET,
       headers: {
-        'Authorization': 'Bearer ${firebaseToken}',
+        'Authorization': 'Bearer ${token}',
       },
       params: params,
       returnBody: true,
@@ -1635,9 +1635,10 @@ class FastAPINotificacionesCall {
     );
   }
 
+  // Extractors - Compatible con WordPress ACF format
   static List<int>? id(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].id''',
+        r'''$[:].id''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1645,9 +1646,9 @@ class FastAPINotificacionesCall {
           .withoutNulls
           .toList();
 
-  static List<String>? titulo(dynamic response) => (getJsonField(
+  static List<String>? date(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].titulo''',
+        r'''$[:].date''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1655,9 +1656,39 @@ class FastAPINotificacionesCall {
           .withoutNulls
           .toList();
 
-  static List<String>? mensaje(dynamic response) => (getJsonField(
+  static List<int>? author(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].mensaje''',
+        r'''$[:].author''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<int>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? title(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].title.rendered''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? textoNotificacion(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.texto_notificacion''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+
+  static List<String>? tipo(dynamic response) => (getJsonField(
+        response,
+        r'''$[:].acf.tipo''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1667,28 +1698,13 @@ class FastAPINotificacionesCall {
 
   static List<bool>? leida(dynamic response) => (getJsonField(
         response,
-        r'''$.items[:].leida''',
+        r'''$[:].acf.leida''',
         true,
       ) as List?)
           ?.withoutNulls
           .map((x) => castToType<bool>(x))
           .withoutNulls
           .toList();
-
-  static List<String>? fechaCreacion(dynamic response) => (getJsonField(
-        response,
-        r'''$.items[:].created_at''',
-        true,
-      ) as List?)
-          ?.withoutNulls
-          .map((x) => castToType<String>(x))
-          .withoutNulls
-          .toList();
-
-  static int? total(dynamic response) => castToType<int>(getJsonField(
-        response,
-        r'''$.total''',
-      ));
 }
 
 /// PUT /notifications/{id}/read - Marcar notificación como leída (requiere auth)

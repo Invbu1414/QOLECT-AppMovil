@@ -143,6 +143,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
+          name: MisColeccionesPageWidget.routeName,
+          path: MisColeccionesPageWidget.routePath,
+          builder: (context, params) => MisColeccionesPageWidget(),
+        ),
+        FFRoute(
           name: RatingPageWidget.routeName,
           path: RatingPageWidget.routePath,
           builder: (context, params) => RatingPageWidget(

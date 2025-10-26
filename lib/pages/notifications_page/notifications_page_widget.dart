@@ -44,8 +44,9 @@ class _NotificationsPageWidgetState extends State<NotificationsPageWidget> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.notiAmount = FFAppState().notificationsAmount.toString();
       safeSetState(() {});
-      _model.startApiResult = await WordpressNotificacionesCall.call(
+      _model.startApiResult = await FastAPINotificacionesCall.call(
         author: FFAppState().userSessionID.toString(),
+        token: FFAppState().token,
       );
 
       if ((_model.startApiResult?.succeeded ?? true)) {

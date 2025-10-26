@@ -2,6 +2,7 @@ import '/backend/api_requests/api_calls.dart';
 import '/components/home_drawer/home_drawer_widget.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
 import '/pages/cart_page/cart_page_widget.dart';
+import '/pages/mis_colecciones_page/mis_colecciones_page_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
@@ -671,13 +672,35 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   ),
                 ],
               ),
-              // TODO: Crear página TusViajesPageWidget para listar todos los viajes
-              // FFButtonWidget(
-              //   onPressed: () {
-              //     // context.pushNamed(TusViajesPageWidget.routeName);
-              //   },
-              //   text: 'Ver todos >',
-              // ),
+              // Botón para ver todas las colecciones activas
+              InkWell(
+                onTap: () {
+                  context.pushNamed(MisColeccionesPageWidget.routeName);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Ver todas',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                              color: FlutterFlowTheme.of(context).primary,
+                              fontSize: 14.0,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                      const SizedBox(width: 4.0),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: FlutterFlowTheme.of(context).primary,
+                        size: 14.0,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -709,9 +732,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       onTap: () {
         context.pushNamed(
           ViajePageWidget.routeName,
-          queryParameters: {
-            'viajeId': serializeParam(viaje['id'], ParamType.int),
-          }.withoutNulls,
+          extra: <String, dynamic>{
+            kTransitionInfoKey: const TransitionInfo(
+              hasTransition: true,
+              transitionType: PageTransitionType.rightToLeft,
+              duration: Duration(milliseconds: 300),
+            ),
+            'info': viaje,
+          },
         );
       },
       child: Container(

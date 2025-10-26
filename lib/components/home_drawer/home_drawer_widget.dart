@@ -181,10 +181,11 @@ class _HomeDrawerWidgetState extends State<HomeDrawerWidget> {
                             _buildMinimalMenuItem(
                               context: context,
                               title: 'Mis Viajes',
-                              subtitle: 'Ver mis reservas',
+                              subtitle: 'Ver mis colecciones',
                               icon: Icons.travel_explore_outlined,
                               onTap: () async {
-
+                                Navigator.pop(context); // Cerrar el drawer
+                                context.pushNamed(MisColeccionesPageWidget.routeName);
                               },
                             ),
                             _buildMinimalMenuItem(
