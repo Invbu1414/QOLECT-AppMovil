@@ -2043,7 +2043,7 @@ class FastAPIGoogleLoginCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Google Login',
-      apiUrl: '${_pythonApiBaseUrl}/auth/google-login',
+      apiUrl: 'http://10.0.2.2:8000/api/v1/auth/google-login',
       callType: ApiCallType.POST,
       headers: {},
       params: {},
