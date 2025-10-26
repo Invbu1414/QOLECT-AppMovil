@@ -4,9 +4,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 final _googleSignIn = GoogleSignIn(
   scopes: ['profile', 'email'],
-  // Web Client ID from Firebase Console
-  // This allows Google Sign-In to work without SHA-1 fingerprint in development
-  clientId: '913800038941-kc6pfnorrab2imbkp2oe88nvhsf5kuc7.apps.googleusercontent.com',
+  // Server Client ID (Web Client ID) from Firebase Console
+  // For Android: use serverClientId instead of clientId
+  serverClientId: '913800038941-kc6pfnorrab2imbkp2oe88nvhsf5kuc7.apps.googleusercontent.com',
 );
 
 Future<UserCredential?> googleSignInFunc() async {

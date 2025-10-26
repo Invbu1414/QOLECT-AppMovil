@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "913800038941-9ktq8gtnuv941k1k9v7jp83c88oulocn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qolect.qolectapp",
+            "certificate_hash": "ba16ed21e6b000812ea6dac46579b85d2715024b"
+          }
+        },
+        {
           "client_id": "913800038941-kc6pfnorrab2imbkp2oe88nvhsf5kuc7.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "913800038941-kc6pfnorrab2imbkp2oe88nvhsf5kuc7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "913800038941-kcg3bp2lm46oqrajirbimbeklmrgduot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.qolect.qolectapp"
+              }
             }
           ]
         }
