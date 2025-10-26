@@ -24,6 +24,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
   dynamic _homeData;
+  dynamic _viajesData;
   String? _errorMessage;
 
   @override
@@ -42,12 +43,23 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         _errorMessage = null;
       });
 
+      // Cargar datos del home
       final response = await FastAPIHomeCall.call();
+
+      // Cargar viajes del usuario (solo si está logueado)
+      dynamic viajesResponse;
+      if (FFAppState().userSessionID > 0) {
+        viajesResponse = await FastAPIViajesCall.call(
+          author: FFAppState().userSessionID.toString(),
+          token: FFAppState().token,
+        );
+      }
 
       if (response.succeeded) {
         if (mounted) {
           setState(() {
             _homeData = response.jsonBody;
+            _viajesData = viajesResponse?.jsonBody;
             _isLoading = false;
           });
         }
@@ -155,6 +167,17 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Mi Colección (solo si está logueado y tiene viajes)
+                        if (FFAppState().userSessionID > 0 &&
+                            _viajesData != null &&
+                            (_viajesData as List).isNotEmpty)
+                          _buildMiColeccion(_viajesData),
+
+                        if (FFAppState().userSessionID > 0 &&
+                            _viajesData != null &&
+                            (_viajesData as List).isNotEmpty)
+                          const SizedBox(height: 20.0),
+
                         // Banner
                         if (_homeData != null &&
                             _homeData['banner'] != null)
@@ -611,6 +634,192 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMiColeccion(List viajes) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.luggage,
+                    color: FlutterFlowTheme.of(context).primary,
+                    size: 28.0,
+                  ),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    'MI COLECCIÓN',
+                    style: FlutterFlowTheme.of(context).headlineSmall.override(
+                          font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                          color: FlutterFlowTheme.of(context).primary,
+                          letterSpacing: 0.0,
+                        ),
+                  ),
+                ],
+              ),
+              // TODO: Crear página TusViajesPageWidget para listar todos los viajes
+              // FFButtonWidget(
+              //   onPressed: () {
+              //     // context.pushNamed(TusViajesPageWidget.routeName);
+              //   },
+              //   text: 'Ver todos >',
+              // ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12.0),
+        SizedBox(
+          height: 220.0,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            itemCount: viajes.length > 5 ? 5 : viajes.length,
+            itemBuilder: (context, index) {
+              final viaje = viajes[index];
+              return _buildViajeCard(viaje, index);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildViajeCard(dynamic viaje, int index) {
+    final acf = viaje['acf'] ?? {};
+    final destino = acf['destino'] ?? 'Sin destino';
+    final imagen = acf['imagen_para_card'] ?? acf['imagen_para_card_copiar'] ?? '';
+    final fechaSalida = acf['fecha_de_salida'] ?? '';
+    final calificacion = acf['calificacion'] ?? '0';
+
+    return InkWell(
+      onTap: () {
+        context.pushNamed(
+          ViajePageWidget.routeName,
+          queryParameters: {
+            'viajeId': serializeParam(viaje['id'], ParamType.int),
+          }.withoutNulls,
+        );
+      },
+      child: Container(
+        width: 280.0,
+        margin: const EdgeInsets.only(right: 12.0),
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).secondaryBackground,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6.0,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
+              child: imagen.isNotEmpty
+                  ? Image.network(
+                      imagen,
+                      width: double.infinity,
+                      height: 120.0,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 120.0,
+                          color: FlutterFlowTheme.of(context).alternate,
+                          child: Center(
+                            child: Icon(
+                              Icons.travel_explore,
+                              size: 48.0,
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
+                      height: 120.0,
+                      color: FlutterFlowTheme.of(context).alternate,
+                      child: Center(
+                        child: Icon(
+                          Icons.travel_explore,
+                          size: 48.0,
+                          color: FlutterFlowTheme.of(context).secondaryText,
+                        ),
+                      ),
+                    ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    destino,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                          fontSize: 16.0,
+                          letterSpacing: 0.0,
+                        ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 14.0,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                      ),
+                      const SizedBox(width: 4.0),
+                      Text(
+                        fechaSalida.isNotEmpty
+                            ? '${fechaSalida.split('T').first}'
+                            : 'Sin fecha',
+                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                              font: GoogleFonts.fredoka(),
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 12.0,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4.0),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.star,
+                        size: 14.0,
+                        color: FlutterFlowTheme.of(context).warning,
+                      ),
+                      const SizedBox(width: 4.0),
+                      Text(
+                        calificacion,
+                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                              font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                              fontSize: 12.0,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
