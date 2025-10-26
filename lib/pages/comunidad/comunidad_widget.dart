@@ -7,6 +7,7 @@ import '/components/home_drawer/home_drawer_widget.dart';
 import '/components/app_bar/main_sliver_app_bar.dart';
 import '/pages/cart_page/cart_page_widget.dart';
 import '/components/whatsapp_fab/whatsapp_fab_widget.dart';
+import '/components/image_viewer/image_viewer_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -267,51 +268,72 @@ class _ComunidadWidgetState extends State<ComunidadWidget> {
                                                 ),
                                                 child: Stack(
                                                   children: [
-                                                    AspectRatio(
-                                                      aspectRatio: 4 / 4,
-                                                      child: imageUrl != null
-                                                          ? Image.network(
-                                                              imageUrl,
-                                                              width: double
-                                                                  .infinity,
-                                                              fit: BoxFit.cover,
-                                                              errorBuilder:
-                                                                  (context,
-                                                                      error,
-                                                                      stackTrace) {
-                                                                return Container(
-                                                                    width: double
-                                                                        .infinity,
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .alternate,
-                                                                    child:
-                                                                        Center(
-                                                                          child: Image
-                                                                              .network(
-                                                                            'https://app.qolect.co/wp-content/uploads/2025/05/hermosa-chica-de-pie-en-el-barco-y-mirando-las-montanas-en-la-presa-ratchaprapha-en-el-parque-nacional-khao-sok-provincia-de-surat-thani-tailandia-scaled.jpg',
-                                                                            fit: BoxFit
-                                                                                .cover,
-                                                                          ),
-                                                                        )
-                                                                    );
-                                                              },
-                                                            )
-                                                          : Container(
-                                                              width: double
-                                                                  .infinity,
-                                                              color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .alternate,
-                                                              child: Center(
-                                                                child: Image
-                                                                    .network(
-                                                                  'https://app.qolect.co/wp-content/uploads/2025/05/hermosa-chica-de-pie-en-el-barco-y-mirando-las-montanas-en-la-presa-ratchaprapha-en-el-parque-nacional-khao-sok-provincia-de-surat-thani-tailandia-scaled.jpg',
-                                                                  fit: BoxFit
-                                                                      .cover,
+                                                    GestureDetector(
+                                                      behavior: HitTestBehavior.opaque,
+                                                      onTap: imageUrl != null
+                                                          ? () {
+                                                              print('DEBUG: Image tapped - experiencia ${experienciaItem['id']}, hasVideo: $hasVideo');
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      ImageViewerWidget(
+                                                                    imageUrl: imageUrl,
+                                                                    heroTag: 'experiencia_${experienciaItem['id']}_image',
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }
+                                                          : null,
+                                                      child: AspectRatio(
+                                                        aspectRatio: 4 / 4,
+                                                        child: imageUrl != null
+                                                            ? Hero(
+                                                                tag: 'experiencia_${experienciaItem['id']}_image',
+                                                                child: Image.network(
+                                                                  imageUrl,
+                                                                  width: double
+                                                                      .infinity,
+                                                                  fit: BoxFit.cover,
+                                                                  errorBuilder:
+                                                                      (context,
+                                                                          error,
+                                                                          stackTrace) {
+                                                                    return Container(
+                                                                        width: double
+                                                                            .infinity,
+                                                                        color: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .alternate,
+                                                                        child:
+                                                                            Center(
+                                                                              child: Image
+                                                                                  .network(
+                                                                                'https://app.qolect.co/wp-content/uploads/2025/05/hermosa-chica-de-pie-en-el-barco-y-mirando-las-montanas-en-la-presa-ratchaprapha-en-el-parque-nacional-khao-sok-provincia-de-surat-thani-tailandia-scaled.jpg',
+                                                                                fit: BoxFit
+                                                                                    .cover,
+                                                                              ),
+                                                                            )
+                                                                        );
+                                                                  },
+                                                                ),
+                                                              )
+                                                            : Container(
+                                                                width: double
+                                                                    .infinity,
+                                                                color: FlutterFlowTheme
+                                                                        .of(context)
+                                                                    .alternate,
+                                                                child: Center(
+                                                                  child: Image
+                                                                      .network(
+                                                                    'https://app.qolect.co/wp-content/uploads/2025/05/hermosa-chica-de-pie-en-el-barco-y-mirando-las-montanas-en-la-presa-ratchaprapha-en-el-parque-nacional-khao-sok-provincia-de-surat-thani-tailandia-scaled.jpg',
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
+                                                      ),
                                                     ),
                                                     if (hasVideo)
                                                       Positioned.fill(
@@ -325,6 +347,43 @@ class _ComunidadWidgetState extends State<ComunidadWidget> {
                                                                       .of(context)
                                                                   .secondaryBackground,
                                                               size: 56.0,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    // Botón de zoom en la esquina superior derecha
+                                                    if (imageUrl != null)
+                                                      Positioned(
+                                                        top: 8.0,
+                                                        right: 8.0,
+                                                        child: Material(
+                                                          color: Colors.transparent,
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              print('DEBUG: Zoom button tapped - experiencia ${experienciaItem['id']}');
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      ImageViewerWidget(
+                                                                    imageUrl: imageUrl,
+                                                                    heroTag: 'experiencia_${experienciaItem['id']}_image',
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            borderRadius: BorderRadius.circular(20.0),
+                                                            child: Container(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.black.withOpacity(0.6),
+                                                                borderRadius: BorderRadius.circular(20.0),
+                                                              ),
+                                                              child: Icon(
+                                                                Icons.zoom_in,
+                                                                color: Colors.white,
+                                                                size: 24.0,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),

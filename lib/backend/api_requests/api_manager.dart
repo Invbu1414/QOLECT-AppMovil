@@ -12,6 +12,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
 
 import '/flutter_flow/uploaded_file.dart';
+import '/flutter_flow/flutter_flow_util.dart';
 
 import 'get_streamed_response.dart';
 
@@ -569,6 +570,118 @@ class ApiManager {
       // If caching is on, cache the result (if present).
       if (cache) {
         _apiCache[callOptions] = result;
+      }
+
+      // Auto-refresh token if 401 Unauthorized
+      if (result.statusCode == 401 &&
+          !apiUrl.contains('/auth/refresh') &&
+          !apiUrl.contains('/auth/login') &&
+          !apiUrl.contains('/auth/google-login')) {
+        print('[ApiManager] 401 detected, attempting token refresh...');
+
+        final refreshToken = FFAppState().refreshToken;
+
+        if (refreshToken.isNotEmpty) {
+          try {
+            // Call refresh endpoint directly
+            final refreshResponse = await requestWithBody(
+              ApiCallType.POST,
+              'http://10.0.2.2:8000/api/v1/auth/refresh',
+              {},
+              {},
+              '{"refresh_token": "$refreshToken"}',
+              BodyType.JSON,
+              true,
+              false,
+              false,
+              false,
+              false,
+            );
+
+            if (refreshResponse.statusCode == 200) {
+              // Extract new access token from response
+              final responseBody = json.decode(refreshResponse.jsonBody ?? '{}');
+              final newAccessToken = responseBody['access_token'];
+
+              if (newAccessToken != null && newAccessToken.isNotEmpty) {
+                // Update token in app state
+                FFAppState().token = newAccessToken;
+                print('[ApiManager] Token refreshed successfully, retrying original request...');
+
+                // Update headers with new token
+                headers['Authorization'] = 'Bearer $newAccessToken';
+
+                // Retry original request with new token
+                switch (callType) {
+                  case ApiCallType.GET:
+                    result = await urlRequest(
+                      callType,
+                      apiUrl,
+                      headers,
+                      params,
+                      returnBody,
+                      decodeUtf8,
+                      isStreamingApi,
+                      client: client,
+                    );
+                    break;
+                  case ApiCallType.DELETE:
+                    result = alwaysAllowBody
+                        ? await requestWithBody(
+                            callType,
+                            apiUrl,
+                            headers,
+                            params,
+                            body,
+                            bodyType,
+                            returnBody,
+                            encodeBodyUtf8,
+                            decodeUtf8,
+                            alwaysAllowBody,
+                            isStreamingApi,
+                            client: client,
+                          )
+                        : await urlRequest(
+                            callType,
+                            apiUrl,
+                            headers,
+                            params,
+                            returnBody,
+                            decodeUtf8,
+                            isStreamingApi,
+                            client: client,
+                          );
+                    break;
+                  case ApiCallType.POST:
+                  case ApiCallType.PUT:
+                  case ApiCallType.PATCH:
+                    result = await requestWithBody(
+                      callType,
+                      apiUrl,
+                      headers,
+                      params,
+                      body,
+                      bodyType,
+                      returnBody,
+                      encodeBodyUtf8,
+                      decodeUtf8,
+                      alwaysAllowBody,
+                      isStreamingApi,
+                      client: client,
+                    );
+                    break;
+                }
+                print('[ApiManager] Retry completed with status: ${result.statusCode}');
+              }
+            } else {
+              print('[ApiManager] Refresh failed with status ${refreshResponse.statusCode}, user needs to login');
+            }
+          } catch (e) {
+            print('[ApiManager] Error during token refresh: $e');
+          }
+        } else {
+          print('[ApiManager] No refresh token available, user needs to login');
+        }
       }
     } catch (e) {
       result = ApiCallResponse(null, {}, -1, exception: e);

@@ -149,10 +149,10 @@ class _ViewExperienceWidgetState extends State<ViewExperienceWidget> {
                       if (!widget.hasVideo!)
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              30.0, 0.0, 30.0, 0.0),
+                              20.0, 0.0, 20.0, 0.0),
                           child: Container(
-                            width: 250.0,
-                            height: 250.0,
+                            width: MediaQuery.sizeOf(context).width * 0.9,
+                            height: MediaQuery.sizeOf(context).width * 0.9,
                             decoration: BoxDecoration(
                               color: Color(0xFFF9FFFF),
                               borderRadius: BorderRadius.circular(20.0),
@@ -162,11 +162,11 @@ class _ViewExperienceWidgetState extends State<ViewExperienceWidget> {
                               ),
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(18.0),
                               child: Image.network(
                                 widget.imageUrl!,
-                                width: 65.0,
-                                height: 65.0,
+                                width: double.infinity,
+                                height: double.infinity,
                                 fit: BoxFit.cover,
                               ),
                             ),
