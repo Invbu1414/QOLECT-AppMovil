@@ -2025,6 +2025,86 @@ class FastAPILoginCall {
       ));
 }
 
+/// POST /auth/google-login - Login with Google
+class FastAPIGoogleLoginCall {
+  static Future<ApiCallResponse> call({
+    String? email = '',
+    String? name = '',
+    String? photoUrl = '',
+    String? firebaseUid = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "email": "${email}",
+  "name": "${name}",
+  "photo_url": "${photoUrl}",
+  "firebase_uid": "${firebaseUid}"
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Google Login',
+      apiUrl: '${_pythonApiBaseUrl}/auth/google-login',
+      callType: ApiCallType.POST,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  // Response fields
+  static String? token(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.token''',
+      ));
+
+  static int? userId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.user_id''',
+      ));
+
+  static String? email(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.email''',
+      ));
+
+  static String? nombre(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.nombre''',
+      ));
+
+  static String? fotoUrl(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.foto_url''',
+      ));
+
+  static String? telefono(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.telefono''',
+      ));
+
+  static String? nombreusuario(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.nombreusuario''',
+      ));
+
+  static bool? verificado(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.verificado''',
+      ));
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+}
+
 /// POST /validate-email - Validar si email existe
 class FastAPIValidateEmailCall {
   static Future<ApiCallResponse> call({

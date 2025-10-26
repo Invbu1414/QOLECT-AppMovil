@@ -627,12 +627,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                   if (user == null) {
                                                     return;
                                                   }
-                                                  _model.apiResultLoginWordPress =
-                                                      await WordPressLoginCall
-                                                          .call(
-                                                    username: currentUserEmail,
-                                                    password: currentUserEmail,
-                                                  );
 
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
@@ -653,30 +647,38 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                               .primary,
                                                     ),
                                                   );
+
+                                                  // Login con FastAPI usando datos de Google
+                                                  _model.apiResultLoginWordPress =
+                                                      await FastAPIGoogleLoginCall
+                                                          .call(
+                                                    email: currentUserEmail,
+                                                    name: currentUserDisplayName,
+                                                    photoUrl: currentUserPhoto,
+                                                    firebaseUid: currentUserUid,
+                                                  );
+
                                                   if ((_model
                                                           .apiResultLoginWordPress
                                                           ?.succeeded ??
                                                       true)) {
                                                     FFAppState().token =
-                                                        getJsonField(
+                                                        FastAPIGoogleLoginCall.token(
                                                       (_model.apiResultLoginWordPress
                                                               ?.jsonBody ??
                                                           ''),
-                                                      r'''$.token''',
                                                     ).toString();
                                                     FFAppState().userSessionID =
-                                                        getJsonField(
+                                                        FastAPIGoogleLoginCall.userId(
                                                       (_model.apiResultLoginWordPress
                                                               ?.jsonBody ??
                                                           ''),
-                                                      r'''$.id''',
-                                                    );
+                                                    ) ?? 0;
                                                     FFAppState().userEmail =
-                                                        getJsonField(
+                                                        FastAPIGoogleLoginCall.email(
                                                       (_model.apiResultLoginWordPress
                                                               ?.jsonBody ??
                                                           ''),
-                                                      r'''$.user_email''',
                                                     ).toString();
                                                     safeSetState(() {});
 
