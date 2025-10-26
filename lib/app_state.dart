@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'models/cart_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();
@@ -17,6 +18,8 @@ class FFAppState extends ChangeNotifier {
 
   Future initializePersistedState() async {
     prefs = await SharedPreferences.getInstance();
+    _secureStorage = const FlutterSecureStorage();
+
     _safeInit(() {
       _token = prefs.getString('ff_token') ?? _token;
     });
@@ -29,6 +32,11 @@ class FFAppState extends ChangeNotifier {
     _safeInit(() {
       _secondTimeOpen = prefs.getBool('ff_secondTimeOpen') ?? _secondTimeOpen;
     });
+
+    // Cargar refresh token desde SecureStorage
+    await _safeInitAsync(() async {
+      _refreshToken = await _secureStorage.read(key: 'ff_refreshToken') ?? _refreshToken;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -37,12 +45,20 @@ class FFAppState extends ChangeNotifier {
   }
 
   late SharedPreferences prefs;
+  late FlutterSecureStorage _secureStorage;
 
   String _token = '';
   String get token => _token;
   set token(String value) {
     _token = value;
     prefs.setString('ff_token', value);
+  }
+
+  String _refreshToken = '';
+  String get refreshToken => _refreshToken;
+  set refreshToken(String value) {
+    _refreshToken = value;
+    _secureStorage.write(key: 'ff_refreshToken', value: value);
   }
 
   int _userSessionID = 0;
@@ -108,6 +124,21 @@ class FFAppState extends ChangeNotifier {
 
   void clearCart() {
     cartItems.clear();
+    notifyListeners();
+  }
+
+  // Limpiar tokens en logout
+  Future<void> clearTokens() async {
+    _token = '';
+    _refreshToken = '';
+    _userSessionID = 0;
+    _userEmail = '';
+
+    await prefs.remove('ff_token');
+    await prefs.remove('ff_userSessionID');
+    await prefs.remove('ff_userEmail');
+    await _secureStorage.delete(key: 'ff_refreshToken');
+
     notifyListeners();
   }
 }

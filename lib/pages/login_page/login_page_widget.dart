@@ -668,6 +668,15 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                                               ?.jsonBody ??
                                                           ''),
                                                     ).toString();
+
+                                                    // NUEVO: Guardar refresh token
+                                                    FFAppState().refreshToken =
+                                                        FastAPIGoogleLoginCall.refreshToken(
+                                                      (_model.apiResultLoginWordPress
+                                                              ?.jsonBody ??
+                                                          ''),
+                                                    ).toString();
+
                                                     FFAppState().userSessionID =
                                                         FastAPIGoogleLoginCall.userId(
                                                       (_model.apiResultLoginWordPress

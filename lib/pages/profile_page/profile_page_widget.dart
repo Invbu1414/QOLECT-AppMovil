@@ -40,19 +40,19 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.apiResultUser = await WordPressUserCall.call(
-        author: FFAppState().userSessionID.toString(),
+      _model.apiResultUser = await FastAPIGetUserCall.call(
+        userId: FFAppState().userSessionID,
         token: FFAppState().token,
       );
 
       if ((_model.apiResultUser?.succeeded ?? true)) {
-        _model.foto = WordPressUserCall.foto(
+        _model.foto = FastAPIGetUserCall.fotoUrl(
           (_model.apiResultUser?.jsonBody ?? ''),
         );
-        _model.celular = WordPressUserCall.telefono(
+        _model.celular = FastAPIGetUserCall.telefono(
           (_model.apiResultUser?.jsonBody ?? ''),
         );
-        _model.nombre = WordPressUserCall.nombre(
+        _model.nombre = FastAPIGetUserCall.name(
           (_model.apiResultUser?.jsonBody ?? ''),
         );
         safeSetState(() {});
@@ -199,7 +199,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                   child: ClipOval(
                                     child: Image.network(
                                       valueOrDefault<String>(
-                                        WordPressUserCall.foto(
+                                        FastAPIGetUserCall.fotoUrl(
                                           (_model.apiResultUser?.jsonBody ??
                                               ''),
                                         ),
@@ -273,6 +273,21 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                             photo: _model.fotoAsset,
                                           );
                                           _model.assetUploadState = false;
+
+                                          // Recargar datos del usuario para mostrar la nueva foto
+                                          if ((_model.uploadResult?.succeeded ?? true)) {
+                                            _model.apiResultUser = await FastAPIGetUserCall.call(
+                                              userId: FFAppState().userSessionID,
+                                              token: FFAppState().token,
+                                            );
+
+                                            if ((_model.apiResultUser?.succeeded ?? true)) {
+                                              _model.foto = FastAPIGetUserCall.fotoUrl(
+                                                (_model.apiResultUser?.jsonBody ?? ''),
+                                              );
+                                            }
+                                          }
+
                                           safeSetState(() {});
                                         }
                                       },
@@ -1502,21 +1517,16 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                                                             false;
                                                         if (loggedIn) {
                                                           _model.apiResultnsiw =
-                                                              await WordPressProfileCall
+                                                              await FastAPIUpdateUserCall
                                                                   .call(
-                                                            id: FFAppState()
+                                                            userId: FFAppState()
                                                                 .userSessionID,
                                                             token: FFAppState()
                                                                 .token,
-                                                            celular: _model
+                                                            telefono: _model
                                                                 .textController2
                                                                 .text,
-                                                            pictureId:
-                                                                _model.assetId,
-                                                            pictureIdX:
-                                                                _model.fotoidX,
-                                                            celularX:
-                                                                _model.celularX,
+                                                            password: null,
                                                           );
 
                                                           _shouldSetState =

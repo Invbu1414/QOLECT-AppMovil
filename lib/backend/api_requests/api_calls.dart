@@ -2103,6 +2103,12 @@ class FastAPIGoogleLoginCall {
         response,
         r'''$.success''',
       ));
+
+  // NUEVO: Refresh Token
+  static String? refreshToken(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.refresh_token''',
+      ));
 }
 
 /// POST /validate-email - Validar si email existe
@@ -2502,6 +2508,87 @@ class FastAPIDeleteProfilePhotoCall {
         'Authorization': 'Bearer $authToken',
       },
       params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+/// POST /auth/refresh - Renovar access token
+class FastAPIRefreshTokenCall {
+  static Future<ApiCallResponse> call({
+    String? refreshToken = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "refresh_token": "$refreshToken"
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Refresh Token',
+      apiUrl: 'http://10.0.2.2:8000/api/v1/auth/refresh',
+      callType: ApiCallType.POST,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static String? accessToken(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.access_token''',
+      ));
+
+  static String? refreshToken(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.refresh_token''',
+      ));
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+}
+
+/// POST /auth/logout - Cerrar sesión revocando refresh token
+class FastAPILogoutCall {
+  static Future<ApiCallResponse> call({
+    String? refreshToken = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "refresh_token": "$refreshToken"
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Logout',
+      apiUrl: 'http://10.0.2.2:8000/api/v1/auth/logout',
+      callType: ApiCallType.POST,
+      headers: {},
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
