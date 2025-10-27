@@ -1127,16 +1127,23 @@ class FastAPIPlanesCall {
   static Future<ApiCallResponse> call({
     int skip = 0,
     int limit = 20,
+    String? categoria,
   }) async {
+    final params = <String, dynamic>{
+      'skip': skip,
+      'limit': limit,
+    };
+
+    if (categoria != null && categoria.isNotEmpty) {
+      params['categoria'] = categoria;
+    }
+
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Planes',
       apiUrl: '${_pythonApiBaseUrl}/planes',
       callType: ApiCallType.GET,
       headers: {},
-      params: {
-        'skip': skip,
-        'limit': limit,
-      },
+      params: params,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,

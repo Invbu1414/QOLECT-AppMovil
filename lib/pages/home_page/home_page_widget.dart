@@ -27,6 +27,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   dynamic _homeData;
   dynamic _viajesData;
   String? _errorMessage;
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -156,56 +157,68 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                   ),
                 )
-              : Container(
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image:
-                          AssetImage('assets/images/20852675_6345959_1_(2).png'),
-                      fit: BoxFit.cover,
+              : Column(
+                  children: [
+                    // Barra de búsqueda
+                    _buildSearchBar(),
+                    // Contenido scrollable
+                    Expanded(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/20852675_6345959_1_(2).png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Banner Hero
+                              if (_homeData != null && _homeData['banner'] != null)
+                                _buildBanner(_homeData['banner']),
+
+                              const SizedBox(height: 20.0),
+
+                              // NUEVO: Ofertas Especiales
+                              if (_homeData != null && _homeData['planes_populares'] != null)
+                                _buildOfertasEspeciales(_homeData['planes_populares']),
+
+                              // NUEVO: Categorías
+                              _buildCategoriasRapidas(),
+
+                              const SizedBox(height: 20.0),
+
+                              // Mi Colección (solo si está logueado y tiene viajes)
+                              if (FFAppState().userSessionID > 0 &&
+                                  _viajesData != null &&
+                                  _viajesData is List &&
+                                  (_viajesData as List).isNotEmpty)
+                                _buildMiColeccion(_viajesData as List),
+
+                              if (FFAppState().userSessionID > 0 &&
+                                  _viajesData != null &&
+                                  _viajesData is List &&
+                                  (_viajesData as List).isNotEmpty)
+                                const SizedBox(height: 20.0),
+
+                              // Planes Populares (mejorados)
+                              if (_homeData != null && _homeData['planes_populares'] != null)
+                                _buildPlanesPopulares(_homeData['planes_populares']),
+
+                              const SizedBox(height: 20.0),
+
+                              // Noticias Destacadas
+                              if (_homeData != null && _homeData['noticias_destacadas'] != null)
+                                _buildNoticiasDestacadas(_homeData['noticias_destacadas']),
+
+                              const SizedBox(height: 50.0),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Mi Colección (solo si está logueado y tiene viajes)
-                        if (FFAppState().userSessionID > 0 &&
-                            _viajesData != null &&
-                            _viajesData is List &&
-                            (_viajesData as List).isNotEmpty)
-                          _buildMiColeccion(_viajesData as List),
-
-                        if (FFAppState().userSessionID > 0 &&
-                            _viajesData != null &&
-                            _viajesData is List &&
-                            (_viajesData as List).isNotEmpty)
-                          const SizedBox(height: 20.0),
-
-                        // Banner
-                        if (_homeData != null &&
-                            _homeData['banner'] != null)
-                          _buildBanner(_homeData['banner']),
-
-                        const SizedBox(height: 20.0),
-
-                        // Noticias Destacadas
-                        if (_homeData != null &&
-                            _homeData['noticias_destacadas'] != null)
-                          _buildNoticiasDestacadas(
-                              _homeData['noticias_destacadas']),
-
-                        const SizedBox(height: 20.0),
-
-                        // Planes Populares
-                        if (_homeData != null &&
-                            _homeData['planes_populares'] != null)
-                          _buildPlanesPopulares(
-                              _homeData['planes_populares']),
-
-                        const SizedBox(height: 50.0),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
     );
   }
@@ -854,6 +867,350 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // NUEVO: Barra de búsqueda
+  Widget _buildSearchBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      color: FlutterFlowTheme.of(context).primaryBackground,
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: '¿A dónde quieres viajar?',
+          prefixIcon: Icon(Icons.search, color: FlutterFlowTheme.of(context).primary),
+          suffixIcon: Icon(Icons.tune, color: FlutterFlowTheme.of(context).secondaryText),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+        ),
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value;
+          });
+        },
+        onSubmitted: (value) {
+          // Navegar a página de planes con búsqueda
+          context.pushNamed(
+            PlansPageWidget.routeName,
+            queryParameters: {'search': value},
+          );
+        },
+      ),
+    );
+  }
+
+  // NUEVO: Ofertas especiales
+  Widget _buildOfertasEspeciales(List planes) {
+    // Filtrar planes con descuento
+    final ofertas = planes.where((p) {
+      final precioNormal = p['precio_normal'] ?? p['precio'];
+      final precioRebajado = p['precio_rebajado'] ?? p['precio'];
+      return precioRebajado != null && precioNormal != null && precioRebajado < precioNormal;
+    }).toList();
+
+    if (ofertas.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.local_fire_department, color: Colors.orange, size: 24),
+                    const SizedBox(width: 8),
+                    Text(
+                      'OFERTAS ESPECIALES',
+                      style: FlutterFlowTheme.of(context).headlineSmall.override(
+                        font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                        color: Colors.orange,
+                        letterSpacing: 0.0,
+                      ),
+                    ),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.pushNamed(PlansPageWidget.routeName);
+                  },
+                  child: Text('Ver todas >'),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 280,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              itemCount: ofertas.length > 4 ? 4 : ofertas.length,
+              itemBuilder: (context, index) {
+                return _buildOfertaCard(ofertas[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfertaCard(dynamic plan) {
+    final nombre = plan['nombre'] ?? '';
+    final precioNormal = (plan['precio_normal'] ?? plan['precio'] ?? 0.0).toDouble();
+    final precioRebajado = (plan['precio_rebajado'] ?? plan['precio'] ?? 0.0).toDouble();
+    final imagen = plan['imagen'] ?? '';
+    final descuento = precioNormal > 0 ? ((precioNormal - precioRebajado) / precioNormal * 100).round() : 0;
+    final heroTag = 'oferta_${plan['idproducto'] ?? nombre}';
+
+    return GestureDetector(
+      onTap: () {
+        final normalizedPlan = {
+          'plan_title': nombre,
+          'plan_image': imagen,
+          'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
+          'precio': precioRebajado,
+          'plan_price': precioRebajado.toStringAsFixed(2),
+          'is_active': true,
+          'plan_id': plan['idproducto'],
+        };
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PlanDetailPageWidget(
+              plan: normalizedPlan,
+              heroTag: heroTag,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: 220,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  child: Image.network(
+                    imagen,
+                    height: 140,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 140,
+                        color: FlutterFlowTheme.of(context).alternate,
+                        child: const Icon(Icons.image, size: 50, color: Colors.grey),
+                      );
+                    },
+                  ),
+                ),
+                // Badge de descuento
+                if (descuento > 0)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '-$descuento%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nombre,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      if (descuento > 0) ...[
+                        Text(
+                          '\$${precioNormal.toStringAsFixed(0)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Text(
+                        '\$${precioRebajado.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final normalizedPlan = {
+                          'plan_title': nombre,
+                          'plan_image': imagen,
+                          'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
+                          'precio': precioRebajado,
+                          'plan_price': precioRebajado.toStringAsFixed(2),
+                          'is_active': true,
+                          'plan_id': plan['idproducto'],
+                        };
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PlanDetailPageWidget(
+                              plan: normalizedPlan,
+                              heroTag: heroTag,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: FlutterFlowTheme.of(context).primary,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Comprar',
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // NUEVO: Categorías rápidas
+  Widget _buildCategoriasRapidas() {
+    final categorias = [
+      {'nombre': 'Playa', 'icon': Icons.beach_access, 'color': Colors.blue},
+      {'nombre': 'Montaña', 'icon': Icons.terrain, 'color': Colors.green},
+      {'nombre': 'Aventura', 'icon': Icons.hiking, 'color': Colors.orange},
+      {'nombre': 'Romántico', 'icon': Icons.favorite, 'color': Colors.pink},
+      {'nombre': 'Familiar', 'icon': Icons.family_restroom, 'color': Colors.purple},
+      {'nombre': 'Nacional', 'icon': Icons.flag, 'color': Colors.amber},
+    ];
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Text(
+              'CATEGORÍAS',
+              style: FlutterFlowTheme.of(context).headlineSmall.override(
+                font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
+                color: FlutterFlowTheme.of(context).primaryText,
+                letterSpacing: 0.0,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              itemCount: categorias.length,
+              itemBuilder: (context, index) {
+                final cat = categorias[index];
+                return GestureDetector(
+                  onTap: () {
+                    context.pushNamed(
+                      PlansPageWidget.routeName,
+                      queryParameters: {'categoria': cat['nombre'] as String},
+                    );
+                  },
+                  child: Container(
+                    width: 80,
+                    margin: const EdgeInsets.only(right: 12),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: (cat['color'] as Color).withValues(alpha: 0.2),
+                          child: Icon(
+                            cat['icon'] as IconData,
+                            color: cat['color'] as Color,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          cat['nombre'] as String,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
