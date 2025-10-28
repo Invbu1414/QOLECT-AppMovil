@@ -32,3 +32,8 @@ export '/pages/notice_detail/notice_detail_widget.dart'
     show NoticeDetailPageWidget;
 export '/pages/plans_page/plans_page_widget.dart' show PlansPageWidget;
 export '/pages/plan_detail_page/plan_detail_widget.dart' show PlanDetailPageWidget;
+export '/pages/checkout_page/checkout_page_widget.dart' show CheckoutPageWidget;
+export '/pages/payment_waiting_page/payment_waiting_page_widget.dart'
+    show PaymentWaitingPageWidget;
+export '/pages/payment_result_page/payment_result_page_widget.dart'
+    show PaymentResultPageWidget;

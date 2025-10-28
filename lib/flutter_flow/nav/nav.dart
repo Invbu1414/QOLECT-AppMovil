@@ -215,6 +215,34 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             description: params.getParam('description', ParamType.String),
             heroTag: params.getParam('heroTag', ParamType.String),
           ),
+        ),
+        FFRoute(
+          name: CheckoutPageWidget.routeName,
+          path: CheckoutPageWidget.routePath,
+          builder: (context, params) => CheckoutPageWidget(
+            planId: params.getParam('planId', ParamType.int),
+            planTitle: params.getParam('planTitle', ParamType.String),
+            planPrice: params.getParam('planPrice', ParamType.double),
+            planImage: params.getParam('planImage', ParamType.String),
+            planDescription: params.getParam('planDescription', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: PaymentWaitingPageWidget.routeName,
+          path: PaymentWaitingPageWidget.routePath,
+          builder: (context, params) => PaymentWaitingPageWidget(
+            compraId: params.getParam('compra_id', ParamType.int),
+            paymentUrl: params.getParam('payment_url', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: PaymentResultPageWidget.routeName,
+          path: PaymentResultPageWidget.routePath,
+          builder: (context, params) => PaymentResultPageWidget(
+            status: params.getParam('status', ParamType.String),
+            message: params.getParam('message', ParamType.String),
+            compraId: params.getParam('compra_id', ParamType.int),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],

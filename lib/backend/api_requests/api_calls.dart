@@ -2631,3 +2631,197 @@ class FastAPILogoutCall {
         r'''$.message''',
       ));
 }
+
+/// GET /planes/{plan_id} - Obtener detalle de un plan
+class FastAPIPlanDetailCall {
+  static Future<ApiCallResponse> call({
+    required int planId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Plan Detail',
+      apiUrl: '${_pythonApiBaseUrl}/planes/$planId',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static int? planId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.plan_id''',
+      ));
+
+  static String? planTitle(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.plan_title''',
+      ));
+
+  static String? planImage(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.plan_image''',
+      ));
+
+  static String? planPrice(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.plan_price''',
+      ));
+
+  static String? descripcion(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.descripcion''',
+      ));
+
+  static double? precio(dynamic response) => castToType<double>(getJsonField(
+        response,
+        r'''$.precio''',
+      ));
+
+  static String? categoria(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.categoria''',
+      ));
+
+  static int? duracionDias(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.duracion_dias''',
+      ));
+
+  static String? destino(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.destino''',
+      ));
+}
+
+/// POST /payments/create-checkout - Crear checkout de pago
+class FastAPICreateCheckoutCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    required String itemId,
+    required String itemTitle,
+    String? itemDescription = '',
+    int? itemQuantity = 1,
+    required double itemUnitPrice,
+    String? currencyId = 'COP',
+    String? tipoCompra = 'plan',
+    int? idproducto,
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "items": [
+    {
+      "id": "$itemId",
+      "title": "$itemTitle",
+      "description": "$itemDescription",
+      "quantity": $itemQuantity,
+      "unit_price": $itemUnitPrice,
+      "currency_id": "$currencyId"
+    }
+  ],
+  "tipo_compra": "$tipoCompra",
+  "idproducto": $idproducto,
+  "metadata": {}
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Create Checkout',
+      apiUrl: '${_pythonApiBaseUrl}/payments/create-checkout',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? preferenceId(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.preference_id''',
+      ));
+
+  static String? initPoint(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.init_point''',
+      ));
+
+  static String? sandboxInitPoint(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.sandbox_init_point''',
+      ));
+
+  static int? compraId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.compra_id''',
+      ));
+
+  static String? externalReference(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.external_reference''',
+      ));
+}
+
+/// GET /payments/purchases/{purchase_id} - Obtener estado de una compra
+class FastAPIGetPurchaseCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    required int purchaseId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Get Purchase',
+      apiUrl: '${_pythonApiBaseUrl}/payments/purchases/$purchaseId',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? estado(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.purchase.estado''',
+      ));
+
+  static String? titulo(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.purchase.titulo''',
+      ));
+
+  static double? precioTotal(dynamic response) => castToType<double>(getJsonField(
+        response,
+        r'''$.purchase.precio_total''',
+      ));
+
+  static String? fechaPago(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.purchase.fecha_pago''',
+      ));
+}

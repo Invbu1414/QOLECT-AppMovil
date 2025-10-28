@@ -546,10 +546,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     final descripcionCorta = plan['descripcioncorta'] ?? '';
     final precio = plan['precio'] ?? 0.0;
     final imagen = plan['imagen'] ?? '';
+    final imagenes = plan['imagenes'] ?? plan['plan_images'] ?? (imagen != null && imagen.isNotEmpty ? [imagen] : []);
     final heroTag = 'planHero_${plan['idproducto'] ?? nombre}';
     final normalizedPlan = {
       'plan_title': nombre,
       'plan_image': imagen,
+      'plan_images': imagenes,
       'descripcion': descripcionCorta,
       'precio': precio,
       'plan_price': precio.toStringAsFixed(2),
@@ -971,6 +973,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     final precioNormal = (plan['precio_normal'] ?? plan['precio'] ?? 0.0).toDouble();
     final precioRebajado = (plan['precio_rebajado'] ?? plan['precio'] ?? 0.0).toDouble();
     final imagen = plan['imagen'] ?? '';
+    final imagenes = plan['imagenes'] ?? plan['plan_images'] ?? (imagen != null && imagen.isNotEmpty ? [imagen] : []);
     final descuento = precioNormal > 0 ? ((precioNormal - precioRebajado) / precioNormal * 100).round() : 0;
     final heroTag = 'oferta_${plan['idproducto'] ?? nombre}';
 
@@ -979,6 +982,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         final normalizedPlan = {
           'plan_title': nombre,
           'plan_image': imagen,
+          'plan_images': imagenes,
           'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
           'precio': precioRebajado,
           'plan_price': precioRebajado.toStringAsFixed(2),
@@ -1099,6 +1103,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         final normalizedPlan = {
                           'plan_title': nombre,
                           'plan_image': imagen,
+                          'plan_images': imagenes,
                           'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
                           'precio': precioRebajado,
                           'plan_price': precioRebajado.toStringAsFixed(2),
