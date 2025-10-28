@@ -1238,6 +1238,7 @@ class FastAPIViajesCall {
       apiUrl: '${_pythonApiBaseUrl}/viajes',
       callType: ApiCallType.GET,
       headers: {
+        ..._apiHeaders,
         'Authorization': 'Bearer ${token}',
       },
       params: {
