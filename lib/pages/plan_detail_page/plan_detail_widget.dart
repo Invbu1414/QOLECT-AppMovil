@@ -180,6 +180,9 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: FFButtonWidget(
             onPressed: () {
+              // Obtener número de WhatsApp del producto (si existe)
+              final whatsappVentas = getJsonField(widget.plan, r'''$.whatsapp_ventas''')?.toString();
+
               context.read<FFAppState>().addToCart(
                 CartItem(
                   id: planIdStr,
@@ -187,6 +190,7 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                   price: priceValue > 0 ? priceValue : 0.0,
                   quantity: 1,
                   imageUrl: imageUrl.isNotEmpty ? imageUrl : null,
+                  whatsappVentas: whatsappVentas,
                 ),
               );
               ScaffoldMessenger.of(context).showSnackBar(

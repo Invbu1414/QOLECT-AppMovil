@@ -6,6 +6,7 @@ class CartItem {
   final double price;
   final int quantity;
   final String? imageUrl;
+  final String? whatsappVentas; // Número de WhatsApp para este producto
 
   const CartItem({
     required this.id,
@@ -13,6 +14,7 @@ class CartItem {
     required this.price,
     required this.quantity,
     this.imageUrl,
+    this.whatsappVentas,
   });
 
   CartItem copyWith({
@@ -21,6 +23,7 @@ class CartItem {
     double? price,
     int? quantity,
     String? imageUrl,
+    String? whatsappVentas,
   }) {
     return CartItem(
       id: id ?? this.id,
@@ -28,6 +31,7 @@ class CartItem {
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
       imageUrl: imageUrl ?? this.imageUrl,
+      whatsappVentas: whatsappVentas ?? this.whatsappVentas,
     );
   }
 }

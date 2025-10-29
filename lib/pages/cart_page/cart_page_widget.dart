@@ -71,8 +71,28 @@ class _CartPageWidgetState extends State<CartPageWidget> {
     mensaje += '*Total: \$${state.cartTotal.toStringAsFixed(2)}*\n\n';
     mensaje += '¿Podrías ayudarme con el proceso de compra? 😊';
 
-    // Número de WhatsApp
-    const String phoneNumber = '573105158593'; // +57 310 5158593 (sin espacios ni +)
+    // Determinar número de WhatsApp a usar
+    // Prioridad:
+    // 1. Si hay un solo producto con whatsapp_ventas → usar ese número
+    // 2. Si hay múltiples productos y todos tienen el mismo whatsapp_ventas → usar ese número
+    // 3. Si hay productos con diferentes números o alguno sin número → usar número por defecto
+    String? phoneNumber;
+
+    if (state.cartItems.isNotEmpty) {
+      // Obtener todos los números de WhatsApp únicos (que no sean null)
+      final whatsappNumbers = state.cartItems
+          .where((item) => item.whatsappVentas != null && item.whatsappVentas!.isNotEmpty)
+          .map((item) => item.whatsappVentas!)
+          .toSet();
+
+      // Si todos los productos tienen el mismo número, usarlo
+      if (whatsappNumbers.length == 1) {
+        phoneNumber = whatsappNumbers.first;
+      }
+    }
+
+    // Número por defecto si no se encontró uno específico
+    phoneNumber ??= '573105158593'; // +57 310 5158593 (sin espacios ni +)
 
     // URL de WhatsApp con mensaje
     final whatsappUrl = 'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(mensaje)}';
