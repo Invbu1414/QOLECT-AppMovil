@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '/custom_code/actions/index.dart' as actions;
@@ -8,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/components/app_bar/main_sliver_app_bar.dart';
 import '/components/optimized_image/optimized_image_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CartPageWidget extends StatefulWidget {
   const CartPageWidget({Key? key}) : super(key: key);
@@ -56,31 +56,35 @@ class _CartPageWidgetState extends State<CartPageWidget> {
     super.initState();
   }
 
-  Future<void> _checkout(FFAppState state) async {
+  Future<void> _checkoutWhatsApp(FFAppState state) async {
     if (state.cartItems.isEmpty) return;
 
-    // Reemplaza por el enlace de tu pasarela/checkout hospedado
-    const String checkoutBaseUrl = 'https://tu-pasarela.com/checkout';
+    // Generar mensaje para WhatsApp
+    String mensaje = '¡Hola! 👋 Quiero comprar las siguientes experiencias:\n\n';
 
-    final items = state.cartItems
-        .map((i) => {
-              'id': i.id,
-              'name': i.name,
-              'qty': i.quantity,
-              'price': i.price,
-            })
-        .toList();
+    for (var item in state.cartItems) {
+      mensaje += '• ${item.name}\n';
+      mensaje += '  Cantidad: ${item.quantity}\n';
+      mensaje += '  Precio: \$${item.price.toStringAsFixed(2)}\n\n';
+    }
 
-    final params = {
-      'amount': state.cartTotal.toStringAsFixed(2),
-      'currency': 'CO',
-      'items': json.encode(items),
-    };
+    mensaje += '*Total: \$${state.cartTotal.toStringAsFixed(2)}*\n\n';
+    mensaje += '¿Podrías ayudarme con el proceso de compra? 😊';
 
-    final checkoutUrl =
-        Uri.parse(checkoutBaseUrl).replace(queryParameters: params).toString();
+    // Número de WhatsApp
+    const String phoneNumber = '573105158593'; // +57 310 5158593 (sin espacios ni +)
 
-    await actions.launchInBrowser(checkoutUrl);
+    // URL de WhatsApp con mensaje
+    final whatsappUrl = 'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(mensaje)}';
+
+    await actions.launchInBrowser(whatsappUrl);
+  }
+
+  Future<void> _checkoutMercadoPago(FFAppState state) async {
+    if (state.cartItems.isEmpty) return;
+
+    // TODO: Implementar integración con Mercado Pago
+    // Por ahora está deshabilitado
   }
 
   @override
@@ -228,21 +232,67 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+            // Botón de WhatsApp (Activo)
             FFButtonWidget(
-              onPressed: state.cartItems.isEmpty ? null : () => _checkout(state),
-              text: 'Pagar',
+              onPressed: state.cartItems.isEmpty ? null : () => _checkoutWhatsApp(state),
+              text: 'Comprar por WhatsApp',
+              icon: const FaIcon(
+                FontAwesomeIcons.whatsapp,
+                size: 24,
+              ),
               options: FFButtonOptions(
                 width: double.infinity,
-                height: 48,
-                color: FlutterFlowTheme.of(context).warning,
+                height: 52,
+                color: const Color(0xFF25D366), // Verde de WhatsApp
                 textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                  color: Colors.white,
+                  fontSize: 16.0,
                   letterSpacing: 0.0,
                 ),
                 elevation: 2.0,
-                borderRadius: BorderRadius.circular(24.0),
+                borderRadius: BorderRadius.circular(12.0),
               ),
+            ),
+            const SizedBox(height: 10),
+            // Botón de Mercado Pago (Deshabilitado)
+            Opacity(
+              opacity: 0.5,
+              child: FFButtonWidget(
+                onPressed: null, // Deshabilitado
+                text: 'Pagar con Mercado Pago',
+                icon: Icon(
+                  Icons.credit_card,
+                  size: 24,
+                  color: Colors.white.withValues(alpha: 0.7),
+                ),
+                options: FFButtonOptions(
+                  width: double.infinity,
+                  height: 52,
+                  color: const Color(0xFF009EE3), // Azul de Mercado Pago
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                    font: GoogleFonts.fredoka(fontWeight: FontWeight.w600),
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 16.0,
+                    letterSpacing: 0.0,
+                  ),
+                  elevation: 0.0,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Próximamente: Pago con tarjeta',
+              style: FlutterFlowTheme.of(context).bodySmall.override(
+                font: GoogleFonts.fredoka(),
+                color: FlutterFlowTheme.of(context).secondaryText,
+                fontSize: 12.0,
+                letterSpacing: 0.0,
+                fontStyle: FontStyle.italic,
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
