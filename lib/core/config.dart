@@ -30,10 +30,11 @@ class AppConfig {
 
   /// Obtiene la URL base de la API según el ambiente
   static String get apiBaseUrl =>
-      IS_PRODUCTION ? API_BASE_URL_PROD : API_BASE_URL_DEV;
+      IS_PRODUCTION ? API_BASE_URL_PROD : API_BASE_URL_PROD;
 
   /// Obtiene la API Key según el ambiente
-  static String get apiKey => IS_PRODUCTION ? API_KEY_PROD : API_KEY_DEV;
+  /// NOTA: Siempre usa la API key de producción porque siempre nos conectamos a producción
+  static String get apiKey => API_KEY_PROD;
 
   /// Obtiene el nombre del ambiente actual (para debug)
   static String get environment => IS_PRODUCTION ? "PRODUCCIÓN" : "DESARROLLO";
@@ -70,3 +71,4 @@ class AppConfig {
     return null;
   }
 }
+

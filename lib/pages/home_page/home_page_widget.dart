@@ -543,6 +543,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   Widget _buildPlanCard(dynamic plan) {
     final nombre = plan['nombre'] ?? '';
+    final descripcionCompleta = plan['descripcion'] ?? '';
     final descripcionCorta = plan['descripcioncorta'] ?? '';
     final precio = plan['precio'] ?? 0.0;
     final imagen = plan['imagen'] ?? '';
@@ -552,7 +553,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       'plan_title': nombre,
       'plan_image': imagen,
       'plan_images': imagenes,
-      'descripcion': descripcionCorta,
+      'descripcion': descripcionCompleta,
+      'descripcioncorta': descripcionCorta,
       'precio': precio,
       'plan_price': precio.toStringAsFixed(2),
       'is_active': true,
@@ -983,7 +985,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           'plan_title': nombre,
           'plan_image': imagen,
           'plan_images': imagenes,
-          'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
+          'descripcion': plan['descripcion'] ?? '',
+          'descripcioncorta': plan['descripcioncorta'] ?? '',
           'precio': precioRebajado,
           'plan_price': precioRebajado.toStringAsFixed(2),
           'is_active': true,
@@ -1104,7 +1107,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           'plan_title': nombre,
                           'plan_image': imagen,
                           'plan_images': imagenes,
-                          'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
+                          'descripcion': plan['descripcion'] ?? '',
+                          'descripcioncorta': plan['descripcioncorta'] ?? '',
                           'precio': precioRebajado,
                           'plan_price': precioRebajado.toStringAsFixed(2),
                           'is_active': true,

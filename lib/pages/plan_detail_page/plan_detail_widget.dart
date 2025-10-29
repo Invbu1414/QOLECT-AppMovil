@@ -148,6 +148,13 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
 
     final description =
         getJsonField(widget.plan, r'''$.descripcion''')?.toString() ?? '';
+
+    // DEBUG: Imprimir datos del plan
+    debugPrint('=== PLAN DETAIL DEBUG ===');
+    debugPrint('Plan data keys: ${widget.plan.keys.toList()}');
+    debugPrint('Description value: $description');
+    debugPrint('Description length: ${description.length}');
+
     final planPriceStr =
         getJsonField(widget.plan, r'''$.plan_price''')?.toString();
     final precioNumero = getJsonField(widget.plan, r'''$.precio''');
