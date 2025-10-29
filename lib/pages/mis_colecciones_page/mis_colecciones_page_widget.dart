@@ -388,6 +388,7 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                   const SizedBox(height: 8.0),
                   // Calificación
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(
                         Icons.star,
@@ -395,7 +396,7 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                         color: FlutterFlowTheme.of(context).warning,
                       ),
                       const SizedBox(width: 6.0),
-                      Flexible(
+                      Expanded(
                         child: Text(
                           calificacion,
                           style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -404,7 +405,6 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                                 fontSize: 14.0,
                                 letterSpacing: 0.0,
                               ),
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8.0),
