@@ -336,6 +336,8 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                   // Destino
                   Text(
                     destino,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: FlutterFlowTheme.of(context).headlineSmall.override(
                           font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
                           color: FlutterFlowTheme.of(context).primaryText,
