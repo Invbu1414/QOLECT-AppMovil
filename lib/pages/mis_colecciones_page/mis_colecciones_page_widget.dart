@@ -393,16 +393,19 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                         color: FlutterFlowTheme.of(context).warning,
                       ),
                       const SizedBox(width: 6.0),
-                      Text(
-                        calificacion,
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.fredoka(
-                                  fontWeight: FontWeight.w600),
-                              fontSize: 14.0,
-                              letterSpacing: 0.0,
-                            ),
+                      Flexible(
+                        child: Text(
+                          calificacion,
+                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.fredoka(
+                                    fontWeight: FontWeight.w600),
+                                fontSize: 14.0,
+                                letterSpacing: 0.0,
+                              ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8.0),
                       // Badge de "Activo"
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -446,3 +449,4 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
     );
   }
 }
+
