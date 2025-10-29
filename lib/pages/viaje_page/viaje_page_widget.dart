@@ -309,7 +309,7 @@ class _ViajePageWidgetState extends State<ViajePageWidget> {
                                           borderRadius: BorderRadius.circular(20.0),
                                         ),
                                         child: Row(
-                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Icon(
                                               Icons.location_on_rounded,
@@ -317,24 +317,28 @@ class _ViajePageWidgetState extends State<ViajePageWidget> {
                                               color: FlutterFlowTheme.of(context).primary,
                                             ),
                                             const SizedBox(width: 6.0),
-                                            Text(
-                                              valueOrDefault<String>(
-                                                getJsonField(widget.info, r'''$.acf.destino''')?.toString(),
-                                                'Sin datos',
-                                              ),
-                                              style: FlutterFlowTheme.of(context).bodySmall.override(
-                                                    font: GoogleFonts.fredoka(
-                                                      fontWeight: FlutterFlowTheme.of(context)
-                                                          .bodySmall
-                                                          .fontWeight,
-                                                      fontStyle: FlutterFlowTheme.of(context)
-                                                          .bodySmall
-                                                          .fontStyle,
+                                            Flexible(
+                                              child: Text(
+                                                valueOrDefault<String>(
+                                                  getJsonField(widget.info, r'''$.acf.destino''')?.toString(),
+                                                  'Sin datos',
+                                                ),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: FlutterFlowTheme.of(context).bodySmall.override(
+                                                      font: GoogleFonts.fredoka(
+                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                            .bodySmall
+                                                            .fontWeight,
+                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                            .bodySmall
+                                                            .fontStyle,
+                                                      ),
+                                                      color: Colors.black,
+                                                      fontSize: 12.0,
+                                                      letterSpacing: 0.0,
                                                     ),
-                                                    color: Colors.black,
-                                                    fontSize: 12.0,
-                                                    letterSpacing: 0.0,
-                                                  ),
+                                              ),
                                             ),
                                           ],
                                         ),
