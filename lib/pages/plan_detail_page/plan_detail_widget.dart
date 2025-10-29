@@ -392,21 +392,23 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                           ),
                         ),
                       ),
-                      RatingBarIndicator(
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star_rounded,
-                          color: FlutterFlowTheme.of(context).warning,
+                      Flexible(
+                        child: RatingBarIndicator(
+                          itemBuilder: (context, index) => Icon(
+                            Icons.star_rounded,
+                            color: FlutterFlowTheme.of(context).warning,
+                          ),
+                          direction: Axis.horizontal,
+                          rating: rating,
+                          unratedColor: Colors.black12,
+                          itemCount: 5,
+                          itemSize: 16.0,
                         ),
-                        direction: Axis.horizontal,
-                        rating: rating,
-                        unratedColor: Colors.black12,
-                        itemCount: 5,
-                        itemSize: 16.0,
                       ),
                     ],
                   ),
                   const SizedBox(height: 12.0),
-                  // “Pill” de precio
+                  // "Pill" de precio
                   Row(
                     children: [
                       Text(
@@ -418,19 +420,22 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                         ),
                       ),
                       const SizedBox(width: 8.0),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primary.withOpacity(0.06),
-                          borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(color: FlutterFlowTheme.of(context).primary),
-                        ),
-                        child: Text(
-                          priceValue > 0 ? priceValue.toStringAsFixed(2) : (planPriceStr ?? ''),
-                          style: FlutterFlowTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.fredoka(),
-                            color: FlutterFlowTheme.of(context).primary,
-                            letterSpacing: 0.0,
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).primary.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(color: FlutterFlowTheme.of(context).primary),
+                          ),
+                          child: Text(
+                            priceValue > 0 ? priceValue.toStringAsFixed(2) : (planPriceStr ?? ''),
+                            style: FlutterFlowTheme.of(context).titleSmall.override(
+                              font: GoogleFonts.fredoka(),
+                              color: FlutterFlowTheme.of(context).primary,
+                              letterSpacing: 0.0,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
