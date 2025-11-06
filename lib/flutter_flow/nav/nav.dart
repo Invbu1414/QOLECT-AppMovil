@@ -178,11 +178,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => RegistrarPageWidget(),
         ),
         FFRoute(
-          name: RegistrarUsuarioPageWidget.routeName,
-          path: RegistrarUsuarioPageWidget.routePath,
-          builder: (context, params) => RegistrarUsuarioPageWidget(),
-        ),
-        FFRoute(
           name: ComunidadWidget.routeName,
           path: ComunidadWidget.routePath,
           builder: (context, params) => ComunidadWidget(),
@@ -243,7 +238,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             message: params.getParam('message', ParamType.String),
             compraId: params.getParam('compra_id', ParamType.int),
           ),
-        )
+        ),
+        FFRoute(
+          name: RegistrarFastAPIPageWidget.routeName,
+          path: RegistrarFastAPIPageWidget.routePath,
+          builder: (context, params) => RegistrarFastAPIPageWidget(),
+        ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
     );

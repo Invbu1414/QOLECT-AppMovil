@@ -1429,7 +1429,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                         highlightColor: Colors.transparent,
                                         onTap: () async {
                                           context.pushNamed(
-                                              RegistrarUsuarioPageWidget
+                                              RegistrarFastAPIPageWidget
                                                   .routeName);
                                         },
                                         child: Text(
