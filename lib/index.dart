@@ -22,8 +22,6 @@ export '/pages/restablece_page/restablece_page_widget.dart'
     show RestablecePageWidget;
 export '/pages/registrar_page/registrar_page_widget.dart'
     show RegistrarPageWidget;
-export '/pages/registrar_usuario_page/registrar_usuario_page_widget.dart'
-    show RegistrarUsuarioPageWidget;
 export '/pages/comunidad/comunidad_widget.dart' show ComunidadWidget;
 export '/versiones/comunidadv1/comunidadv1_widget.dart' show Comunidadv1Widget;
 export '/components/optimized_image/optimized_image_widget.dart';
@@ -37,3 +35,5 @@ export '/pages/payment_waiting_page/payment_waiting_page_widget.dart'
     show PaymentWaitingPageWidget;
 export '/pages/payment_result_page/payment_result_page_widget.dart'
     show PaymentResultPageWidget;
+export '/pages/registrar_fastapi_page/registrar_fastapi_page_widget.dart'
+    show RegistrarFastAPIPageWidget;
