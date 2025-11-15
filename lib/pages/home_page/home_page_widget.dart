@@ -543,16 +543,24 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   Widget _buildPlanCard(dynamic plan) {
     final nombre = plan['nombre'] ?? '';
+    final descripcionCompleta = plan['descripcion'] ?? '';
     final descripcionCorta = plan['descripcioncorta'] ?? '';
     final precio = plan['precio'] ?? 0.0;
     final imagen = plan['imagen'] ?? '';
+    final imagenes = plan['imagenes'] ?? plan['plan_images'] ?? (imagen != null && imagen.isNotEmpty ? [imagen] : []);
     final heroTag = 'planHero_${plan['idproducto'] ?? nombre}';
+    // Extraer precio formateado de descripcioncorta (formato: "País | Fecha | PRECIO")
+    final precioFormateado = descripcionCorta.isNotEmpty && descripcionCorta.contains('|')
+        ? descripcionCorta.split('|').last.trim()
+        : '\$${precio.toStringAsFixed(0)}';
     final normalizedPlan = {
       'plan_title': nombre,
       'plan_image': imagen,
-      'descripcion': descripcionCorta,
+      'plan_images': imagenes,
+      'descripcion': descripcionCompleta,
+      'descripcioncorta': descripcionCorta,
       'precio': precio,
-      'plan_price': precio.toStringAsFixed(2),
+      'plan_price': precioFormateado,
       'is_active': true,
       'plan_id': plan['idproducto'] ?? nombre,
       'plan_rating': (plan['rating'] ?? 0).toString(),
@@ -640,7 +648,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      '\$${precio.toStringAsFixed(0)} USD',
+                      precioFormateado,
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
                             color: FlutterFlowTheme.of(context).primary,
@@ -968,20 +976,28 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   Widget _buildOfertaCard(dynamic plan) {
     final nombre = plan['nombre'] ?? '';
+    final descripcionCorta = plan['descripcioncorta'] ?? '';
     final precioNormal = (plan['precio_normal'] ?? plan['precio'] ?? 0.0).toDouble();
     final precioRebajado = (plan['precio_rebajado'] ?? plan['precio'] ?? 0.0).toDouble();
     final imagen = plan['imagen'] ?? '';
+    final imagenes = plan['imagenes'] ?? plan['plan_images'] ?? (imagen != null && imagen.isNotEmpty ? [imagen] : []);
     final descuento = precioNormal > 0 ? ((precioNormal - precioRebajado) / precioNormal * 100).round() : 0;
     final heroTag = 'oferta_${plan['idproducto'] ?? nombre}';
+    // Extraer precio formateado de descripcioncorta (formato: "País | Fecha | PRECIO")
+    final precioFormateado = descripcionCorta.isNotEmpty && descripcionCorta.contains('|')
+        ? descripcionCorta.split('|').last.trim()
+        : '\$${precioRebajado.toStringAsFixed(0)}';
 
     return GestureDetector(
       onTap: () {
         final normalizedPlan = {
           'plan_title': nombre,
           'plan_image': imagen,
-          'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
+          'plan_images': imagenes,
+          'descripcion': plan['descripcion'] ?? '',
+          'descripcioncorta': plan['descripcioncorta'] ?? '',
           'precio': precioRebajado,
-          'plan_price': precioRebajado.toStringAsFixed(2),
+          'plan_price': precioFormateado,
           'is_active': true,
           'plan_id': plan['idproducto'],
         };
@@ -1070,19 +1086,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      if (descuento > 0) ...[
-                        Text(
-                          '\$${precioNormal.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
                       Text(
-                        '\$${precioRebajado.toStringAsFixed(0)}',
+                        precioFormateado,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -1099,9 +1104,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         final normalizedPlan = {
                           'plan_title': nombre,
                           'plan_image': imagen,
-                          'descripcion': plan['descripcion_corta'] ?? plan['descripcioncorta'] ?? '',
+                          'plan_images': imagenes,
+                          'descripcion': plan['descripcion'] ?? '',
+                          'descripcioncorta': plan['descripcioncorta'] ?? '',
                           'precio': precioRebajado,
-                          'plan_price': precioRebajado.toStringAsFixed(2),
+                          'plan_price': precioFormateado,
                           'is_active': true,
                           'plan_id': plan['idproducto'],
                         };

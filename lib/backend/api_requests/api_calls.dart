@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '/flutter_flow/flutter_flow_util.dart';
 import 'api_manager.dart';
+import '/core/config.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
 
@@ -23,7 +24,7 @@ class WordPressLoginCall {
       callName: 'WordPress Login',
       apiUrl: 'https://app.qolect.co/wp-json/jwt-auth/v1/token',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -93,7 +94,7 @@ class WordpressViajesCall {
       callName: 'Wordpress Viajes',
       apiUrl: 'https://app.qolect.co/wp-json/wp/v2/viaje/',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {
         'acf_format': "standard",
         'acf_author': author,
@@ -332,7 +333,7 @@ class WordpressNoticiasCall {
       callName: 'Wordpress Noticias',
       apiUrl: 'https://app.qolect.co/wp-json/wp/v2/noticias/?nocachee',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {
         'acf_format': "standard",
         'acf_author': author,
@@ -419,7 +420,7 @@ class WordpressNotificacionesCall {
       callName: 'Wordpress Notificaciones',
       apiUrl: 'https://app.qolect.co/wp-json/wp/v2/notificaciones',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {
         'acf_format': "standard",
         'acf_author': author,
@@ -591,7 +592,7 @@ class WordpressResetPasswordCall {
       callName: 'Wordpress reset password',
       apiUrl: 'https://app.qolect.co/wp-json/sense/v1/forgot-password',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -785,7 +786,7 @@ class WordpressPlanesCall {
       callName: 'Wordpress Planes',
       apiUrl: 'https://app.qolect.co/wp-json/v2/plans',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -824,7 +825,7 @@ class WordPressExperienciasComunidadCall {
       callName: 'WordPress Experiencias Comunidad',
       apiUrl: 'https://app.qolect.co/wp-json/v2/experiences',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -895,7 +896,7 @@ class WordPressGuardarExperienciaCall {
       callName: 'WordPress guardar experiencia',
       apiUrl: 'https://app.qolect.co/wp-json/v2/experiences',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -921,7 +922,7 @@ class WordPressValidarExistenciaCall {
       callName: 'WordPress Validar existencia',
       apiUrl: 'https://app.qolect.co/wp-json/v2/email-exist',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -1007,7 +1008,7 @@ class WordpressPlanDetailCall {
       callName: 'Wordpress Plan Detail',
       apiUrl: 'https://app.qolect.co/wp-json/v2/plans/${id}',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -1021,16 +1022,19 @@ class WordpressPlanDetailCall {
 
 // ============================================================================
 // NUEVAS API CALLS - PYTHON FASTAPI
-// Base URL: http://localhost:8000 (desarrollo) / https://api.qolect.co (producción)
+// Base URL: Configurada dinámicamente según ambiente (dev/prod) en AppConfig
 // ============================================================================
 
 /// Base URL para la nueva API Python FastAPI
-// Usando 10.0.2.2 para Android emulator (localhost del host)
-// IMPORTANTE: Usamos /rest para endpoints REST (workaround problema DNS Windows)
-const String _pythonApiBaseUrl = 'http://10.0.2.2:8000/api/v1/mobile/rest';
+// Usa AppConfig.apiBaseUrl que cambia automáticamente según el ambiente
+String get _pythonApiBaseUrl => '${AppConfig.apiBaseUrl}/api/v1/mobile';
 
-// URL base para endpoints de UPLOAD (sin /rest/)
-const String _pythonApiUploadBaseUrl = 'http://10.0.2.2:8000/api/v1/mobile';
+/// Headers comunes para todas las llamadas a la API
+// Incluye X-API-Key solo en producción
+Map<String, String> get _apiHeaders => {
+  'Content-Type': 'application/json',
+  if (AppConfig.apiKey.isNotEmpty) 'X-API-Key': AppConfig.apiKey,
+};
 
 /// GET /noticias - Listar noticias (público)
 class FastAPINoticiasCall {
@@ -1042,7 +1046,7 @@ class FastAPINoticiasCall {
       callName: 'FastAPI Noticias',
       apiUrl: '${_pythonApiBaseUrl}/noticias',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {
         'skip': skip,
         'limit': limit,
@@ -1142,7 +1146,7 @@ class FastAPIPlanesCall {
       callName: 'FastAPI Planes',
       apiUrl: '${_pythonApiBaseUrl}/planes',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: params,
       returnBody: true,
       encodeBodyUtf8: false,
@@ -1234,6 +1238,7 @@ class FastAPIViajesCall {
       apiUrl: '${_pythonApiBaseUrl}/viajes',
       callType: ApiCallType.GET,
       headers: {
+        ..._apiHeaders,
         'Authorization': 'Bearer ${token}',
       },
       params: {
@@ -1748,7 +1753,7 @@ class FastAPIExperienciasCall {
       callName: 'FastAPI Experiencias',
       apiUrl: '${_pythonApiBaseUrl}/experiencias',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {
         'skip': skip,
         'limit': limit,
@@ -1835,7 +1840,7 @@ class FastAPIHomeCall {
       callName: 'FastAPI Home',
       apiUrl: '${_pythonApiBaseUrl}/home',
       callType: ApiCallType.GET,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       returnBody: true,
       encodeBodyUtf8: false,
@@ -2008,7 +2013,7 @@ class FastAPILoginCall {
       callName: 'FastAPI Login',
       apiUrl: '${_pythonApiBaseUrl}/login',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2066,9 +2071,9 @@ class FastAPIGoogleLoginCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Google Login',
-      apiUrl: 'http://10.0.2.2:8000/api/v1/auth/google-login',
+      apiUrl: '${AppConfig.apiBaseUrl}/api/v1/auth/google-login',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2148,7 +2153,7 @@ class FastAPIValidateEmailCall {
       callName: 'FastAPI Validate Email',
       apiUrl: '${_pythonApiBaseUrl}/validate-email',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2191,7 +2196,7 @@ class FastAPIRegisterCall {
       callName: 'FastAPI Register',
       apiUrl: '${_pythonApiBaseUrl}/register',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2396,7 +2401,7 @@ class FastAPIUploadProfilePhotoCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Upload Profile Photo',
-      apiUrl: '${_pythonApiUploadBaseUrl}/users/upload-profile-photo',
+      apiUrl: '${_pythonApiBaseUrl}/users/upload-profile-photo',
       callType: ApiCallType.POST,
       headers: {
         'Authorization': 'Bearer $authToken',
@@ -2439,7 +2444,7 @@ class FastAPIUploadExperienciaPhotoCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Upload Experiencia Photo',
-      apiUrl: '${_pythonApiUploadBaseUrl}/experiencias/$experienciaId/upload-photo',
+      apiUrl: '${_pythonApiBaseUrl}/experiencias/$experienciaId/upload-photo',
       callType: ApiCallType.POST,
       headers: {
         'Authorization': 'Bearer $authToken',
@@ -2487,7 +2492,7 @@ class FastAPIDeleteExperienciaPhotoCall {
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Delete Experiencia Photo',
-      apiUrl: '${_pythonApiUploadBaseUrl}/experiencias/$experienciaId/delete-photo?foto_url=$fotoUrl',
+      apiUrl: '${_pythonApiBaseUrl}/experiencias/$experienciaId/delete-photo?foto_url=$fotoUrl',
       callType: ApiCallType.DELETE,
       headers: {
         'Authorization': 'Bearer $authToken',
@@ -2563,9 +2568,9 @@ class FastAPIRefreshTokenCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Refresh Token',
-      apiUrl: 'http://10.0.2.2:8000/api/v1/auth/refresh',
+      apiUrl: '${AppConfig.apiBaseUrl}/api/v1/auth/refresh',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2606,9 +2611,9 @@ class FastAPILogoutCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'FastAPI Logout',
-      apiUrl: 'http://10.0.2.2:8000/api/v1/auth/logout',
+      apiUrl: '${AppConfig.apiBaseUrl}/api/v1/auth/logout',
       callType: ApiCallType.POST,
-      headers: {},
+      headers: _apiHeaders,
       params: {},
       body: ffApiRequestBody,
       bodyType: BodyType.JSON,
@@ -2629,5 +2634,199 @@ class FastAPILogoutCall {
   static String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.message''',
+      ));
+}
+
+/// GET /planes/{plan_id} - Obtener detalle de un plan
+class FastAPIPlanDetailCall {
+  static Future<ApiCallResponse> call({
+    required int planId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Plan Detail',
+      apiUrl: '${_pythonApiBaseUrl}/planes/$planId',
+      callType: ApiCallType.GET,
+      headers: _apiHeaders,
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static int? planId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.plan_id''',
+      ));
+
+  static String? planTitle(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.plan_title''',
+      ));
+
+  static String? planImage(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.plan_image''',
+      ));
+
+  static String? planPrice(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.plan_price''',
+      ));
+
+  static String? descripcion(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.descripcion''',
+      ));
+
+  static double? precio(dynamic response) => castToType<double>(getJsonField(
+        response,
+        r'''$.precio''',
+      ));
+
+  static String? categoria(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.categoria''',
+      ));
+
+  static int? duracionDias(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.duracion_dias''',
+      ));
+
+  static String? destino(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.destino''',
+      ));
+}
+
+/// POST /payments/create-checkout - Crear checkout de pago
+class FastAPICreateCheckoutCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    required String itemId,
+    required String itemTitle,
+    String? itemDescription = '',
+    int? itemQuantity = 1,
+    required double itemUnitPrice,
+    String? currencyId = 'COP',
+    String? tipoCompra = 'plan',
+    int? idproducto,
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "items": [
+    {
+      "id": "$itemId",
+      "title": "$itemTitle",
+      "description": "$itemDescription",
+      "quantity": $itemQuantity,
+      "unit_price": $itemUnitPrice,
+      "currency_id": "$currencyId"
+    }
+  ],
+  "tipo_compra": "$tipoCompra",
+  "idproducto": $idproducto,
+  "metadata": {}
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Create Checkout',
+      apiUrl: '${_pythonApiBaseUrl}/payments/create-checkout',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? preferenceId(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.preference_id''',
+      ));
+
+  static String? initPoint(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.init_point''',
+      ));
+
+  static String? sandboxInitPoint(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.sandbox_init_point''',
+      ));
+
+  static int? compraId(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.compra_id''',
+      ));
+
+  static String? externalReference(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.external_reference''',
+      ));
+}
+
+/// GET /payments/purchases/{purchase_id} - Obtener estado de una compra
+class FastAPIGetPurchaseCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    required int purchaseId,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'FastAPI Get Purchase',
+      apiUrl: '${_pythonApiBaseUrl}/payments/purchases/$purchaseId',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': 'Bearer $authToken',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.success''',
+      ));
+
+  static String? estado(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.purchase.estado''',
+      ));
+
+  static String? titulo(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.purchase.titulo''',
+      ));
+
+  static double? precioTotal(dynamic response) => castToType<double>(getJsonField(
+        response,
+        r'''$.purchase.precio_total''',
+      ));
+
+  static String? fechaPago(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.purchase.fecha_pago''',
       ));
 }

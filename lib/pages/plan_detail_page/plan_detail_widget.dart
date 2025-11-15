@@ -1,3 +1,4 @@
+import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -28,6 +29,66 @@ class PlanDetailPageWidget extends StatefulWidget {
 
 class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late PageController _pageController;
+  int _currentPage = 0;
+  List<String>? _loadedImages;
+  bool _isLoadingImages = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _loadPlanImagesIfNeeded();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadPlanImagesIfNeeded() async {
+    final planId = getJsonField(widget.plan, r'''$.plan_id''');
+    if (planId == null) return;
+
+    setState(() {
+      _isLoadingImages = true;
+    });
+
+    try {
+      final response = await FastAPIPlanesCall.call(skip: 0, limit: 100);
+      if (response.succeeded && response.jsonBody != null) {
+        final items = getJsonField(response.jsonBody, r'''$.items''');
+        if (items is List) {
+          for (var item in items) {
+            final itemId = getJsonField(item, r'''$.plan_id''');
+            if (itemId == planId) {
+              final imagesRaw = getJsonField(item, r'''$.plan_images''');
+              if (imagesRaw is List) {
+                final images = <String>[];
+                for (var img in imagesRaw) {
+                  if (img != null && img.toString().isNotEmpty) {
+                    images.add(img.toString());
+                  }
+                }
+                setState(() {
+                  _loadedImages = images;
+                  _isLoadingImages = false;
+                });
+                return;
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print('Error loading plan images: $e');
+    }
+
+    setState(() {
+      _isLoadingImages = false;
+    });
+  }
 
   double _parsePrice(dynamic precioNumero, String? planPriceStr) {
     final planPrice = (planPriceStr ?? '').trim();
@@ -63,8 +124,37 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
         getJsonField(widget.plan, r'''$.plan_title''')?.toString() ?? '';
     final imageUrl =
         getJsonField(widget.plan, r'''$.plan_image''')?.toString() ?? '';
+
+    // Obtener array de imágenes
+    // Prioridad: 1) _loadedImages del API, 2) plan_images del objeto, 3) plan_image
+    List<String> planImages = [];
+
+    if (_loadedImages != null && _loadedImages!.isNotEmpty) {
+      planImages = _loadedImages!;
+    } else {
+      final planImagesRaw = getJsonField(widget.plan, r'''$.plan_images''');
+      if (planImagesRaw is List) {
+        for (var img in planImagesRaw) {
+          if (img != null && img.toString().isNotEmpty) {
+            planImages.add(img.toString());
+          }
+        }
+      }
+      // Si no hay imágenes en plan_images, usar plan_image
+      if (planImages.isEmpty && imageUrl.isNotEmpty) {
+        planImages.add(imageUrl);
+      }
+    }
+
     final description =
         getJsonField(widget.plan, r'''$.descripcion''')?.toString() ?? '';
+
+    // DEBUG: Imprimir datos del plan
+    debugPrint('=== PLAN DETAIL DEBUG ===');
+    debugPrint('Plan data keys: ${widget.plan.keys.toList()}');
+    debugPrint('Description value: $description');
+    debugPrint('Description length: ${description.length}');
+
     final planPriceStr =
         getJsonField(widget.plan, r'''$.plan_price''')?.toString();
     final precioNumero = getJsonField(widget.plan, r'''$.precio''');
@@ -90,6 +180,9 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: FFButtonWidget(
             onPressed: () {
+              // Obtener número de WhatsApp del producto (si existe)
+              final whatsappVentas = getJsonField(widget.plan, r'''$.whatsapp_ventas''')?.toString();
+
               context.read<FFAppState>().addToCart(
                 CartItem(
                   id: planIdStr,
@@ -97,6 +190,7 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                   price: priceValue > 0 ? priceValue : 0.0,
                   quantity: 1,
                   imageUrl: imageUrl.isNotEmpty ? imageUrl : null,
+                  whatsappVentas: whatsappVentas,
                 ),
               );
               ScaffoldMessenger.of(context).showSnackBar(
@@ -162,7 +256,7 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nuevo: Hero con overlay y chip de estado
+                  // Nuevo: Hero con overlay y chip de estado + CARRUSEL DE 3 IMÁGENES
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
                     child: Hero(
@@ -172,21 +266,33 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                         height: bannerHeight,
                         child: Stack(
                           children: [
-                            AspectRatio(
-                              aspectRatio: bannerAspect,
-                              child: imageUrl.isNotEmpty
-                                  ? OptimizedImageWidget(
-                                      imageUrl: imageUrl,
-                                      width: bannerWidth,
-                                      height: bannerHeight,
-                                      fit: BoxFit.cover,
-                                      borderRadius: 0.0,
-                                    )
-                                  : Container(
-                                      width: bannerWidth,
-                                      height: bannerHeight,
-                                      color: FlutterFlowTheme.of(context).alternate,
-                                    ),
+                            // PageView para carrusel de imágenes
+                            PageView.builder(
+                              controller: _pageController,
+                              itemCount: planImages.length,
+                              onPageChanged: (index) {
+                                setState(() {
+                                  _currentPage = index;
+                                });
+                              },
+                              itemBuilder: (context, index) {
+                                return AspectRatio(
+                                  aspectRatio: bannerAspect,
+                                  child: planImages[index].isNotEmpty
+                                      ? OptimizedImageWidget(
+                                          imageUrl: planImages[index],
+                                          width: bannerWidth,
+                                          height: bannerHeight,
+                                          fit: BoxFit.cover,
+                                          borderRadius: 0.0,
+                                        )
+                                      : Container(
+                                          width: bannerWidth,
+                                          height: bannerHeight,
+                                          color: FlutterFlowTheme.of(context).alternate,
+                                        ),
+                                );
+                              },
                             ),
                             // Overlay degradado inferior
                             Positioned.fill(
@@ -223,6 +329,43 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                                 ),
                               ),
                             ),
+                            // Indicadores de página (puntos clickeables) - solo si hay más de 1 imagen
+                            if (planImages.length > 1)
+                              Positioned(
+                                bottom: 12.0,
+                                left: 0,
+                                right: 0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    planImages.length,
+                                    (index) => GestureDetector(
+                                      onTap: () {
+                                        _pageController.animateToPage(
+                                          index,
+                                          duration: const Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                                        width: _currentPage == index ? 12.0 : 8.0,
+                                        height: _currentPage == index ? 12.0 : 8.0,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: _currentPage == index
+                                              ? Colors.white
+                                              : Colors.white.withOpacity(0.5),
+                                          border: Border.all(
+                                            color: Colors.white.withOpacity(0.8),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -253,21 +396,23 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                           ),
                         ),
                       ),
-                      RatingBarIndicator(
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star_rounded,
-                          color: FlutterFlowTheme.of(context).warning,
+                      Flexible(
+                        child: RatingBarIndicator(
+                          itemBuilder: (context, index) => Icon(
+                            Icons.star_rounded,
+                            color: FlutterFlowTheme.of(context).warning,
+                          ),
+                          direction: Axis.horizontal,
+                          rating: rating,
+                          unratedColor: Colors.black12,
+                          itemCount: 5,
+                          itemSize: 16.0,
                         ),
-                        direction: Axis.horizontal,
-                        rating: rating,
-                        unratedColor: Colors.black12,
-                        itemCount: 5,
-                        itemSize: 16.0,
                       ),
                     ],
                   ),
                   const SizedBox(height: 12.0),
-                  // “Pill” de precio
+                  // "Pill" de precio
                   Row(
                     children: [
                       Text(
@@ -279,19 +424,22 @@ class _PlanDetailPageWidgetState extends State<PlanDetailPageWidget> {
                         ),
                       ),
                       const SizedBox(width: 8.0),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primary.withOpacity(0.06),
-                          borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(color: FlutterFlowTheme.of(context).primary),
-                        ),
-                        child: Text(
-                          priceValue > 0 ? priceValue.toStringAsFixed(2) : (planPriceStr ?? ''),
-                          style: FlutterFlowTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.fredoka(),
-                            color: FlutterFlowTheme.of(context).primary,
-                            letterSpacing: 0.0,
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).primary.withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(color: FlutterFlowTheme.of(context).primary),
+                          ),
+                          child: Text(
+                            priceValue > 0 ? priceValue.toStringAsFixed(2) : (planPriceStr ?? ''),
+                            style: FlutterFlowTheme.of(context).titleSmall.override(
+                              font: GoogleFonts.fredoka(),
+                              color: FlutterFlowTheme.of(context).primary,
+                              letterSpacing: 0.0,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),

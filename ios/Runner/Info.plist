@@ -16,54 +16,45 @@
 	<string>Qolect</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>com.googleusercontent.apps.784903621231-ukg0gcgk1hpqajucs65aspe5b3d1bjt3</string>
-                
-            </array>
-        </dict>
-
-        <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>qolect.com</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-        <string>qolect</string>
-        </array>
-        </dict>
-    </array>
-    <key>FlutterDeepLinkingEnabled</key>
-    <true/>
-
-
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.784903621231-ukg0gcgk1hpqajucs65aspe5b3d1bjt3</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>qolect.com</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>qolect</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-
 	<key>NSCameraUsageDescription</key>
-    <string>Estamos usando la cámara para que el usuario pueda subir su foto de perfil</string>
+	<string>Estamos usando la cámara para que el usuario pueda subir su foto de perfil</string>
 	<key>NSMicrophoneUsageDescription</key>
-    <string>In order to record audio for video, this app requires permission to access the microphone.</string>
+	<string>In order to record audio for video, this app requires permission to access the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Estamos usando la cámara para que el usuario pueda subir su foto de perfil</string>
+	<string>Estamos usando la cámara para que el usuario pueda subir su foto de perfil</string>
 	<key>PermissionGroupNotification</key>
-    <string>Vamos a enviarte notificaciones</string>
-
-
-
+	<string>Vamos a enviarte notificaciones</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -83,6 +74,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
 </dict>
 </plist>

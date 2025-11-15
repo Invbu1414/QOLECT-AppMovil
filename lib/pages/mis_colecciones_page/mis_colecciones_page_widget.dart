@@ -336,6 +336,8 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                   // Destino
                   Text(
                     destino,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: FlutterFlowTheme.of(context).headlineSmall.override(
                           font: GoogleFonts.fredoka(fontWeight: FontWeight.bold),
                           color: FlutterFlowTheme.of(context).primaryText,
@@ -386,6 +388,7 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                   const SizedBox(height: 8.0),
                   // Calificación
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(
                         Icons.star,
@@ -393,16 +396,18 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
                         color: FlutterFlowTheme.of(context).warning,
                       ),
                       const SizedBox(width: 6.0),
-                      Text(
-                        calificacion,
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.fredoka(
-                                  fontWeight: FontWeight.w600),
-                              fontSize: 14.0,
-                              letterSpacing: 0.0,
-                            ),
+                      Expanded(
+                        child: Text(
+                          calificacion,
+                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.fredoka(
+                                    fontWeight: FontWeight.w600),
+                                fontSize: 14.0,
+                                letterSpacing: 0.0,
+                              ),
+                        ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 8.0),
                       // Badge de "Activo"
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -446,3 +451,4 @@ class _MisColeccionesPageWidgetState extends State<MisColeccionesPageWidget> {
     );
   }
 }
+
